@@ -47,20 +47,20 @@
 #include "private/qqmljsparser_p.h"
 #include "private/qqmljsengine_p.h"
 
-static bool verifyKrules(QQmlJS::AST::UiProgram *qmlAST, RuleSet *kruleTree)
-{
+static bool verifyKrules(QQmlJS::AST::UiProgram *qmlAST, RuleSet *kruleTree, const bool silent) {
     Skeleton *skeleton = new Skeleton();
     kruleTree->accept(skeleton);
-    printf("%i", skeleton->getResult());
+    if (!silent) {
+        printf("%i", skeleton->getResult());
+    }
     return true;
 }
 
-static bool lint_file(const QString &filename, RuleSet *kruleTree, bool silent)
-{
-    QFile file(filename);
+static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, const bool silent) {
+    QFile file(qmlFilename);
     if (!file.open(QFile::ReadOnly)) {
-        qWarning() << "Failed to open file" << filename << file.error();
-        return false;
+        qWarning() << "Failed to open file" << qmlFilename << file.error();
+        exit(-1);
     }
 
     QString code = QString::fromUtf8(file.readAll());
@@ -69,24 +69,47 @@ static bool lint_file(const QString &filename, RuleSet *kruleTree, bool silent)
     QQmlJS::Engine engine;
     QQmlJS::Lexer lexer(&engine);
 
-    QFileInfo info(filename);
+    QFileInfo info(qmlFilename);
     bool isJavaScript = info.suffix().toLower() == QLatin1String("js");
     lexer.setCode(code, /*line = */ 1, /*qmlMode=*/ !isJavaScript);
     QQmlJS::Parser parser(&engine);
-    verifyKrules(parser.ast(), kruleTree);
     bool success = isJavaScript ? parser.parseProgram() : parser.parse();
 
     if (!success && !silent) {
         foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
-            qWarning("%s:%d : %s", qPrintable(filename), m.loc.startLine, qPrintable(m.message));
+            qWarning("%s:%d : %s", qPrintable(qmlFilename), m.loc.startLine, qPrintable(m.message));
         }
     }
 
-    return success;
+    return parser.ast();
 }
 
-int main(int argv, char *argc[])
-{
+static RuleSet* parseKRuleFile(const QString kruleFilename, const bool silent) {
+    const char* flnm = kruleFilename.toUtf8().data();
+
+    FILE *kruleFile = fopen(flnm, "r");
+    if (!kruleFile) {
+      qWarning() << "Error opening input file.\n";
+      exit(1);
+    }
+    RuleSet *kruleTree = pRuleSet(kruleFile);
+
+    if (kruleTree) {
+        if (!silent) {
+            ShowAbsyn s = ShowAbsyn();
+            qDebug() << s.show(kruleTree);
+            qDebug() << "[Linearized Tree]\n";
+            PrintAbsyn p = PrintAbsyn();
+            qDebug() << p.print(kruleTree);
+        }
+        return kruleTree;
+    } else {
+        exit(-1);
+    }
+}
+
+int main(int argv, char *argc[]) {
+    // Setup commandline parser
     QCoreApplication app(argv, argc);
     QCoreApplication::setApplicationName("qmllint");
     QCoreApplication::setApplicationVersion("1.0");
@@ -97,46 +120,30 @@ int main(int argv, char *argc[])
     QCommandLineOption silentOption(QStringList() << "s" << "silent", QLatin1String("Don't output syntax errors"));
     parser.addOption(silentOption);
 
-    // END WITH KRULE
     parser.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
-    // QML FILES
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
-
 
     parser.process(app);
 
-    if (parser.positionalArguments().isEmpty()) {
+    // Verify parsed arguments
+    if (parser.positionalArguments().length() < 2) {
         parser.showHelp(-1);
     }
 
-    bool silent = parser.isSet(silentOption);
+    const bool silent = parser.isSet(silentOption);
+
+    // Parse KRule
+    QStringList parsedArguments = parser.positionalArguments();
+    const QString &kruleFilename = parsedArguments.takeFirst();
+
+    RuleSet *kruleTree = parseKRuleFile(kruleFilename, silent);
+
+    // Run verification
     bool success = true;
-    qDebug() << silent;
-
-    QStringList ls = parser.positionalArguments();
-    const QString &kruleFilename = ls.takeFirst();
-    const char* flnm = kruleFilename.toUtf8().data();
-
-    FILE *kruleFile = fopen(flnm, "r");
-    if (!kruleFile)
-    {
-      fprintf(stderr, "Error opening input file.\n");
-      exit(1);
+    foreach (const QString &filename, parsedArguments) {
+        QQmlJS::AST::UiProgram *qmlAST = parseQML(filename, silent);
+        success &= verifyKrules(qmlAST, kruleTree, silent);
     }
-    /* The default entry point is used. For other options see Parser.H */
-    RuleSet *kruleTree = pRuleSet(kruleFile);
-    if (kruleTree) {
-        ShowAbsyn *s = new ShowAbsyn();
-        qDebug() << s->show(kruleTree);
-        qDebug() << "[Linearized Tree]\n";
-        PrintAbsyn *p = new PrintAbsyn();
-        qDebug() << p->print(kruleTree);
 
-        foreach (const QString &filename, ls) {
-            success &= lint_file(filename, kruleTree, silent);
-        }
-
-        return success ? 0 : -1;
-    }
-    return -1;
+    return success ? 0 : -1;
 }
