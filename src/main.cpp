@@ -55,7 +55,7 @@ static bool verifyKrules(QQmlJS::AST::UiProgram *qmlAST, RuleSet *kruleTree)
     return true;
 }
 
-static bool lint_file(const QString &filename, const RuleSet *kruleTree, bool silent)
+static bool lint_file(const QString &filename, RuleSet *kruleTree, bool silent)
 {
     QFile file(filename);
     if (!file.open(QFile::ReadOnly)) {
@@ -73,6 +73,7 @@ static bool lint_file(const QString &filename, const RuleSet *kruleTree, bool si
     bool isJavaScript = info.suffix().toLower() == QLatin1String("js");
     lexer.setCode(code, /*line = */ 1, /*qmlMode=*/ !isJavaScript);
     QQmlJS::Parser parser(&engine);
+    verifyKrules(parser.ast(), kruleTree);
     bool success = isJavaScript ? parser.parseProgram() : parser.parse();
 
     if (!success && !silent) {
@@ -110,10 +111,13 @@ int main(int argv, char *argc[])
 
     bool silent = parser.isSet(silentOption);
     bool success = true;
-    printf("%i\n", silent);
+    qDebug() << silent;
 
-    const QString &kruleFilename = parser.positionalArguments().first();
-    FILE *kruleFile = fopen(kruleFilename.toLatin1().data(), "r");
+    QStringList ls = parser.positionalArguments();
+    const QString &kruleFilename = ls.takeFirst();
+    const char* flnm = kruleFilename.toUtf8().data();
+
+    FILE *kruleFile = fopen(flnm, "r");
     if (!kruleFile)
     {
       fprintf(stderr, "Error opening input file.\n");
@@ -123,12 +127,12 @@ int main(int argv, char *argc[])
     RuleSet *kruleTree = pRuleSet(kruleFile);
     if (kruleTree) {
         ShowAbsyn *s = new ShowAbsyn();
-        printf("%s\n\n", s->show(kruleTree));
-        printf("[Linearized Tree]\n");
+        qDebug() << s->show(kruleTree);
+        qDebug() << "[Linearized Tree]\n";
         PrintAbsyn *p = new PrintAbsyn();
-        printf("%s\n\n", p->print(kruleTree));
+        qDebug() << p->print(kruleTree);
 
-        foreach (const QString &filename, parser.positionalArguments()) {
+        foreach (const QString &filename, ls) {
             success &= lint_file(filename, kruleTree, silent);
         }
 
