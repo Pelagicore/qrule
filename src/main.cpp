@@ -43,6 +43,7 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 
+#include "QmlVisitor.h"
 #include "private/qqmljslexer_p.h"
 #include "private/qqmljsparser_p.h"
 #include "private/qqmljsengine_p.h"
@@ -56,7 +57,7 @@ static bool verifyKrules(QQmlJS::AST::UiProgram *qmlAST, RuleSet *kruleTree, con
     return true;
 }
 
-static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, const bool silent) {
+static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, QmlVisitor *qv,const bool silent) {
     QFile file(qmlFilename);
     if (!file.open(QFile::ReadOnly)) {
         qWarning() << "Failed to open file" << qmlFilename << file.error();
@@ -66,6 +67,7 @@ static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, const bool si
     QString code = QString::fromUtf8(file.readAll());
     file.close();
 
+    qv->setCode(code);
     QQmlJS::Engine engine;
     QQmlJS::Lexer lexer(&engine);
 
@@ -140,8 +142,10 @@ int main(int argv, char *argc[]) {
 
     // Run verification
     bool success = true;
+    QmlVisitor *qv = new QmlVisitor("");
     foreach (const QString &filename, parsedArguments) {
-        QQmlJS::AST::UiProgram *qmlAST = parseQML(filename, silent);
+        QQmlJS::AST::UiProgram *qmlAST = parseQML(filename, qv, silent);
+        qmlAST->accept(qv);
         success &= verifyKrules(qmlAST, kruleTree, silent);
     }
 

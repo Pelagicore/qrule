@@ -8,7 +8,9 @@ set(SOURCE_FILES
         main.cpp
         Environment.cpp
         Environment.h
-        Scope.cpp Scope.h
+        Scope.cpp
+        Scope.h
+        QmlVisitor.h
         private/qqmljsast.cpp
         private/qqmljsastfwd_p.h
         private/qqmljsast_p.h
