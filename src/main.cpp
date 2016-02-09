@@ -32,9 +32,9 @@
 ****************************************************************************/
 
 #include <stdio.h>
-#include "Parser.H"
-#include "Printer.H"
-#include "Absyn.H"
+#include "gen/Parser.H"
+#include "gen/Printer.H"
+#include "gen/Absyn.H"
 #include "Skeleton.H"
 
 #include <QDebug>
@@ -43,10 +43,9 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 
-#include <private/qv4value_inl_p.h>
-#include <private/qqmljslexer_p.h>
-#include <private/qqmljsparser_p.h>
-#include <private/qqmljsengine_p.h>
+#include "private/qqmljslexer_p.h"
+#include "private/qqmljsparser_p.h"
+#include "private/qqmljsengine_p.h"
 
 static bool verifyKrules(QQmlJS::AST::UiProgram *qmlAST, RuleSet *kruleTree)
 {
@@ -114,8 +113,8 @@ int main(int argv, char *argc[])
     printf("%i\n", silent);
 
     const QString &kruleFilename = parser.positionalArguments().first();
-    FILE *kruleFile = fopen(kruleFilename, "r");
-    if (!input)
+    FILE *kruleFile = fopen(kruleFilename.toLatin1().data(), "r");
+    if (!kruleFile)
     {
       fprintf(stderr, "Error opening input file.\n");
       exit(1);
@@ -124,10 +123,10 @@ int main(int argv, char *argc[])
     RuleSet *kruleTree = pRuleSet(kruleFile);
     if (kruleTree) {
         ShowAbsyn *s = new ShowAbsyn();
-        printf("%s\n\n", s->show(parse_tree));
+        printf("%s\n\n", s->show(kruleTree));
         printf("[Linearized Tree]\n");
         PrintAbsyn *p = new PrintAbsyn();
-        printf("%s\n\n", p->print(parse_tree));
+        printf("%s\n\n", p->print(kruleTree));
 
         foreach (const QString &filename, parser.positionalArguments()) {
             success &= lint_file(filename, kruleTree, silent);
