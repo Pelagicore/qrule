@@ -14,7 +14,7 @@
 #include <QtCore/qvarlengtharray.h>
 #include <QFile>
 #include <typeinfo>
-
+#include "Environment.h"
 
 
 using namespace QQmlJS::AST;
@@ -22,15 +22,15 @@ using namespace QQmlJS::AST;
 class QmlVisitor: public QQmlJS::AST::Visitor {
 public:
     QmlVisitor(QString code): _code(code){}
+    virtual ~QmlVisitor() {
+        delete env;
+    }
 
     virtual bool visit(FunctionBody *exp) {
         debug(exp);
         return true;
     }
 
-    virtual bool visit(UiObjectDefinition *exp) {
-        debug(exp);
-        return true; }
 
     virtual bool visit(UiImport *exp) {
         debug(exp);
@@ -80,9 +80,7 @@ public:
         debug(exp);
         return true; }
 
-    virtual bool visit(UiScriptBinding *exp) {
-        debug(exp);
-        return true; }
+    virtual bool visit(UiScriptBinding *exp);
 
     virtual bool visit(UiParameterList *exp) {
         debug(exp);
@@ -104,21 +102,13 @@ public:
         debug(exp);
         return true; }
 
-    virtual bool visit(IdentifierExpression *exp) {
-        debug(exp);
-        return true; }
-
     virtual bool visit(NullExpression *exp) {
         debug(exp);
         return true; }
 
-    virtual bool visit(TrueLiteral *exp) {
-        debug(exp);
-        return true; }
+    virtual bool visit(TrueLiteral *exp);
 
-    virtual bool visit(FalseLiteral *exp) {
-        debug(exp);
-        return true; }
+    virtual bool visit(FalseLiteral *exp);
 
     virtual bool visit(StringLiteral *exp) {
         debug(exp);
@@ -388,10 +378,6 @@ public:
         debug(exp);
         return true; }
 
-    void setCode(QString code) {
-        _code = code;
-    }
-
     virtual void endVisit(UiProgram *){ deIndent(); }
     virtual void endVisit(UiImport *){ deIndent(); }
     virtual void endVisit(UiHeaderItemList *){ deIndent(); }
@@ -399,9 +385,8 @@ public:
     virtual void endVisit(UiPublicMember *){ deIndent(); }
     virtual void endVisit(UiSourceElement *){ deIndent(); }
     virtual void endVisit(UiObjectInitializer *){ deIndent(); }
-    virtual void endVisit(UiObjectDefinition*) { deIndent(); }
     virtual void endVisit(UiObjectBinding *){ deIndent(); }
-    virtual void endVisit(UiScriptBinding *){ deIndent(); }
+    virtual void endVisit(UiScriptBinding *);
     virtual void endVisit(UiArrayBinding *){ deIndent(); }
     virtual void endVisit(UiParameterList *){ deIndent(); }
     virtual void endVisit(UiObjectMemberList *){ deIndent(); }
@@ -485,29 +470,23 @@ public:
     virtual void endVisit(StatementSourceElement *){ deIndent(); }
     virtual void endVisit(DebuggerStatement *){ deIndent(); }
 
-private:
-    QStringRef printable(const SourceLocation &start, const SourceLocation &end) {
-        return QStringRef(&_code, start.offset, end.offset + end.length - start.offset);
-    }
+    virtual bool visit(IdentifierExpression *);
+    virtual bool visit(UiObjectDefinition *);
+    virtual void endVisit(UiObjectDefinition *);
 
+    Environment* getEnvironment() { return env; }
+
+private:
+    Environment* env = new Environment();
     QString indent = "";
 
-    void deIndent() {
-        indent.chop(2);
-    }
-
-    void expandIndent() {
-        indent.append("  ");
-    }
-
-    void debug(QQmlJS::AST::Node *exp) {
-
-        QString name = QString(typeid(*exp).name());
-        name = name.remove(QRegExp(".*AST[0-9]*"));
-        qDebug() << indent << name
-                 << printable(exp->firstSourceLocation(), exp->lastSourceLocation());
-        expandIndent();
-    }
-
+    QString notPairedParamValue = "";
+    QString notPairedParamName  = "";
     QString _code;
+
+    QStringRef getSource(QQmlJS::AST::Node *);
+    QStringRef printable(const SourceLocation &start, const SourceLocation &end);
+    void debug(QQmlJS::AST::Node *);
+    void deIndent();
+    void expandIndent();
 };

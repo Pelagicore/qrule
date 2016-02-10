@@ -43,31 +43,34 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 
+#include "ParseException.h"
+#include "Environment.h"
+
 #include "QmlVisitor.h"
 #include "private/qqmljslexer_p.h"
 #include "private/qqmljsparser_p.h"
 #include "private/qqmljsengine_p.h"
 
-static bool verifyKrules(QQmlJS::AST::UiProgram *qmlAST, RuleSet *kruleTree, const bool silent) {
+static bool verifyKrules(Environment *env, RuleSet *kruleTree) {
     Skeleton *skeleton = new Skeleton();
     kruleTree->accept(skeleton);
-    if (!silent) {
-        printf("%i", skeleton->getResult());
-    }
+    qDebug() << skeleton->getResult() << endl;
+
     return true;
 }
-
-static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, QmlVisitor *qv,const bool silent) {
+static QString readCode(QString qmlFilename) {
     QFile file(qmlFilename);
     if (!file.open(QFile::ReadOnly)) {
         qWarning() << "Failed to open file" << qmlFilename << file.error();
-        exit(-1);
+        throw ParseException(qmlFilename.prepend("Could not open file "));
     }
 
     QString code = QString::fromUtf8(file.readAll());
     file.close();
+    return code;
+}
 
-    qv->setCode(code);
+static QQmlJS::AST::UiProgram* parseQML(const QString code, const QString qmlFilename) {
     QQmlJS::Engine engine;
     QQmlJS::Lexer lexer(&engine);
 
@@ -77,7 +80,7 @@ static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, QmlVisitor *q
     QQmlJS::Parser parser(&engine);
     bool success = isJavaScript ? parser.parseProgram() : parser.parse();
 
-    if (!success && !silent) {
+    if (!success) {
         foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
             qWarning("%s:%d : %s", qPrintable(qmlFilename), m.loc.startLine, qPrintable(m.message));
         }
@@ -86,27 +89,25 @@ static QQmlJS::AST::UiProgram* parseQML(const QString qmlFilename, QmlVisitor *q
     return parser.ast();
 }
 
-static RuleSet* parseKRuleFile(const QString kruleFilename, const bool silent) {
-    const char* flnm = kruleFilename.toUtf8().data();
+static RuleSet* parseKRuleFile(QString kruleFilename) {
+    const char* kruleFileNameChar = kruleFilename.toUtf8().data();
 
-    FILE *kruleFile = fopen(flnm, "r");
+    FILE *kruleFile = fopen(kruleFileNameChar, "r");
     if (!kruleFile) {
       qWarning() << "Error opening input file.\n";
-      exit(1);
+      throw ParseException(kruleFilename.prepend("Could not open KRule file "));
     }
     RuleSet *kruleTree = pRuleSet(kruleFile);
 
     if (kruleTree) {
-        if (!silent) {
-            ShowAbsyn s = ShowAbsyn();
-            qDebug() << s.show(kruleTree);
-            qDebug() << "[Linearized Tree]\n";
-            PrintAbsyn p = PrintAbsyn();
-            qDebug() << p.print(kruleTree);
-        }
+        ShowAbsyn s = ShowAbsyn();
+        qDebug() << s.show(kruleTree);
+        qDebug() << "[Linearized Tree]\n";
+        PrintAbsyn p = PrintAbsyn();
+        qDebug() << p.print(kruleTree);
         return kruleTree;
     } else {
-        exit(-1);
+        throw ParseException("Could not parse KRulefile");
     }
 }
 
@@ -137,16 +138,24 @@ int main(int argv, char *argc[]) {
     // Parse KRule
     QStringList parsedArguments = parser.positionalArguments();
     const QString &kruleFilename = parsedArguments.takeFirst();
-
-    RuleSet *kruleTree = parseKRuleFile(kruleFilename, silent);
+    RuleSet *kruleTree = parseKRuleFile(kruleFilename);
 
     // Run verification
     bool success = true;
-    QmlVisitor *qv = new QmlVisitor("");
-    foreach (const QString &filename, parsedArguments) {
-        QQmlJS::AST::UiProgram *qmlAST = parseQML(filename, qv, silent);
-        qmlAST->accept(qv);
-        success &= verifyKrules(qmlAST, kruleTree, silent);
+    foreach (const QString &qmlFilename, parsedArguments) {
+        try {
+            QString code = readCode(qmlFilename);
+            QmlVisitor qmlVisitor = QmlVisitor(code);
+            QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
+            qmlAST->accept(&qmlVisitor);
+            Environment *env = qmlVisitor.getEnvironment();
+            env->print();
+            verifyKrules(env, kruleTree);
+        }
+        catch (ParseException &e) {
+           qCritical() << e.what() << endl;
+           success = false;
+        }
     }
 
     return success ? 0 : -1;

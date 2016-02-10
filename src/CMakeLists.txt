@@ -11,6 +11,10 @@ set(SOURCE_FILES
         Scope.cpp
         Scope.h
         QmlVisitor.h
+        QmlVisitor.cpp
+        ParseException.h
+        EnvironmentIterator.cpp
+        EnvironmentIterator.h
         private/qqmljsast.cpp
         private/qqmljsastfwd_p.h
         private/qqmljsast_p.h
