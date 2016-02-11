@@ -45,6 +45,7 @@
 
 #include "ParseException.h"
 #include "Environment.h"
+#include "EnvironmentVerifierQml.h"
 
 #include "QmlVisitor.h"
 #include "private/qqmljslexer_p.h"
@@ -52,11 +53,9 @@
 #include "private/qqmljsengine_p.h"
 
 static bool verifyKrules(Environment *env, RuleSet *kruleTree) {
-    Skeleton *skeleton = new Skeleton();
-    kruleTree->accept(skeleton);
-    qDebug() << skeleton->getResult() << endl;
 
-    return true;
+    EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
+    return env->accept(&envv);
 }
 static QString readCode(QString qmlFilename) {
     QFile file(qmlFilename);
@@ -145,16 +144,21 @@ int main(int argv, char *argc[]) {
     foreach (const QString &qmlFilename, parsedArguments) {
         try {
             QString code = readCode(qmlFilename);
-            QmlVisitor qmlVisitor = QmlVisitor(code);
+            QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
             QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
             qmlAST->accept(&qmlVisitor);
             Environment *env = qmlVisitor.getEnvironment();
             env->print();
-            verifyKrules(env, kruleTree);
+            bool b = verifyKrules(env, kruleTree);
+            if (!b) {
+                exit(-1);
+            }
         }
         catch (ParseException &e) {
-           qCritical() << e.what() << endl;
-           success = false;
+            const char* msg = e.what();
+
+            qDebug() << e.reason.toStdString().c_str();
+            success = false;
         }
     }
 

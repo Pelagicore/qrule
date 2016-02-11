@@ -7,10 +7,10 @@ class ParseException: public std::exception {
   public:
     ParseException(QString reason): reason(reason) {}
     virtual const char* what() const throw() {
-      return "My exception happened";
+      return "A KRule does not hold";
     }
-  private:
     QString reason;
+  private:
 };
 
 #endif // PARSEEXCEPTION_H

@@ -1,3 +1,6 @@
+#ifndef KRULEENGINE_QMLVISITOR_H
+#define KRULEENGINE_QMLVISITOR_H
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "private/qqmljsengine_p.h"
@@ -21,7 +24,7 @@ using namespace QQmlJS::AST;
 
 class QmlVisitor: public QQmlJS::AST::Visitor {
 public:
-    QmlVisitor(QString code): _code(code){}
+    QmlVisitor(QString code, QString filename): _code(code), filename(filename){}
     virtual ~QmlVisitor() {
         delete env;
     }
@@ -484,9 +487,13 @@ private:
     QString notPairedParamName  = "";
     QString _code;
 
+    QString filename;
+
     QStringRef getSource(QQmlJS::AST::Node *);
     QStringRef printable(const SourceLocation &start, const SourceLocation &end);
     void debug(QQmlJS::AST::Node *);
     void deIndent();
     void expandIndent();
 };
+
+#endif // KRULEENGINE_QMLVISITOR_H

@@ -13,8 +13,9 @@ set(SOURCE_FILES
         QmlVisitor.h
         QmlVisitor.cpp
         ParseException.h
-        EnvironmentIterator.cpp
-        EnvironmentIterator.h
+        EnvironmentVerifierQml.cpp
+        EnvironmentVerifierQml.h
+        EnvironmentVerifier.h
         private/qqmljsast.cpp
         private/qqmljsastfwd_p.h
         private/qqmljsast_p.h

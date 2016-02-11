@@ -4,20 +4,23 @@
    List->accept() does NOT traverse the list. This allows different
    algorithms to use context information differently. */
 
+#include "ParseException.h"
 #include "Skeleton.H"
 
+#include <Printer.H>
 
 
-void Skeleton::visitRuleSet(RuleSet* t) {} //abstract class
-void Skeleton::visitRule(Rule* t) {} //abstract class
-void Skeleton::visitAnalysis(Analysis* t) {} //abstract class
-void Skeleton::visitTag(Tag* t) {} //abstract class
-void Skeleton::visitSeverity(Severity* t) {} //abstract class
-void Skeleton::visitExpr(Expr* t) {} //abstract class
-void Skeleton::visitScope(Scope* t) {} //abstract class
-void Skeleton::visitParam(Param* t) {} //abstract class
 
-void Skeleton::visitRSet(RSet *rset)
+void KRuleVisitor::visitRuleSet(RuleSet* t) {} //abstract class
+void KRuleVisitor::visitRule(Rule* t) {} //abstract class
+void KRuleVisitor::visitAnalysis(Analysis* t) {} //abstract class
+void KRuleVisitor::visitTag(Tag* t) {} //abstract class
+void KRuleVisitor::visitSeverity(Severity* t) {} //abstract class
+void KRuleVisitor::visitExpr(Expr* t) {} //abstract class
+void KRuleVisitor::visitScope(Scope* t) {} //abstract class
+void KRuleVisitor::visitParam(Param* t) {} //abstract class
+
+void KRuleVisitor::visitRSet(RSet *rset)
 {
   /* Code For RSet Goes Here */
 
@@ -25,90 +28,90 @@ void Skeleton::visitRSet(RSet *rset)
 
 }
 
-void Skeleton::visitRRule(RRule *rrule)
+void KRuleVisitor::visitRRule(RRule *rrule)
 {
   /* Code For RRule Goes Here */
-
-  val += 1;
   rrule->tag_->accept(this);
   rrule->severity_->accept(this);
   rrule->analysis_->accept(this);
   rrule->expr_->accept(this);
 
+  if (!rtBool) {
+      PrintAbsyn prnt = PrintAbsyn();
+      QString reason = prnt.print(rrule);
+      throw ParseException(reason.append(" \n ").append(scope->getCode()));
+  }
 }
 
-void Skeleton::visitAStatic(AStatic *astatic)
+void KRuleVisitor::visitAStatic(AStatic *astatic)
 {
   /* Code For AStatic Goes Here */
 
 
 }
 
-void Skeleton::visitADynamic(ADynamic *adynamic)
+void KRuleVisitor::visitADynamic(ADynamic *adynamic)
 {
   /* Code For ADynamic Goes Here */
 
 
 }
 
-void Skeleton::visitTTag(TTag *ttag)
+void KRuleVisitor::visitTTag(TTag *ttag)
 {
-  /* Code For TTag Goes Here */
-
-  visitString(ttag->string_);
-
+    currentRuleTag = currentRuleTag.fromStdString(ttag->string_);
 }
 
-void Skeleton::visitSevWarning(SevWarning *sevwarning)
+void KRuleVisitor::visitSevWarning(SevWarning *sevwarning)
 {
   /* Code For SevWarning Goes Here */
 
 
 }
 
-void Skeleton::visitSevCritical(SevCritical *sevcritical)
+void KRuleVisitor::visitSevCritical(SevCritical *sevcritical)
 {
   /* Code For SevCritical Goes Here */
 
 
 }
 
-void Skeleton::visitEInt(EInt *eint)
+void KRuleVisitor::visitEInt(EInt *eint)
 {
   /* Code For EInt Goes Here */
   visitInteger(eint->integer_);
 
 }
 
-void Skeleton::visitEMinRDepth(EMinRDepth *eminrdepth)
+void KRuleVisitor::visitEMinRDepth(EMinRDepth *eminrdepth)
 {
   /* Code For EMinRDepth Goes Here */
 
 
 }
 
-void Skeleton::visitEMaxRDepth(EMaxRDepth *emaxrdepth)
+void KRuleVisitor::visitEMaxRDepth(EMaxRDepth *emaxrdepth)
 {
   /* Code For EMaxRDepth Goes Here */
 
 
 }
 
-void Skeleton::visitEDepth(EDepth *edepth)
+void KRuleVisitor::visitEDepth(EDepth *edepth)
 {
   /* Code For EDepth Goes Here */
 
 
 }
 
-void Skeleton::visitENrChildren(ENrChildren *enrchildren)
+void KRuleVisitor::visitENrChildren(ENrChildren *enrchildren)
 {
   /* Code For ENrChildren Goes Here */
 
 
 }
 
-void Skeleton::visitERsInScope(ERsInScope *ersinscope)
+void KRuleVisitor::visitERsInScope(ERsInScope *ersinscope)
 {
   /* Code For ERsInScope Goes Here */
 
@@ -116,29 +119,34 @@ void Skeleton::visitERsInScope(ERsInScope *ersinscope)
 
 }
 
-void Skeleton::visitETrue(ETrue *etrue)
+void KRuleVisitor::visitETrue(ETrue *etrue)
 {
   /* Code For ETrue Goes Here */
 
 
 }
 
-void Skeleton::visitEFalse(EFalse *efalse)
+void KRuleVisitor::visitEFalse(EFalse *efalse)
 {
   /* Code For EFalse Goes Here */
 
 
 }
 
-void Skeleton::visitEIsSet(EIsSet *eisset)
+void KRuleVisitor::visitEIsSet(EIsSet *eisset)
 {
-  /* Code For EIsSet Goes Here */
-
   eisset->param_->accept(this);
-
+  bool s = false;
+  foreach (EnvParam *p, scope->params) {
+      if (rtString.compare(p->name) == 0) {
+          s = true;
+      }
+  }
+  rtString = "";
+  rtBool = s;
 }
 
-void Skeleton::visitEIsType(EIsType *eistype)
+void KRuleVisitor::visitEIsType(EIsType *eistype)
 {
   /* Code For EIsType Goes Here */
 
@@ -146,7 +154,7 @@ void Skeleton::visitEIsType(EIsType *eistype)
 
 }
 
-void Skeleton::visitEParant(EParant *eparant)
+void KRuleVisitor::visitEParant(EParant *eparant)
 {
   /* Code For EParant Goes Here */
 
@@ -154,7 +162,7 @@ void Skeleton::visitEParant(EParant *eparant)
 
 }
 
-void Skeleton::visitENot(ENot *enot)
+void KRuleVisitor::visitENot(ENot *enot)
 {
   /* Code For ENot Goes Here */
 
@@ -162,7 +170,7 @@ void Skeleton::visitENot(ENot *enot)
 
 }
 
-void Skeleton::visitEImpl(EImpl *eimpl)
+void KRuleVisitor::visitEImpl(EImpl *eimpl)
 {
   /* Code For EImpl Goes Here */
 
@@ -171,7 +179,7 @@ void Skeleton::visitEImpl(EImpl *eimpl)
 
 }
 
-void Skeleton::visitELtEq(ELtEq *elteq)
+void KRuleVisitor::visitELtEq(ELtEq *elteq)
 {
   /* Code For ELtEq Goes Here */
 
@@ -180,7 +188,7 @@ void Skeleton::visitELtEq(ELtEq *elteq)
 
 }
 
-void Skeleton::visitEGtEq(EGtEq *egteq)
+void KRuleVisitor::visitEGtEq(EGtEq *egteq)
 {
   /* Code For EGtEq Goes Here */
 
@@ -189,7 +197,7 @@ void Skeleton::visitEGtEq(EGtEq *egteq)
 
 }
 
-void Skeleton::visitELt(ELt *elt)
+void KRuleVisitor::visitELt(ELt *elt)
 {
   /* Code For ELt Goes Here */
 
@@ -198,7 +206,7 @@ void Skeleton::visitELt(ELt *elt)
 
 }
 
-void Skeleton::visitEGt(EGt *egt)
+void KRuleVisitor::visitEGt(EGt *egt)
 {
   /* Code For EGt Goes Here */
 
@@ -207,7 +215,7 @@ void Skeleton::visitEGt(EGt *egt)
 
 }
 
-void Skeleton::visitEEq(EEq *eeq)
+void KRuleVisitor::visitEEq(EEq *eeq)
 {
   /* Code For EEq Goes Here */
 
@@ -216,7 +224,7 @@ void Skeleton::visitEEq(EEq *eeq)
 
 }
 
-void Skeleton::visitEAnd(EAnd *eand)
+void KRuleVisitor::visitEAnd(EAnd *eand)
 {
   /* Code For EAnd Goes Here */
 
@@ -225,7 +233,7 @@ void Skeleton::visitEAnd(EAnd *eand)
 
 }
 
-void Skeleton::visitEOr(EOr *eor)
+void KRuleVisitor::visitEOr(EOr *eor)
 {
   /* Code For EOr Goes Here */
 
@@ -234,7 +242,7 @@ void Skeleton::visitEOr(EOr *eor)
 
 }
 
-void Skeleton::visitERelease(ERelease *erelease)
+void KRuleVisitor::visitERelease(ERelease *erelease)
 {
   /* Code For ERelease Goes Here */
 
@@ -243,7 +251,7 @@ void Skeleton::visitERelease(ERelease *erelease)
 
 }
 
-void Skeleton::visitENext(ENext *enext)
+void KRuleVisitor::visitENext(ENext *enext)
 {
   /* Code For ENext Goes Here */
 
@@ -252,7 +260,7 @@ void Skeleton::visitENext(ENext *enext)
 
 }
 
-void Skeleton::visitEEventually(EEventually *eeventually)
+void KRuleVisitor::visitEEventually(EEventually *eeventually)
 {
   /* Code For EEventually Goes Here */
 
@@ -260,7 +268,7 @@ void Skeleton::visitEEventually(EEventually *eeventually)
 
 }
 
-void Skeleton::visitEAlways(EAlways *ealways)
+void KRuleVisitor::visitEAlways(EAlways *ealways)
 {
   /* Code For EAlways Goes Here */
 
@@ -268,7 +276,7 @@ void Skeleton::visitEAlways(EAlways *ealways)
 
 }
 
-void Skeleton::visitEUntil(EUntil *euntil)
+void KRuleVisitor::visitEUntil(EUntil *euntil)
 {
   /* Code For EUntil Goes Here */
 
@@ -277,51 +285,50 @@ void Skeleton::visitEUntil(EUntil *euntil)
 
 }
 
-void Skeleton::visitSParent(SParent *sparent)
+void KRuleVisitor::visitSParent(SParent *sparent)
 {
   /* Code For SParent Goes Here */
 
 
 }
 
-void Skeleton::visitSFile(SFile *sfile)
+void KRuleVisitor::visitSFile(SFile *sfile)
 {
   /* Code For SFile Goes Here */
 
 
 }
 
-void Skeleton::visitSChildren(SChildren *schildren)
+void KRuleVisitor::visitSChildren(SChildren *schildren)
 {
   /* Code For SChildren Goes Here */
 
 
 }
 
-void Skeleton::visitSSiblings(SSiblings *ssiblings)
+void KRuleVisitor::visitSSiblings(SSiblings *ssiblings)
 {
   /* Code For SSiblings Goes Here */
 
 
 }
 
-void Skeleton::visitSAny(SAny *sany)
+void KRuleVisitor::visitSAny(SAny *sany)
 {
   /* Code For SAny Goes Here */
 
 
 }
 
-void Skeleton::visitPParam(PParam *pparam)
+void KRuleVisitor::visitPParam(PParam *pparam)
 {
   /* Code For PParam Goes Here */
 
   visitString(pparam->string_);
-
 }
 
 
-void Skeleton::visitListRule(ListRule* listrule)
+void KRuleVisitor::visitListRule(ListRule* listrule)
 {
   for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i)
   {
@@ -329,7 +336,7 @@ void Skeleton::visitListRule(ListRule* listrule)
   }
 }
 
-void Skeleton::visitListExpr(ListExpr* listexpr)
+void KRuleVisitor::visitListExpr(ListExpr* listexpr)
 {
   for (ListExpr::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i)
   {
@@ -338,32 +345,29 @@ void Skeleton::visitListExpr(ListExpr* listexpr)
 }
 
 
-void Skeleton::visitInteger(Integer x)
-{
-  /* Code for Integer Goes Here */
+void KRuleVisitor::visitInteger(Integer x) {
+    rtInt = x;
 }
 
-void Skeleton::visitChar(Char x)
-{
-  /* Code for Char Goes Here */
+void KRuleVisitor::visitChar(Char x) {
 }
 
-void Skeleton::visitDouble(Double x)
+void KRuleVisitor::visitDouble(Double x)
 {
   /* Code for Double Goes Here */
 }
 
-void Skeleton::visitString(String x)
+void KRuleVisitor::visitString(String x)
 {
-  /* Code for String Goes Here */
+    rtString = rtString.fromStdString(x);
 }
 
-void Skeleton::visitIdent(Ident x)
+void KRuleVisitor::visitIdent(Ident x)
 {
   /* Code for Ident Goes Here */
 }
 
-unsigned int Skeleton::getResult() {
-  return val;
+bool KRuleVisitor::getResult() {
+  return rtBool;
 }
 

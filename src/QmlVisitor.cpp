@@ -8,7 +8,10 @@ void QmlVisitor::endVisit(UiObjectDefinition*) {
 bool QmlVisitor::visit(UiObjectDefinition *exp) {
     debug(exp);
     QString newScopeName = getSource(exp->qualifiedTypeNameId).toString();
-    env->enterNewScope(newScopeName);
+    env->enterNewScope(newScopeName, filename,
+                       exp->firstSourceLocation().startLine,
+                       exp->firstSourceLocation().startColumn,
+                       getSource(exp).toString());
     return true; }
 
 bool QmlVisitor::visit(IdentifierExpression *exp) {
