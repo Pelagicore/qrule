@@ -164,18 +164,21 @@ void KRuleVisitor::visitEParant(EParant *eparant)
 
 void KRuleVisitor::visitENot(ENot *enot)
 {
-  /* Code For ENot Goes Here */
-
   enot->expr_->accept(this);
-
+  rtBool = !rtBool;
 }
 
 void KRuleVisitor::visitEImpl(EImpl *eimpl)
 {
-  /* Code For EImpl Goes Here */
-
   eimpl->expr_1->accept(this);
-  eimpl->expr_2->accept(this);
+  const bool leftExpression = rtBool;
+  if (leftExpression == true) {
+      eimpl->expr_2->accept(this);
+      const bool rightExpression = rtBool;
+      rtBool = rightExpression == true;
+  } else {
+      rtBool = true;
+  }
 
 }
 
@@ -226,20 +229,22 @@ void KRuleVisitor::visitEEq(EEq *eeq)
 
 void KRuleVisitor::visitEAnd(EAnd *eand)
 {
-  /* Code For EAnd Goes Here */
-
   eand->expr_1->accept(this);
+  const bool b1 = rtBool;
+  rtBool = false;
   eand->expr_2->accept(this);
-
+  const bool b2 = rtBool;
+  rtBool = b1 && b2;
 }
 
 void KRuleVisitor::visitEOr(EOr *eor)
 {
-  /* Code For EOr Goes Here */
-
   eor->expr_1->accept(this);
+  const bool b1 = rtBool;
+  rtBool = false;
   eor->expr_2->accept(this);
-
+  const bool b2 = rtBool;
+  rtBool = b1 || b2;
 }
 
 void KRuleVisitor::visitERelease(ERelease *erelease)
@@ -330,8 +335,7 @@ void KRuleVisitor::visitPParam(PParam *pparam)
 
 void KRuleVisitor::visitListRule(ListRule* listrule)
 {
-  for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i)
-  {
+  for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i){
     (*i)->accept(this);
   }
 }
