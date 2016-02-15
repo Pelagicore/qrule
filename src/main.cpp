@@ -32,10 +32,10 @@
 ****************************************************************************/
 
 #include <stdio.h>
-#include "gen/Parser.H"
-#include "gen/Printer.H"
-#include "gen/Absyn.H"
-#include "Skeleton.H"
+#include "gen/Parser.h"
+#include "gen/Printer.h"
+#include "gen/Absyn.h"
+#include "Skeleton.h"
 
 #include <QDebug>
 #include <QFile>

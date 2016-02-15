@@ -2,7 +2,7 @@
 #define SKELETON_HEADER
 /* You might want to change the above name. */
 
-#include "Absyn.H"
+#include "Absyn.h"
 #include "Environment.h"
 
 
@@ -32,6 +32,7 @@ public:
     void visitERsInScope(ERsInScope* p);
     void visitETrue(ETrue* p);
     void visitEFalse(EFalse* p);
+    void visitEIsSetRx(EIsSetRx* p);
     void visitEIsSet(EIsSet* p);
     void visitEIsType(EIsType* p);
     void visitEParant(EParant* p);

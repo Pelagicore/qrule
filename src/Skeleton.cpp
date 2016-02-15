@@ -5,9 +5,9 @@
    algorithms to use context information differently. */
 
 #include "ParseException.h"
-#include "Skeleton.H"
+#include "Skeleton.h"
 
-#include <Printer.H>
+#include <Printer.h>
 
 
 
@@ -131,6 +131,19 @@ void KRuleVisitor::visitEFalse(EFalse *efalse)
   /* Code For EFalse Goes Here */
 
 
+}
+
+void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset)
+{
+  eisset->param_->accept(this);
+  bool s = false;
+  foreach (EnvParam *p, scope->params) {
+      if (rtString.compare(p->name) == 0) {
+          s = true;
+      }
+  }
+  rtString = "";
+  rtBool = s;
 }
 
 void KRuleVisitor::visitEIsSet(EIsSet *eisset)

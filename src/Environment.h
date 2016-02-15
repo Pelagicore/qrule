@@ -2,7 +2,7 @@
 #define KRULEENGINE_ENVIRONMENT_H
 
 #include "QString"
-#include <Absyn.H>
+#include <Absyn.h>
 #include "EnvironmentVerifier.h"
 
 class EnvironmentVisitor;

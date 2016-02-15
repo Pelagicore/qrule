@@ -5,10 +5,10 @@
 /*                                                                          */
 /****************************************************************************/
 #include <stdio.h>
-#include "Parser.H"
-#include "Printer.H"
-#include "Absyn.H"
-#include "Skeleton.H"
+#include "Parser.h"
+#include "Printer.h"
+#include "Absyn.h"
+#include "Skeleton.h"
 
 int main(int argc, char ** argv)
 {
