@@ -1,4 +1,4 @@
-#include "KRuleOutput.h"
+#include "output/KRuleOutput.h"
 
 void KRuleOutput::addCodeOccurrance(CodeOccurrance codeOccurrance) {
     codeOccurrances.append(codeOccurrance);
