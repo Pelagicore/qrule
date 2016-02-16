@@ -1,7 +1,7 @@
 #include "outputformatter/xmloutputformatter.h"
 
 QString XMLOutputFormatter::format(){
-    QString output = "";
+    QString output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     foreach (KRuleOutput* ko, klist){
         QString occurrances = QString();
         foreach (QString occurrance, ko->getOccurrances()) {
