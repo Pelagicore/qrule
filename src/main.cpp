@@ -134,8 +134,6 @@ int main(int argv, char *argc[]) {
     RuleSet *kruleTree = parseKRuleFile(kruleFilename);
 
     // Run verification
-    bool success = true;
-    QStringList qstrls = QStringList();
     QMap<QString, KRuleOutput*> ruleViolationsMap;
     foreach (const QString &qmlFilename, parsedArguments) {
         QString code = readCode(qmlFilename);
@@ -143,16 +141,22 @@ int main(int argv, char *argc[]) {
         QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
         qmlAST->accept(&qmlVisitor);
         Environment *env = qmlVisitor.getEnvironment();
+
         env->print();
+
         EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
         QMap<QString, KRuleOutput*> result = env->accept(&envv);
 
         ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, result);
     }
 
+    // Output
     QList<KRuleOutput*> ruleViolations = ruleViolationsMap.values();
     OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);
     qDebug() << xof->format();
+    bool success = ruleViolations.isEmpty();
+
+    // Cleanup
     delete xof;
 
     foreach (KRuleOutput* ko, ruleViolations) {
