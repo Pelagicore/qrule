@@ -46,18 +46,12 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
   }
 }
 
-void KRuleVisitor::visitAStatic(AStatic *astatic)
-{
-  /* Code For AStatic Goes Here */
-
-
+void KRuleVisitor::visitAStatic(AStatic *astatic) {
+    currentRuleAnalysis = "Static";
 }
 
-void KRuleVisitor::visitADynamic(ADynamic *adynamic)
-{
-  /* Code For ADynamic Goes Here */
-
-
+void KRuleVisitor::visitADynamic(ADynamic *adynamic) {
+    currentRuleAnalysis = "Dynamic";
 }
 
 void KRuleVisitor::visitTTag(TTag *ttag)
@@ -65,18 +59,12 @@ void KRuleVisitor::visitTTag(TTag *ttag)
     currentRuleTag = currentRuleTag.fromStdString(ttag->string_);
 }
 
-void KRuleVisitor::visitSevWarning(SevWarning *sevwarning)
-{
-  /* Code For SevWarning Goes Here */
-
-
+void KRuleVisitor::visitSevWarning(SevWarning *) {
+    currentRuleSeverity = "Warning";
 }
 
-void KRuleVisitor::visitSevCritical(SevCritical *sevcritical)
-{
-  /* Code For SevCritical Goes Here */
-
-
+void KRuleVisitor::visitSevCritical(SevCritical *) {
+    currentRuleSeverity = "Critical";
 }
 
 void KRuleVisitor::visitEInt(EInt *eint)
