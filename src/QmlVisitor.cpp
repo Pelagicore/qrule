@@ -42,12 +42,13 @@ void QmlVisitor::expandIndent() {
 }
 
 void QmlVisitor::debug(QQmlJS::AST::Node *exp) {
-
+/*
     QString name = QString(typeid(*exp).name());
     name = name.remove(QRegExp(".*AST[0-9]*"));
     qDebug() << indent << name
              << getSource(exp);
     expandIndent();
+*/
 }
 
 QStringRef QmlVisitor::printable(const SourceLocation &start, const SourceLocation &end) {

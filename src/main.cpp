@@ -94,10 +94,10 @@ static RuleSet* parseKRuleFile(QString kruleFilename) {
 
     if (kruleTree) {
         ShowAbsyn s = ShowAbsyn();
-        qDebug() << s.show(kruleTree);
-        qDebug() << "[Linearized Tree]\n";
+    //    qDebug() << s.show(kruleTree);
+    //    qDebug() << "[Linearized Tree]\n";
         PrintAbsyn p = PrintAbsyn();
-        qDebug() << p.print(kruleTree);
+    //    qDebug() << p.print(kruleTree);
         return kruleTree;
     } else {
         throw ParseException("Could not parse KRulefile");
@@ -142,7 +142,7 @@ int main(int argv, char *argc[]) {
         qmlAST->accept(&qmlVisitor);
         Environment *env = qmlVisitor.getEnvironment();
 
-        env->print();
+    //    env->print();
 
         EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
         QMap<QString, KRuleOutput*> result = env->accept(&envv);
