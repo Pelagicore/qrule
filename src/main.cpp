@@ -153,7 +153,7 @@ int main(int argv, char *argc[]) {
     // Output
     QList<KRuleOutput*> ruleViolations = ruleViolationsMap.values();
     OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);
-    qDebug() << xof->format();
+    qDebug() << xof->format().toStdString().c_str();
     bool success = ruleViolations.isEmpty();
 
     // Cleanup
