@@ -8,6 +8,7 @@
 #include "Skeleton.h"
 
 #include <Printer.h>
+#include <QRegExp>
 
 
 
@@ -20,16 +21,12 @@ void KRuleVisitor::visitExpr(Expr* t) {} //abstract class
 void KRuleVisitor::visitScope(Scope* t) {} //abstract class
 void KRuleVisitor::visitParam(Param* t) {} //abstract class
 
-void KRuleVisitor::visitRSet(RSet *rset)
-{
-  /* Code For RSet Goes Here */
-
+void KRuleVisitor::visitRSet(RSet *rset) {
   rset->listrule_->accept(this);
-
 }
 
-void KRuleVisitor::visitRRule(RRule *rrule)
-{
+void KRuleVisitor::visitRRule(RRule *rrule) {
+  resetRts();
   /* Code For RRule Goes Here */
   rrule->tag_->accept(this);
   rrule->severity_->accept(this);
@@ -37,9 +34,15 @@ void KRuleVisitor::visitRRule(RRule *rrule)
   rrule->expr_->accept(this);
 
   if (!rtBool) {
-      PrintAbsyn prnt = PrintAbsyn();
-      QString reason = prnt.print(rrule);
-      throw ParseException(reason.append(" \n ").append(scope->getCode()));
+
+      KRuleOutput* outp;
+      if (failedRules.contains(currentRuleTag)) {
+          outp = failedRules[currentRuleTag];
+      } else {
+          outp = new KRuleOutput(currentRuleTag, currentRuleSeverity, currentRuleAnalysis);
+      }
+      outp->addCodeOccurrance(scope->getCode());
+      failedRules.insert(currentRuleTag, outp);
   }
 }
 
@@ -111,34 +114,28 @@ void KRuleVisitor::visitENrChildren(ENrChildren *enrchildren)
 
 }
 
-void KRuleVisitor::visitERsInScope(ERsInScope *ersinscope)
-{
+void KRuleVisitor::visitERsInScope(ERsInScope *ersinscope){
   /* Code For ERsInScope Goes Here */
 
   ersinscope->scope_->accept(this);
 
 }
 
-void KRuleVisitor::visitETrue(ETrue *etrue)
-{
-  /* Code For ETrue Goes Here */
-
-
+void KRuleVisitor::visitETrue(ETrue *etrue) {
+  rtBool = true;
 }
 
-void KRuleVisitor::visitEFalse(EFalse *efalse)
-{
-  /* Code For EFalse Goes Here */
-
-
+void KRuleVisitor::visitEFalse(EFalse *efalse) {
+  rtBool = false;
 }
 
-void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset)
-{
+void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset) {
   eisset->param_->accept(this);
   bool s = false;
+
+  QRegExp regexp = QRegExp(rtString);
   foreach (EnvParam *p, scope->params) {
-      if (rtString.compare(p->name) == 0) {
+      if (regexp.exactMatch(p->name)) {
           s = true;
       }
   }
@@ -146,8 +143,7 @@ void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset)
   rtBool = s;
 }
 
-void KRuleVisitor::visitEIsSet(EIsSet *eisset)
-{
+void KRuleVisitor::visitEIsSet(EIsSet *eisset) {
   eisset->param_->accept(this);
   bool s = false;
   foreach (EnvParam *p, scope->params) {
@@ -366,16 +362,7 @@ void KRuleVisitor::visitInteger(Integer x) {
     rtInt = x;
 }
 
-void KRuleVisitor::visitChar(Char x) {
-}
-
-void KRuleVisitor::visitDouble(Double x)
-{
-  /* Code for Double Goes Here */
-}
-
-void KRuleVisitor::visitString(String x)
-{
+void KRuleVisitor::visitString(String x) {
     rtString = rtString.fromStdString(x);
 }
 
@@ -384,7 +371,15 @@ void KRuleVisitor::visitIdent(Ident x)
   /* Code for Ident Goes Here */
 }
 
-bool KRuleVisitor::getResult() {
-  return rtBool;
+QMap<QString, KRuleOutput*> KRuleVisitor::getFailures() {
+  return failedRules;
 }
 
+void KRuleVisitor::resetRts() {
+    rtBool = false;
+    rtInt  = 0;
+    rtString = "";
+}
+
+void KRuleVisitor::visitChar(Char x) {}
+void KRuleVisitor::visitDouble(Double x) {}

@@ -26,21 +26,35 @@ void Environment::exitCurrentScope() {
     }
 }
 
-bool Environment::accept(EnvironmentVisitor *envv) {
+QMap<QString, KRuleOutput*> Environment::accept(EnvironmentVisitor *envv) {
     if (rootScope == NULL) {
-        return false;
+        return QMap<QString, KRuleOutput*>();
     } else {
         return rootScope->accept(envv);
     }
 }
 
-bool EnvScope::accept(EnvironmentVisitor *envv) {
-    bool success = true;
+QMap<QString, KRuleOutput*> EnvScope::accept(EnvironmentVisitor *envv) {
+    QMap<QString, KRuleOutput*> map;
     foreach(EnvScope *scope, innerScopes) {
-        success &= scope->accept(envv);
+        QMap<QString, KRuleOutput*> inner = scope->accept(envv);
+        map = mergeOccurranceMap(map, inner);
     }
-    success &= envv->visit(this);
-    return success;
+    map = mergeOccurranceMap(map, envv->visit(this));
+    return map;
+}
+
+QMap<QString, KRuleOutput*> mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, QMap<QString, KRuleOutput*> m2) {
+    foreach(QString key, m2.keys()) {
+        if (m1.contains(key)) {
+            KRuleOutput* ko = m1[key];
+            ko->addCodeOccurrances(m2[key]);
+            m1.insert(key, ko);
+        } else {
+            m1.insert(key, m2[key]);
+        }
+    }
+    return m1;
 }
 
 void Environment::print(){
@@ -63,9 +77,9 @@ void Environment::print(EnvScope *scope) {
 QString EnvScope::getCode(){
     QString rt = "";
     return rt.append(file).append(" ")
-            .append(std::to_string(row).c_str())
-            .append(":")
-            .append(std::to_string(col).c_str())
-            .append(":\n")
-            .append(code);
+             .append(std::to_string(row).c_str())
+             .append(":")
+             .append(std::to_string(col).c_str())
+             .append(":\n")
+             .append(code);
 }

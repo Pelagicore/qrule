@@ -5,11 +5,12 @@
 
 class ParseException: public std::exception {
   public:
-    ParseException(QString reason): reason(reason) {}
+    ParseException(QString reason): reason(reason) { wh=reason.toStdString().c_str(); }
     virtual const char* what() const throw() {
-      return "A KRule does not hold";
+      return this->wh;
     }
     QString reason;
+    const char* wh;
   private:
 };
 

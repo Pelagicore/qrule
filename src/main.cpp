@@ -52,7 +52,7 @@
 #include "private/qqmljsparser_p.h"
 #include "private/qqmljsengine_p.h"
 
-static bool verifyKrules(Environment *env, RuleSet *kruleTree) {
+static QMap<QString, KRuleOutput*> verifyKrules(Environment *env, RuleSet *kruleTree) {
 
     EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
     return env->accept(&envv);
@@ -89,11 +89,9 @@ static QQmlJS::AST::UiProgram* parseQML(const QString code, const QString qmlFil
 }
 
 static RuleSet* parseKRuleFile(QString kruleFilename) {
-    const char* kruleFileNameChar = kruleFilename.toUtf8().data();
-
-    FILE *kruleFile = fopen(kruleFileNameChar, "r");
+    FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
     if (!kruleFile) {
-      qWarning() << "Error opening input file.\n";
+      qWarning() << "Error opening krule file: " << kruleFilename;
       throw ParseException(kruleFilename.prepend("Could not open KRule file "));
     }
     RuleSet *kruleTree = pRuleSet(kruleFile);
@@ -141,26 +139,29 @@ int main(int argv, char *argc[]) {
 
     // Run verification
     bool success = true;
+    QStringList qstrls = QStringList();
+    QMap<QString, KRuleOutput*> ruleViolationsMap;
     foreach (const QString &qmlFilename, parsedArguments) {
-        try {
-            QString code = readCode(qmlFilename);
-            QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
-            QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
-            qmlAST->accept(&qmlVisitor);
-            Environment *env = qmlVisitor.getEnvironment();
-            env->print();
-            bool b = verifyKrules(env, kruleTree);
-            if (!b) {
-                exit(-1);
-            }
-        }
-        catch (ParseException &e) {
-            const char* msg = e.what();
+        QString code = readCode(qmlFilename);
+        QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
+        QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
+        qmlAST->accept(&qmlVisitor);
+        Environment *env = qmlVisitor.getEnvironment();
+        env->print();
+        QMap<QString, KRuleOutput*> result = verifyKrules(env, kruleTree);
 
-            qDebug() << e.reason.toStdString().c_str();
-            success = false;
+        ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, result);
+    }
+
+    // Output results
+    foreach(KRuleOutput* ko, ruleViolationsMap.values()) {
+        if (ko->analysisMode.compare("Warning")) {
+            qWarning() << ko->toString();
+        } else {
+            qCritical() << ko->toString();
         }
     }
 
-    return success ? 0 : -1;
+
+    return success ? 0 : 1;
 }

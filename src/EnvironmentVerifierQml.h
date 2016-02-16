@@ -9,7 +9,7 @@ public:
     EnvironmentVisitorQml(RuleSet *kruleSet):
         kruleSet(kruleSet){}
 
-    bool visit(EnvScope *scope);
+    QMap<QString, KRuleOutput*> visit(EnvScope *scope);
 private:
     RuleSet *kruleSet;
 };

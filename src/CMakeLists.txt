@@ -13,6 +13,7 @@ set(SOURCE_FILES
         QmlVisitor.h
         QmlVisitor.cpp
         ParseException.h
+        KRuleOutput.cpp
         EnvironmentVerifierQml.cpp
         EnvironmentVerifierQml.h
         EnvironmentVerifier.h

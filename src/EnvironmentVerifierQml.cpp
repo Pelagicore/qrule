@@ -1,7 +1,7 @@
 #include "EnvironmentVerifierQml.h"
-
-bool EnvironmentVisitorQml::visit(EnvScope *scope) {
+#include <QDebug>
+QMap<QString, KRuleOutput*> EnvironmentVisitorQml::visit(EnvScope *scope) {
     KRuleVisitor kruleVisitor = KRuleVisitor(scope);
     kruleSet->accept(&kruleVisitor);
-    return kruleVisitor.getResult();
+    return kruleVisitor.getFailures();
 }

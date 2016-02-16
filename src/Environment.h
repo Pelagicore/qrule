@@ -4,6 +4,9 @@
 #include "QString"
 #include <Absyn.h>
 #include "EnvironmentVerifier.h"
+#include <QList>
+#include <QMap>
+#include "KRuleOutput.h"
 
 class EnvironmentVisitor;
 
@@ -15,6 +18,8 @@ public:
     QString name;
     QString value;
 };
+
+QMap<QString, KRuleOutput*> mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, QMap<QString, KRuleOutput*> m2);
 
 class EnvScope {
 public:
@@ -29,7 +34,7 @@ public:
         }
     }
 
-    bool accept(EnvironmentVisitor*);
+    QMap<QString, KRuleOutput*> accept(EnvironmentVisitor*);
 
     QString getCode();
     QString name;
@@ -52,7 +57,7 @@ public:
     void enterNewScope(QString name, QString file, quint32 row, quint32 col, QString code);
     void exitCurrentScope();
 
-    bool accept(EnvironmentVisitor *);
+    QMap<QString, KRuleOutput*> accept(EnvironmentVisitor *);
     void print();
 
 private:
@@ -65,7 +70,7 @@ private:
 
 class EnvironmentVisitor {
 public:
-    virtual bool visit(EnvScope *scope) = 0;
+    virtual QMap<QString, KRuleOutput*> visit(EnvScope *scope) = 0;
 
 };
 

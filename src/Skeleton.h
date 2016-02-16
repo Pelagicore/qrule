@@ -4,6 +4,9 @@
 
 #include "Absyn.h"
 #include "Environment.h"
+#include "KRuleOutput.h"
+
+#include <QMap>
 
 
 class KRuleVisitor : public Visitor {
@@ -65,14 +68,18 @@ public:
     void visitString(String x);
     void visitIdent(Ident x);
 
-    bool getResult();
+    QMap<QString, KRuleOutput*> getFailures();
 
 private:
+    void resetRts();
     EnvScope *scope;
     bool rtBool = false;
     QString rtString = "";
     QString currentRuleTag = "";
+    QString currentRuleSeverity = "";
+    QString currentRuleAnalysis = "";
     int rtInt = 0;
+    QMap<QString, KRuleOutput*> failedRules;
 };
 
 
