@@ -42,6 +42,7 @@
 #include <QFileInfo>
 #include <QCommandLineParser>
 #include <QCoreApplication>
+#include <outputformatter/xmloutputformatter.h>
 
 #include "ParseException.h"
 #include "Environment.h"
@@ -153,15 +154,13 @@ int main(int argv, char *argc[]) {
         ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, result);
     }
 
-    // Output results
-    foreach(KRuleOutput* ko, ruleViolationsMap.values()) {
-        if (ko->analysisMode.compare("Warning")) {
-            qWarning() << ko->toString();
-        } else {
-            qCritical() << ko->toString();
-        }
-    }
+    OutputFormatter* xof = new XMLOutputFormatter(ruleViolationsMap.values());
+    qDebug() << xof->format();
+    delete xof;
 
+    foreach (KRuleOutput* ko, ruleViolationsMap.values()) {
+        delete ko;
+    }
 
     return success ? 0 : 1;
 }

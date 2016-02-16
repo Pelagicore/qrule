@@ -2,7 +2,7 @@
 #define SKELETON_HEADER
 /* You might want to change the above name. */
 
-#include "Absyn.h"
+#include "gen/Absyn.h"
 #include "Environment.h"
 #include "KRuleOutput.h"
 

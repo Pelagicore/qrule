@@ -2,7 +2,7 @@
 #define KRULEENGINE_ENVIRONMENT_H
 
 #include "QString"
-#include <Absyn.h>
+#include <gen/Absyn.h>
 #include "EnvironmentVerifier.h"
 #include <QList>
 #include <QMap>
