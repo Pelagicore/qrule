@@ -6,11 +6,11 @@ set(SOURCE_FILES
         gen/Lexer.cpp
         gen/Absyn.cpp
         main.cpp
-        Environment.cpp
         QmlVisitor.cpp
         output/KRuleOutput.cpp
-        EnvironmentVerifierQml.cpp
         output/xmloutputformatter.cpp
+        environment/Environment.cpp
+        environment/EnvironmentVerifierQml.cpp
         )
 include_directories(.)
 

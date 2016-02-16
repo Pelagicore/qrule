@@ -3,7 +3,7 @@
 
 #include "QString"
 #include <gen/Absyn.h>
-#include "EnvironmentVerifier.h"
+#include "environment/EnvironmentVerifier.h"
 #include <QList>
 #include <QMap>
 #include "output/KRuleOutput.h"

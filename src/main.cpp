@@ -45,8 +45,8 @@
 #include <output/xmloutputformatter.h>
 
 #include "ParseException.h"
-#include "Environment.h"
-#include "EnvironmentVerifierQml.h"
+#include "environment/Environment.h"
+#include "environment/EnvironmentVerifierQml.h"
 
 #include "QmlVisitor.h"
 #include "private/qqmljslexer_p.h"

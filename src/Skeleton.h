@@ -3,7 +3,7 @@
 /* You might want to change the above name. */
 
 #include "gen/Absyn.h"
-#include "Environment.h"
+#include "environment/Environment.h"
 #include "output/KRuleOutput.h"
 
 #include <QMap>

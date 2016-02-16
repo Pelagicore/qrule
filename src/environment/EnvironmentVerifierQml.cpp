@@ -1,4 +1,4 @@
-#include "EnvironmentVerifierQml.h"
+#include "environment/EnvironmentVerifierQml.h"
 #include <QDebug>
 QMap<QString, KRuleOutput*> EnvironmentVisitorQml::visit(EnvScope *scope) {
     KRuleVisitor kruleVisitor = KRuleVisitor(scope);

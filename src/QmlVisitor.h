@@ -17,7 +17,7 @@
 #include <QtCore/qvarlengtharray.h>
 #include <QFile>
 #include <typeinfo>
-#include "Environment.h"
+#include "environment/Environment.h"
 
 
 using namespace QQmlJS::AST;
