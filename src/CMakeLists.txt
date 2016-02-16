@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.3)
 set(SOURCE_FILES 
-        Skeleton.cpp
+        krulevisitor.cpp
         gen/Printer.cpp
         gen/Parser.cpp
         gen/Lexer.cpp

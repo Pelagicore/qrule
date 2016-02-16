@@ -5,7 +5,7 @@
    algorithms to use context information differently. */
 
 #include "ParseException.h"
-#include "Skeleton.h"
+#include "krulevisitor.h"
 
 #include <gen/Printer.h>
 #include <QRegExp>

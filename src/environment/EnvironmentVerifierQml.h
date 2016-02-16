@@ -2,7 +2,7 @@
 #define KRULEENGINE_ENVIRONMENTVERIFIERQML_H
 
 #include "environment/Environment.h"
-#include "Skeleton.h"
+#include "krulevisitor.h"
 
 class EnvironmentVisitorQml: public EnvironmentVisitor {
 public:

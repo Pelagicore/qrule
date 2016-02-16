@@ -35,7 +35,7 @@
 #include "gen/Parser.h"
 #include "gen/Printer.h"
 #include "gen/Absyn.h"
-#include "Skeleton.h"
+#include "krulevisitor.h"
 
 #include <QDebug>
 #include <QFile>
