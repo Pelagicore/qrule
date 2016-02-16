@@ -1,6 +1,6 @@
 #include "KRuleOutput.h"
 
-void KRuleOutput::addCodeOccurrance(QString codeOccurrance) {
+void KRuleOutput::addCodeOccurrance(CodeOccurrance codeOccurrance) {
     codeOccurrances.append(codeOccurrance);
 }
 
@@ -8,6 +8,6 @@ void KRuleOutput::addCodeOccurrances(KRuleOutput* kro) {
     codeOccurrances += kro->codeOccurrances;
 }
 
-const QList<QString>& KRuleOutput::getOccurrances() {
+QList<CodeOccurrance>& KRuleOutput::getOccurrances() {
     return codeOccurrances;
 }

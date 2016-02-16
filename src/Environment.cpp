@@ -73,13 +73,3 @@ void Environment::print(EnvScope *scope) {
     }
     indent -= 2;
 }
-
-QString EnvScope::getCode(){
-    QString rt = "";
-    return rt.append(file).append(" ")
-             .append(std::to_string(row).c_str())
-             .append(":")
-             .append(std::to_string(col).c_str())
-             .append(":\n")
-             .append(code);
-}

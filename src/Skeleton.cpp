@@ -41,7 +41,7 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
       } else {
           outp = new KRuleOutput(currentRuleTag, currentRuleSeverity, currentRuleAnalysis);
       }
-      outp->addCodeOccurrance(scope->getCode());
+      outp->addCodeOccurrance(scope->codeOccurrance);
       failedRules.insert(currentRuleTag, outp);
   }
 }

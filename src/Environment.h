@@ -23,8 +23,8 @@ QMap<QString, KRuleOutput*> mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, Q
 
 class EnvScope {
 public:
-    EnvScope(QString name, QString file, quint32 row, quint32 col, QString code):
-        name(name), file(file), row(row), col(col), code(code) {}
+    EnvScope(QString name, QString filename, quint32 row, quint32 col, QString code):
+        name(name), codeOccurrance(code, filename, row, col) {}
     virtual ~EnvScope() {
         foreach (EnvParam *p, params) {
             delete p;
@@ -36,16 +36,11 @@ public:
 
     QMap<QString, KRuleOutput*> accept(EnvironmentVisitor*);
 
-    QString getCode();
     QString name;
     EnvScope *parent = NULL;
     std::vector<EnvParam*> params;
     std::vector<EnvScope*> innerScopes;
-private:
-    const QString code;
-    const QString file;
-    const quint32 row;
-    const quint32 col;
+    CodeOccurrance codeOccurrance;
 };
 
 class Environment {
