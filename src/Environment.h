@@ -6,7 +6,7 @@
 #include "EnvironmentVerifier.h"
 #include <QList>
 #include <QMap>
-#include "KRuleOutput.h"
+#include "output/KRuleOutput.h"
 
 class EnvironmentVisitor;
 

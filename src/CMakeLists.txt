@@ -8,9 +8,9 @@ set(SOURCE_FILES
         main.cpp
         Environment.cpp
         QmlVisitor.cpp
-        KRuleOutput.cpp
+        output/KRuleOutput.cpp
         EnvironmentVerifierQml.cpp
-        outputformatter/xmloutputformatter.cpp
+        output/xmloutputformatter.cpp
         )
 include_directories(.)
 

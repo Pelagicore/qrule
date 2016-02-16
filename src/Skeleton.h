@@ -4,7 +4,7 @@
 
 #include "gen/Absyn.h"
 #include "Environment.h"
-#include "KRuleOutput.h"
+#include "output/KRuleOutput.h"
 
 #include <QMap>
 

@@ -1,7 +1,7 @@
 #ifndef KRULEXMLOUTPUTFORMATTER_H
 #define KRULEXMLOUTPUTFORMATTER_H
 
-#include "outputformatter/outputformatter.h"
+#include "output/outputformatter.h"
 
 class XMLOutputFormatter: public OutputFormatter {
 public:

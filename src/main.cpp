@@ -42,7 +42,7 @@
 #include <QFileInfo>
 #include <QCommandLineParser>
 #include <QCoreApplication>
-#include <outputformatter/xmloutputformatter.h>
+#include <output/xmloutputformatter.h>
 
 #include "ParseException.h"
 #include "Environment.h"

@@ -1,4 +1,4 @@
-#include "outputformatter/xmloutputformatter.h"
+#include "output/xmloutputformatter.h"
 
 QString XMLOutputFormatter::format(){
     QString output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
