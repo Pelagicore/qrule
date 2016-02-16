@@ -53,11 +53,6 @@
 #include "private/qqmljsparser_p.h"
 #include "private/qqmljsengine_p.h"
 
-static QMap<QString, KRuleOutput*> verifyKrules(Environment *env, RuleSet *kruleTree) {
-
-    EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
-    return env->accept(&envv);
-}
 static QString readCode(QString qmlFilename) {
     QFile file(qmlFilename);
     if (!file.open(QFile::ReadOnly)) {
@@ -149,16 +144,18 @@ int main(int argv, char *argc[]) {
         qmlAST->accept(&qmlVisitor);
         Environment *env = qmlVisitor.getEnvironment();
         env->print();
-        QMap<QString, KRuleOutput*> result = verifyKrules(env, kruleTree);
+        EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
+        QMap<QString, KRuleOutput*> result = env->accept(&envv);
 
         ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, result);
     }
 
-    OutputFormatter* xof = new XMLOutputFormatter(ruleViolationsMap.values());
+    QList<KRuleOutput*> ruleViolations = ruleViolationsMap.values();
+    OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);
     qDebug() << xof->format();
     delete xof;
 
-    foreach (KRuleOutput* ko, ruleViolationsMap.values()) {
+    foreach (KRuleOutput* ko, ruleViolations) {
         delete ko;
     }
 
