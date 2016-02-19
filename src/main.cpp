@@ -154,6 +154,12 @@ int main(int argv, char *argc[]) {
     QList<KRuleOutput*> ruleViolations = ruleViolationsMap.values();
     OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);
     qDebug() << xof->format().toStdString().c_str();
+
+    QFile fl("output.xml");
+    fl.open(QIODevice::WriteOnly);
+    fl.write(xof->format().toStdString().c_str());
+    fl.close();
+
     bool success = ruleViolations.isEmpty();
 
     // Cleanup

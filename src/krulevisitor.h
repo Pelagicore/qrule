@@ -8,6 +8,12 @@
 
 #include <QMap>
 
+class NotImplemented : public std::exception {
+public:
+    NotImplemented() {}
+    ~NotImplemented() {}
+    const char* what() { return "Feature not yet implemented!"; }
+};
 
 class KRuleVisitor : public Visitor {
 public:
