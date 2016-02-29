@@ -2,6 +2,9 @@
 #include "krulevisitor.h"
 #include <gen/Printer.h>
 #include <QRegExp>
+#include "retType/RetTypeBool.h"
+#include "retType/RetTypeString.h"
+#include "retType/RetTypeUInt.h"
 
 void KRuleVisitor::visitRuleSet(RuleSet* t) {}
 void KRuleVisitor::visitRule(Rule* t) {}
@@ -17,15 +20,13 @@ void KRuleVisitor::visitRSet(RSet *rset) {
 }
 
 void KRuleVisitor::visitRRule(RRule *rrule) {
-  resetRts();
-  rrule->tag_->accept(this);
-  rrule->severity_->accept(this);
-  rrule->analysis_->accept(this);
-  rrule->expr_->accept(this);
-
   try {
-      if (!rtBool) {
+      rrule->tag_->accept(this);
+      rrule->severity_->accept(this);
+      rrule->analysis_->accept(this);
+      rrule->expr_->accept(this);
 
+      if (!getBoolRet()) {
           KRuleOutput* outp;
           if (failedRules.contains(currentRuleTag)) {
               outp = failedRules[currentRuleTag];
@@ -83,38 +84,37 @@ void KRuleVisitor::visitERsInScope(ERsInScope *ersinscope) {
   ersinscope->scope_->accept(this);
 }
 
-void KRuleVisitor::visitETrue(ETrue *etrue) {
-  rtBool = true;
+void KRuleVisitor::visitETrue(ETrue *) {
+    changeRet(new RetTypeBool(true));
 }
 
-void KRuleVisitor::visitEFalse(EFalse *efalse) {
-  rtBool = false;
+void KRuleVisitor::visitEFalse(EFalse *) {
+    changeRet(new RetTypeBool(false));
 }
 
 void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset) {
   eisset->param_->accept(this);
   bool s = false;
 
-  QRegExp regexp = QRegExp(rtString);
+  QRegExp regexp = QRegExp(getStringRet());
   foreach (EnvParam *p, scope->params) {
       if (regexp.exactMatch(p->name)) {
           s = true;
       }
   }
-  rtString = "";
-  rtBool = s;
+  changeRet(new RetTypeBool(s));
 }
 
 void KRuleVisitor::visitEIsSet(EIsSet *eisset) {
   eisset->param_->accept(this);
   bool s = false;
+  QString param = getStringRet();
   foreach (EnvParam *p, scope->params) {
-      if (rtString.compare(p->name) == 0) {
+      if (param.compare(p->name) == 0) {
           s = true;
       }
   }
-  rtString = "";
-  rtBool = s;
+  changeRet(new RetTypeBool(s));
 }
 
 void KRuleVisitor::visitEIsType(EIsType *eistype) {
@@ -128,19 +128,21 @@ void KRuleVisitor::visitEParant(EParant *eparant) {
 
 void KRuleVisitor::visitENot(ENot *enot) {
   enot->expr_->accept(this);
-  rtBool = !rtBool;
+  changeRet(new RetTypeBool(!getBoolRet()));
 }
 
 void KRuleVisitor::visitEImpl(EImpl *eimpl) {
   eimpl->expr_1->accept(this);
-  const bool leftExpression = rtBool;
+  const bool leftExpression = getBoolRet();
+  bool rtBool;
   if (leftExpression == true) {
       eimpl->expr_2->accept(this);
-      const bool rightExpression = rtBool;
+      const bool rightExpression = getBoolRet();
       rtBool = rightExpression == true;
   } else {
       rtBool = true;
   }
+  changeRet(new RetTypeBool(rtBool));
 }
 
 void KRuleVisitor::visitELtEq(ELtEq *elteq) {
@@ -184,20 +186,18 @@ void KRuleVisitor::visitEEq(EEq *eeq) {
 
 void KRuleVisitor::visitEAnd(EAnd *eand) {
   eand->expr_1->accept(this);
-  const bool b1 = rtBool;
-  rtBool = false;
+  const bool b1 = getBoolRet();
   eand->expr_2->accept(this);
-  const bool b2 = rtBool;
-  rtBool = b1 && b2;
+  const bool b2 = getBoolRet();
+  changeRet(new RetTypeBool(b1 && b2));
 }
 
 void KRuleVisitor::visitEOr(EOr *eor) {
   eor->expr_1->accept(this);
-  const bool b1 = rtBool;
-  rtBool = false;
+  const bool b1 = getBoolRet();
   eor->expr_2->accept(this);
-  const bool b2 = rtBool;
-  rtBool = b1 || b2;
+  const bool b2 = getBoolRet();
+  changeRet(new RetTypeBool(b1 || b2));
 }
 
 void KRuleVisitor::visitERelease(ERelease *erelease) {
@@ -262,7 +262,6 @@ void KRuleVisitor::visitPParam(PParam *pparam) {
   visitString(pparam->string_);
 }
 
-
 void KRuleVisitor::visitListRule(ListRule* listrule) {
   for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i){
     (*i)->accept(this);
@@ -278,27 +277,39 @@ void KRuleVisitor::visitListExpr(ListExpr* listexpr) {
 
 
 void KRuleVisitor::visitInteger(Integer x) {
-    rtInt = x;
+    changeRet(new RetTypeUInt((quint32)x));
 }
 
 void KRuleVisitor::visitString(String x) {
-    rtString = rtString.fromStdString(x);
-}
-
-void KRuleVisitor::visitIdent(Ident x)
-{
-  throw NotImplemented();
+    changeRet(new RetTypeString(QString(x.c_str())));
 }
 
 QMap<QString, KRuleOutput*> KRuleVisitor::getFailures() {
-  return failedRules;
+    return failedRules;
 }
 
-void KRuleVisitor::resetRts() {
-    rtBool = false;
-    rtInt  = 0;
-    rtString = "";
+void KRuleVisitor::changeRet(RetType *ret) {
+    delete this->ret;
+    this->ret = ret;
 }
 
-void KRuleVisitor::visitChar(Char x) {}
-void KRuleVisitor::visitDouble(Double x) {}
+void KRuleVisitor::assertType(RetType::RetTypeE type) {
+    if (ret->getType() != type) {
+        throw BadType();
+    }
+}
+
+bool KRuleVisitor::getBoolRet() {
+    assertType(RetType::RetTypeE::RBool);
+    return ((RetTypeBool*)ret)->getData();
+}
+
+QString KRuleVisitor::getStringRet() {
+    assertType(RetType::RetTypeE::RString);
+    return ((RetTypeString*)ret)->getData();
+}
+
+quint32 KRuleVisitor::getUIntRet() {
+    assertType(RetType::RetTypeE::RInt);
+    return ((RetTypeUInt*)ret)->getData();
+}

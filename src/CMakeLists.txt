@@ -11,6 +11,9 @@ set(SOURCE_FILES
         output/xmloutputformatter.cpp
         environment/Environment.cpp
         environment/EnvironmentVerifierQml.cpp
+        retType/RetTypeUInt.cpp
+        retType/RetTypeString.cpp
+        retType/RetTypeBool.cpp
         )
 include_directories(.)
 

@@ -15,6 +15,13 @@ public:
     const char* what() { return "Feature not yet implemented!"; }
 };
 
+class BadType : public std::exception {
+public:
+    BadType() {}
+    ~BadType() {}
+    const char* what() { return "Bad type"; }
+};
+
 class KRuleVisitor : public Visitor {
 public:
     KRuleVisitor(EnvScope *scope): scope(scope){}
@@ -64,27 +71,28 @@ public:
     void visitSChildren(SChildren* p);
     void visitSSiblings(SSiblings* p);
     void visitSAny(SAny* p);
-    void visitPParam(PParam* p);
     void visitListRule(ListRule* p);
     void visitListExpr(ListExpr* p);
 
+    void visitPParam(PParam* p);
+
     void visitInteger(Integer x);
-    void visitChar(Char x);
-    void visitDouble(Double x);
     void visitString(String x);
-    void visitIdent(Ident x);
 
     QMap<QString, KRuleOutput*> getFailures();
 
 private:
-    void resetRts();
+    void changeRet(RetType* ret);
+    bool getBoolRet();
+    QString getStringRet();
+    quint32 getUIntRet();
+
+    void assertType(RetType::RetTypeE type);
     EnvScope *scope;
-    bool rtBool = false;
-    QString rtString = "";
     QString currentRuleTag = "";
     QString currentRuleSeverity = "";
     QString currentRuleAnalysis = "";
-    int rtInt = 0;
+    RetType* ret = NULL;
     QMap<QString, KRuleOutput*> failedRules;
 };
 
