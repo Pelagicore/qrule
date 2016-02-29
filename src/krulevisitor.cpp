@@ -40,11 +40,11 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
   catch(NotImplemented &) {}
 }
 
-void KRuleVisitor::visitAStatic(AStatic *astatic) {
+void KRuleVisitor::visitAStatic(AStatic *) {
     currentRuleAnalysis = "Static";
 }
 
-void KRuleVisitor::visitADynamic(ADynamic *adynamic) {
+void KRuleVisitor::visitADynamic(ADynamic *) {
     currentRuleAnalysis = "Dynamic";
 }
 
