@@ -289,7 +289,9 @@ QMap<QString, KRuleOutput*> KRuleVisitor::getFailures() {
 }
 
 void KRuleVisitor::changeRet(RetType *ret) {
-    delete this->ret;
+    if (ret != NULL) {
+       delete this->ret;
+    }
     this->ret = ret;
 }
 

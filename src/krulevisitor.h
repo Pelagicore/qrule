@@ -1,6 +1,5 @@
-#ifndef SKELETON_HEADER
-#define SKELETON_HEADER
-/* You might want to change the above name. */
+#ifndef KRULEENGINE_KRULEVISITOR_H
+#define KRULEENGINE_KRULEVISITOR_H
 
 #include "gen/Absyn.h"
 #include "environment/Environment.h"
@@ -97,4 +96,4 @@ private:
 };
 
 
-#endif
+#endif // KRULEENGINE_KRULEVISITOR_H
