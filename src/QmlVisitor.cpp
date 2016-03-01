@@ -41,7 +41,7 @@ void QmlVisitor::expandIndent() {
     indent.append("  ");
 }
 
-void QmlVisitor::debug(QQmlJS::AST::Node *exp) {
+void QmlVisitor::debug(const QQmlJS::AST::Node *exp) {
 /*
     QString name = QString(typeid(*exp).name());
     name = name.remove(QRegExp(".*AST[0-9]*"));
@@ -51,11 +51,11 @@ void QmlVisitor::debug(QQmlJS::AST::Node *exp) {
 */
 }
 
-QStringRef QmlVisitor::printable(const SourceLocation &start, const SourceLocation &end) {
+const QStringRef QmlVisitor::printable(const SourceLocation &start, const SourceLocation &end) {
     return QStringRef(&_code, start.offset, end.offset + end.length - start.offset);
 }
 
-QStringRef QmlVisitor::getSource(QQmlJS::AST::Node *exp) {
+const QStringRef QmlVisitor::getSource(const QQmlJS::AST::Node *exp) {
     return printable(exp->firstSourceLocation(), exp->lastSourceLocation());
 }
 

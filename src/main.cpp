@@ -137,10 +137,10 @@ int main(int argv, char *argc[]) {
     QMap<QString, KRuleOutput*> ruleViolationsMap;
     foreach (const QString &qmlFilename, parsedArguments) {
         QString code = readCode(qmlFilename);
-        QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
+        QmlVisitor *qmlVisitor = new QmlVisitor(code, qmlFilename);
         QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
-        qmlAST->accept(&qmlVisitor);
-        Environment *env = qmlVisitor.getEnvironment();
+        qmlAST->accept(qmlVisitor);
+        Environment *env = qmlVisitor->getEnvironment();
 
     //    env->print();
 
@@ -148,6 +148,7 @@ int main(int argv, char *argc[]) {
         QMap<QString, KRuleOutput*> result = env->accept(&envv);
 
         ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, result);
+        delete qmlVisitor;
     }
 
     // Output

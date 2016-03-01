@@ -489,9 +489,9 @@ private:
 
     QString filename;
 
-    QStringRef getSource(QQmlJS::AST::Node *);
-    QStringRef printable(const SourceLocation &start, const SourceLocation &end);
-    void debug(QQmlJS::AST::Node *);
+    const QStringRef getSource(const QQmlJS::AST::Node *);
+    const QStringRef printable(const SourceLocation &start, const SourceLocation &end);
+    void debug(const QQmlJS::AST::Node *);
     void deIndent();
     void expandIndent();
 };
