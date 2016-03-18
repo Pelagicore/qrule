@@ -1,19 +1,23 @@
 #include "ParseException.h"
 #include "krulevisitor.h"
-#include <gen/Printer.h>
+#include <gen/Printer.H>
 #include <QRegExp>
-#include "retType/RetTypeBool.h"
-#include "retType/RetTypeString.h"
-#include "retType/RetTypeUInt.h"
 
-void KRuleVisitor::visitRuleSet(RuleSet* t) {}
-void KRuleVisitor::visitRule(Rule* t) {}
-void KRuleVisitor::visitAnalysis(Analysis* t) {}
-void KRuleVisitor::visitTag(Tag* t) {}
-void KRuleVisitor::visitSeverity(Severity* t) {}
-void KRuleVisitor::visitExpr(Expr* t) {}
-void KRuleVisitor::visitScope(Scope* t) {}
-void KRuleVisitor::visitParam(Param* t) {}
+void KRuleVisitor::visitRuleSet(RuleSet* t) {} //abstract class
+void KRuleVisitor::visitRule(Rule* t) {} //abstract class
+void KRuleVisitor::visitASTScope(ASTScope* t) {} //abstract class
+void KRuleVisitor::visitRuleCause(RuleCause* t) {} //abstract class
+void KRuleVisitor::visitExplanation(Explanation* t) {} //abstract class
+void KRuleVisitor::visitTag(Tag* t) {} //abstract class
+void KRuleVisitor::visitSeverity(Severity* t) {} //abstract class
+void KRuleVisitor::visitOverPaths(OverPaths* t) {} //abstract class
+void KRuleVisitor::visitPathSpecific(PathSpecific* t) {} //abstract class
+void KRuleVisitor::visitIStmnt(IStmnt* t) {} //abstract class
+void KRuleVisitor::visitIExpr(IExpr* t) {} //abstract class
+void KRuleVisitor::visitExpr(Expr* t) {} //abstract class
+void KRuleVisitor::visitType(Type* t) {} //abstract class
+void KRuleVisitor::visitParam(Param* t) {} //abstract class
+
 
 void KRuleVisitor::visitRSet(RSet *rset) {
   rset->listrule_->accept(this);
@@ -23,7 +27,9 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
   try {
       rrule->tag_->accept(this);
       rrule->severity_->accept(this);
-      rrule->analysis_->accept(this);
+      rrule->rulecause_->accept(this);
+      rrule->astscope_->accept(this);
+      rrule->explanation_->accept(this);
       rrule->expr_->accept(this);
 
       if (!getBoolRet()) {
@@ -31,7 +37,8 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
           if (failedRules.contains(currentRuleTag)) {
               outp = failedRules[currentRuleTag];
           } else {
-              outp = new KRuleOutput(currentRuleTag, currentRuleSeverity, currentRuleAnalysis);
+              outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
+                                     currentRuleASTScope, currentRuleCause, currentRuleExplanation);
           }
           outp->addCodeOccurrance(scope->codeOccurrance);
           failedRules.insert(currentRuleTag, outp);
@@ -40,12 +47,26 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
   catch(NotImplemented &) {}
 }
 
-void KRuleVisitor::visitAStatic(AStatic *) {
-    currentRuleAnalysis = "Static";
+void KRuleVisitor::visitASTGlobally(ASTGlobally *astglobally) {
 }
 
-void KRuleVisitor::visitADynamic(ADynamic *) {
-    currentRuleAnalysis = "Dynamic";
+void KRuleVisitor::visitASTFile(ASTFile *astfile) {
+}
+
+void KRuleVisitor::visitASTImported(ASTImported *astimported) {
+}
+
+void KRuleVisitor::visitRCLang(RCLang *rclang) {
+}
+
+void KRuleVisitor::visitRCPolicy(RCPolicy *rcpolicy) {
+}
+
+void KRuleVisitor::visitExplan(Explan *explan) {
+  visitString(explan->string_);
+}
+
+void KRuleVisitor::visitNoexplan(Noexplan *noexplan) {
 }
 
 void KRuleVisitor::visitTTag(TTag *ttag) {
@@ -60,28 +81,71 @@ void KRuleVisitor::visitSevCritical(SevCritical *) {
     currentRuleSeverity = "Critical";
 }
 
-void KRuleVisitor::visitEInt(EInt *eint) {
-  visitInteger(eint->integer_);
+void KRuleVisitor::visitAll(All *all){
+  all->pathspecific_->accept(this);
 }
 
-void KRuleVisitor::visitEMinRDepth(EMinRDepth *eminrdepth) {
+void KRuleVisitor::visitExist(Exist *exist) {
+  exist->pathspecific_->accept(this);
+}
+
+void KRuleVisitor::visitFuture(Future *future) {
+  future->expr_->accept(this);
+}
+
+void KRuleVisitor::visitGlobally(Globally *globally) {
+  globally->expr_->accept(this);
+}
+
+void KRuleVisitor::visitUntil(Until *until) {
+  until->expr_1->accept(this);
+  until->expr_2->accept(this);
+}
+
+void KRuleVisitor::visitNext(Next *next) {
+  next->expr_->accept(this);
+}
+
+void KRuleVisitor::visitIEInt(IEInt *ieint) {
+  visitInteger(ieint->integer_);
+}
+
+void KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
+}
+
+void KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
   throw NotImplemented();
+  ielteq->iexpr_->accept(this);
+  ielteq->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitEMaxRDepth(EMaxRDepth *emaxrdepth) {
+void KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
   throw NotImplemented();
+  iegteq->iexpr_->accept(this);
+  iegteq->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitEDepth(EDepth *edepth) {
+void KRuleVisitor::visitIELt(IELt *ielt) {
   throw NotImplemented();
+  ielt->iexpr_->accept(this);
+  ielt->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitENrChildren(ENrChildren *enrchildren) {
+void KRuleVisitor::visitIEGt(IEGt *iegt) {
   throw NotImplemented();
+  iegt->iexpr_->accept(this);
+  iegt->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitERsInScope(ERsInScope *ersinscope) {
-  ersinscope->scope_->accept(this);
+void KRuleVisitor::visitIEq(IEq *ieq) {
+  throw NotImplemented();
+  ieq->istmnt_1->accept(this);
+  ieq->istmnt_2->accept(this);
+}
+
+void KRuleVisitor::visitIEStmnt(IEStmnt *iestmnt) {
+  throw NotImplemented();
+  iestmnt->istmnt_->accept(this);
 }
 
 void KRuleVisitor::visitETrue(ETrue *) {
@@ -92,8 +156,8 @@ void KRuleVisitor::visitEFalse(EFalse *) {
     changeRet(new RetTypeBool(false));
 }
 
-void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset) {
-  eisset->param_->accept(this);
+void KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
+  visitString(enodeval->string_);
   bool s = false;
 
   QRegExp regexp = QRegExp(getStringRet());
@@ -105,21 +169,9 @@ void KRuleVisitor::visitEIsSetRx(EIsSetRx *eisset) {
   changeRet(new RetTypeBool(s));
 }
 
-void KRuleVisitor::visitEIsSet(EIsSet *eisset) {
-  eisset->param_->accept(this);
-  bool s = false;
-  QString param = getStringRet();
-  foreach (EnvParam *p, scope->params) {
-      if (param.compare(p->name) == 0) {
-          s = true;
-      }
-  }
-  changeRet(new RetTypeBool(s));
-}
-
-void KRuleVisitor::visitEIsType(EIsType *eistype) {
+void KRuleVisitor::visitEType(EType *etype) {
   throw NotImplemented();
-  visitString(eistype->string_);
+  etype->type_->accept(this);
 }
 
 void KRuleVisitor::visitEParant(EParant *eparant) {
@@ -145,43 +197,14 @@ void KRuleVisitor::visitEImpl(EImpl *eimpl) {
   changeRet(new RetTypeBool(rtBool));
 }
 
-void KRuleVisitor::visitELtEq(ELtEq *elteq) {
-  throw NotImplemented();
-  elteq->expr_1->accept(this);
-  elteq->expr_2->accept(this);
-
+void KRuleVisitor::visitEIExpr(EIExpr *eiexpr) {
+  eiexpr->iexpr_->accept(this);
 }
 
-void KRuleVisitor::visitEGtEq(EGtEq *egteq) {
-  throw NotImplemented();
-
-  egteq->expr_1->accept(this);
-  egteq->expr_2->accept(this);
-
-}
-
-void KRuleVisitor::visitELt(ELt *elt) {
-  throw NotImplemented();
-
-  elt->expr_1->accept(this);
-  elt->expr_2->accept(this);
-
-}
-
-void KRuleVisitor::visitEGt(EGt *egt) {
-  throw NotImplemented();
-
-  egt->expr_1->accept(this);
-  egt->expr_2->accept(this);
-
-}
-
-void KRuleVisitor::visitEEq(EEq *eeq) {
-  throw NotImplemented();
-
-  eeq->expr_1->accept(this);
-  eeq->expr_2->accept(this);
-
+void KRuleVisitor::visitEEq(EEq *eeq){
+    throw NotImplemented();
+    eeq->expr_1->accept(this);
+    eeq->expr_2->accept(this);
 }
 
 void KRuleVisitor::visitEAnd(EAnd *eand) {
@@ -200,62 +223,14 @@ void KRuleVisitor::visitEOr(EOr *eor) {
   changeRet(new RetTypeBool(b1 || b2));
 }
 
-void KRuleVisitor::visitERelease(ERelease *erelease) {
-  throw NotImplemented();
-
-  erelease->expr_1->accept(this);
-  erelease->expr_2->accept(this);
-
+void KRuleVisitor::visitEOverPaths(EOverPaths *eoverpaths)
+{
+  eoverpaths->overpaths_->accept(this);
 }
 
-void KRuleVisitor::visitENext(ENext *enext) {
-  throw NotImplemented();
-
-  enext->expr_1->accept(this);
-  enext->expr_2->accept(this);
-
-}
-
-void KRuleVisitor::visitEEventually(EEventually *eeventually) {
-  throw NotImplemented();
-
-  eeventually->expr_->accept(this);
-
-}
-
-void KRuleVisitor::visitEAlways(EAlways *ealways) {
-  throw NotImplemented();
-
-  ealways->expr_->accept(this);
-
-}
-
-void KRuleVisitor::visitEUntil(EUntil *euntil) {
-  throw NotImplemented();
-
-  euntil->expr_1->accept(this);
-  euntil->expr_2->accept(this);
-
-}
-
-void KRuleVisitor::visitSParent(SParent *sparent) {
-  throw NotImplemented();
-}
-
-void KRuleVisitor::visitSFile(SFile *sfile) {
-  throw NotImplemented();
-}
-
-void KRuleVisitor::visitSChildren(SChildren *schildren) {
-  throw NotImplemented();
-}
-
-void KRuleVisitor::visitSSiblings(SSiblings *ssiblings) {
-  throw NotImplemented();
-}
-
-void KRuleVisitor::visitSAny(SAny *sany) {
-  throw NotImplemented();
+void KRuleVisitor::visitTType(TType *ttype)
+{
+  visitString(ttype->string_);
 }
 
 void KRuleVisitor::visitPParam(PParam *pparam) {

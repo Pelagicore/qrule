@@ -18,8 +18,10 @@ public:
 
 class KRuleOutput {
 public:
-    KRuleOutput(QString tag, QString severity, QString analysisMode):
-        tag(tag), severity(severity), analysisMode(analysisMode) {}
+    KRuleOutput(QString tag, QString severity, QString astscope,
+                QString rulecause, QString explanation):
+        tag(tag), severity(severity), astscope(astscope),
+        rulecause(rulecause), explanation(explanation) {}
     ~KRuleOutput() {}
 
     void addCodeOccurrance(CodeOccurrance codeOccurrance);
@@ -27,7 +29,9 @@ public:
 
     const QString tag;
     const QString severity;
-    const QString analysisMode;
+    const QString astscope;
+    const QString rulecause;
+    const QString explanation;
     QList<CodeOccurrance>& getOccurrances();
 private:
     QList<CodeOccurrance> codeOccurrances;

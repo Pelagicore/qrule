@@ -15,11 +15,13 @@ QString XMLOutputFormatter::format(){
 
         QString kruleStartTag = QString().append("<krule tag=\"").append(ko->tag)
                 .append("\" severity=\"").append(ko->severity)
-                .append("\" analysisMode=\"").append(ko->analysisMode)
+                .append("\" astscope=\"").append(ko->astscope)
+                .append("\" rulecause=\"").append(ko->rulecause)
                 .append("\">");
         QString kruleEndTag = "</krule>\n";
+        QString explanationTag = QString().append("<explanation>\n").append(ko->explanation).append("\n</explanation>");
 
-        output.append(kruleStartTag.append(occurrances).append(kruleEndTag));
+        output.append(kruleStartTag.append(occurrances).append(explanationTag).append(kruleEndTag));
     }
     output.chop(1);
     return output;

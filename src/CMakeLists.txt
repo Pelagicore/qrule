@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.3)
 set(SOURCE_FILES 
         krulevisitor.cpp
-        gen/Printer.cpp
-        gen/Parser.cpp
-        gen/Lexer.cpp
-        gen/Absyn.cpp
+        gen/Printer.C
+        gen/Parser.C
+        gen/Lexer.C
+        gen/Absyn.C
         main.cpp
         QmlVisitor.cpp
         output/KRuleOutput.cpp
