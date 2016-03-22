@@ -14,13 +14,14 @@ set(SOURCE_FILES
         retType/RetTypeUInt.cpp
         retType/RetTypeString.cpp
         retType/RetTypeBool.cpp
+        QMLChildren.cpp
         )
 include_directories(.)
 
 add_executable(KRuleEngine ${SOURCE_FILES} )
 
 find_package(Qt5Core REQUIRED)
-find_package(Qt5Qml REQUIRED)
-find_package(Qt5Quick REQUIRED)
-
+find_package(Qt5Qml REQUIRED COMPONENTS Private)
+find_package(Qt5Quick REQUIRED COMPONENTS Private)
+INCLUDE_DIRECTORIES(${Qt5Qml_PRIVATE_INCLUDE_DIRS})
 target_link_libraries(KRuleEngine ${Qt5Core_LIBRARIES} ${Qt5Quick_LIBRARIES} ${Qt5Qml_LIBRARIES})
