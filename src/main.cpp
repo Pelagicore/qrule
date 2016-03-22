@@ -65,25 +65,6 @@ static QString readCode(QString qmlFilename) {
     return code;
 }
 
-static QQmlJS::AST::UiProgram* parseQML(const QString code, const QString qmlFilename) {
-    QQmlJS::Engine engine;
-    QQmlJS::Lexer lexer(&engine);
-
-    QFileInfo info(qmlFilename);
-    bool isJavaScript = info.suffix().toLower() == QLatin1String("js");
-    lexer.setCode(code, /*line = */ 1, /*qmlMode=*/ !isJavaScript);
-    QQmlJS::Parser parser(&engine);
-    bool success = isJavaScript ? parser.parseProgram() : parser.parse();
-
-    if (!success) {
-        foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
-            qWarning("%s:%d : %s", qPrintable(qmlFilename), m.loc.startLine, qPrintable(m.message));
-        }
-    }
-
-    return parser.ast();
-}
-
 static RuleSet* parseKRuleFile(QString kruleFilename) {
     FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
     if (!kruleFile) {
@@ -137,18 +118,31 @@ int main(int argv, char *argc[]) {
     QMap<QString, KRuleOutput*> ruleViolationsMap;
     foreach (const QString &qmlFilename, parsedArguments) {
         QString code = readCode(qmlFilename);
+
+        QQmlJS::Engine engine;
+        QQmlJS::Lexer lexer = QQmlJS::Lexer(&engine);
+
+        QFileInfo info(qmlFilename);
+        bool isJavaScript = info.suffix().toLower() == QLatin1String("js");
+        lexer.setCode(code, /*line = */ 1, /*qmlMode=*/ !isJavaScript);
+        QQmlJS::Parser parser = QQmlJS::Parser(&engine);
+        bool success = isJavaScript ? parser.parseProgram() : parser.parse();
+
+        if (!success) {
+            foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
+                qWarning("%s:%d : %s", qPrintable(qmlFilename), m.loc.startLine, qPrintable(m.message));
+            }
+        }
+
+        KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, parser.ast());
+
+        // Debugging stuff -----------
         QmlVisitor *qmlVisitor = new QmlVisitor(code, qmlFilename);
-        QQmlJS::AST::UiProgram *qmlAST = parseQML(code, qmlFilename);
-        qmlAST->accept(qmlVisitor);
-        Environment *env = qmlVisitor->getEnvironment();
+        parser.ast()->accept(qmlVisitor);
+        // ---------------------------
 
-    //    env->print();
-
-        EnvironmentVisitorQml envv = EnvironmentVisitorQml(kruleTree);
-        QMap<QString, KRuleOutput*> result = env->accept(&envv);
-
-        ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, result);
-        delete qmlVisitor;
+        kruleTree->accept(&kruleVisitor);
+        ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, kruleVisitor.getFailures());
     }
 
     // Output

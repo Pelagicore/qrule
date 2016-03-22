@@ -2,6 +2,7 @@
 #include "krulevisitor.h"
 #include <gen/Printer.H>
 #include <QRegExp>
+#include "QMLChildren.h"
 
 void KRuleVisitor::visitRuleSet(RuleSet* t) {} //abstract class
 void KRuleVisitor::visitRule(Rule* t) {} //abstract class
@@ -40,11 +41,30 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
               outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
                                      currentRuleASTScope, currentRuleCause, currentRuleExplanation);
           }
-          outp->addCodeOccurrance(scope->codeOccurrance);
+          /*
+           * NEEDS MOAR WORK
+           * kolla upp hur node sätts på tillbaka vägen
+           * borde kanske inte använda oldNode för att skriva tillbaka
+           * för att kunna komma åt var det bråkar
+           */
+          outp->addCodeOccurrance(CodeOccurrance(*(getSource(node).string()),
+                                                 filename,
+                                                 node->firstSourceLocation().startLine,
+                                                 node->firstSourceLocation().startColumn));
           failedRules.insert(currentRuleTag, outp);
       }
   }
   catch(NotImplemented &) {}
+}
+
+const QStringRef KRuleVisitor::printable(const SourceLocation &start, const SourceLocation &end) {
+    return QStringRef(&code, start.offset, end.offset + end.length - start.offset);
+}
+
+const QStringRef KRuleVisitor::getSource(const QQmlJS::AST::Node *exp) {
+    const SourceLocation start = exp->firstSourceLocation();
+    const SourceLocation end = exp->firstSourceLocation();
+    return printable(start, end);
 }
 
 void KRuleVisitor::visitASTGlobally(ASTGlobally *astglobally) {
@@ -82,28 +102,156 @@ void KRuleVisitor::visitSevCritical(SevCritical *) {
 }
 
 void KRuleVisitor::visitAll(All *all){
-  all->pathspecific_->accept(this);
+    overPaths = "A";
+    all->pathspecific_->accept(this);
 }
 
 void KRuleVisitor::visitExist(Exist *exist) {
-  exist->pathspecific_->accept(this);
+    overPaths = "E";
+    exist->pathspecific_->accept(this);
 }
 
 void KRuleVisitor::visitFuture(Future *future) {
-  future->expr_->accept(this);
+    future->expr_->accept(this);
+    bool success = false;
+
+    if (getBoolRet()) {
+        success = true;
+    } else {
+        QList<QQmlJS::AST::Node*> childrn = children(node);
+        if (!childrn.isEmpty()){
+            QQmlJS::AST::Node *oldNode = node;
+            bool breakCondition = false;
+            foreach(QQmlJS::AST::Node *child, childrn) {
+                node = child;
+                visitFuture(future);
+                node = oldNode;
+
+                bool res = getBoolRet();
+                if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                        breakCondition = true;
+                        break;
+                }
+            }
+            if (overPaths == "A") {
+                success = breakCondition ? false : true;
+            } else if (overPaths == "E") {
+                success = breakCondition ? true : false;
+            }
+        } else {
+            success = false;
+        }
+    }
+
+    changeRet(new RetTypeBool(success));
 }
 
 void KRuleVisitor::visitGlobally(Globally *globally) {
-  globally->expr_->accept(this);
+    globally->expr_->accept(this);
+    bool success = false;
+
+    if (!getBoolRet()) {
+        success = false;
+    } else {
+        QList<QQmlJS::AST::Node*> childrn = children(node);
+        if (!childrn.isEmpty()) {
+            QQmlJS::AST::Node *oldNode = node;
+            bool breakCondition = false;
+            foreach(QQmlJS::AST::Node *child, childrn) {
+                node = child;
+                visitGlobally(globally);
+                node = oldNode;
+
+                bool res = getBoolRet();
+                if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                        breakCondition = true;
+                        break;
+                }
+            }
+            if (overPaths == "A") {
+                success = breakCondition ? false : true;
+            } else if (overPaths == "E") {
+                success = breakCondition ? true : false;
+            }
+
+        } else {
+            success = true;
+        }
+    }
+
+    changeRet(new RetTypeBool(success));
 }
 
 void KRuleVisitor::visitUntil(Until *until) {
-  until->expr_1->accept(this);
-  until->expr_2->accept(this);
+    until->expr_1->accept(this);
+    bool r1 = getBoolRet();
+    until->expr_2->accept(this);
+    bool r2 = getBoolRet();
+    bool success = false;
+
+    if (r2) {
+        success = true;
+    } else {
+        if (r1) {
+            QList<QQmlJS::AST::Node*> childrn = children(node);
+            if (!childrn.isEmpty()) {
+                QQmlJS::AST::Node *oldNode = node;
+                bool breakCondition = false;
+                foreach(QQmlJS::AST::Node *child, childrn) {
+                    node = child;
+                    visitUntil(until);
+                    node = oldNode;
+
+                    bool res = getBoolRet();
+                    if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                            breakCondition = true;
+                            break;
+                    }
+                }
+                if (overPaths == "A") {
+                    success = breakCondition ? false : true;
+                } else if (overPaths == "E") {
+                    success = breakCondition ? true : false;
+                }
+            } else {
+                success = false;
+            }
+        } else {
+            success = false;
+        }
+    }
+
+    changeRet(new RetTypeBool(success));
 }
 
 void KRuleVisitor::visitNext(Next *next) {
-  next->expr_->accept(this);
+    bool success = true;
+
+    QList<QQmlJS::AST::Node*> childrn = children(node);
+    if (!childrn.isEmpty()) {
+        QQmlJS::AST::Node *oldNode = node;
+        bool breakCondition = false;
+        foreach(QQmlJS::AST::Node *child, childrn) {
+            node = child;
+            next->expr_->accept(this);
+            node = oldNode;
+
+            bool res = getBoolRet();
+            if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                    breakCondition = true;
+                    break;
+            }
+        }
+        if (overPaths == "A") {
+            success = breakCondition ? false : true;
+        } else if (overPaths == "E") {
+            success = breakCondition ? true : false;
+        }
+    } else {
+        success = false;
+    }
+
+    changeRet(new RetTypeBool(success));
 }
 
 void KRuleVisitor::visitIEInt(IEInt *ieint) {
@@ -161,10 +309,13 @@ void KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
   bool s = false;
 
   QRegExp regexp = QRegExp(getStringRet());
-  foreach (EnvParam *p, scope->params) {
-      if (regexp.exactMatch(p->name)) {
-          s = true;
-      }
+  QString nodeCode;
+
+  nodeCode = getSource(node).toString();
+  qDebug() << nodeCode;
+
+  if (regexp.exactMatch(nodeCode)) {
+      s = true;
   }
   changeRet(new RetTypeBool(s));
 }
@@ -228,8 +379,7 @@ void KRuleVisitor::visitEOverPaths(EOverPaths *eoverpaths)
   eoverpaths->overpaths_->accept(this);
 }
 
-void KRuleVisitor::visitTType(TType *ttype)
-{
+void KRuleVisitor::visitTType(TType *ttype) {
   visitString(ttype->string_);
 }
 

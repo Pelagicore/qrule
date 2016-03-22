@@ -7,8 +7,8 @@
 #include "retType/RetTypeBool.h"
 #include "retType/RetTypeString.h"
 #include "retType/RetTypeUInt.h"
-
 #include <QMap>
+#include <private/qqmljsast_p.h>
 
 class NotImplemented : public std::exception {
 public:
@@ -26,7 +26,8 @@ public:
 
 class KRuleVisitor : public Visitor {
 public:
-    KRuleVisitor(EnvScope *scope): scope(scope){}
+    KRuleVisitor(QString filename, QString code, QQmlJS::AST::Node *node):
+        filename(filename), code(code), node(node) {}
     void visitRuleSet(RuleSet* p);
     void visitRule(Rule* p);
     void visitASTScope(ASTScope* p);
@@ -93,13 +94,22 @@ public:
     QMap<QString, KRuleOutput*> getFailures();
 
 private:
+
+    const QStringRef printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end);
+    const QStringRef getSource(const QQmlJS::AST::Node *exp);
+
+    QString overPaths;
     void changeRet(RetType* ret);
     bool getBoolRet();
     QString getStringRet();
     quint32 getUIntRet();
 
+    QString filename;
+    QString code;
+
+    QQmlJS::AST::Node *node;
+
     void assertType(RetType::RetTypeE type);
-    EnvScope *scope;
     QString currentRuleTag = "";
     QString currentRuleSeverity = "";
     QString currentRuleASTScope = "";
