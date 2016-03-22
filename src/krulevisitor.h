@@ -97,6 +97,8 @@ private:
     const QStringRef printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end);
     const QStringRef getSource(const QQmlJS::AST::Node *exp);
 
+    const bool handleBreakCondition(const bool breakCondition);
+
     QString overPaths;
     void changeRet(RetType* ret);
     bool getBoolRet();

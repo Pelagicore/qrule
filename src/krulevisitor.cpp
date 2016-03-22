@@ -109,6 +109,16 @@ void KRuleVisitor::visitExist(Exist *exist) {
     exist->pathspecific_->accept(this);
 }
 
+const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
+    if (overPaths == "A") {
+        return breakCondition ? false : true;
+    } else if (overPaths == "E") {
+        return breakCondition ? true : false;
+    } else {
+        throw NotImplemented();
+    }
+}
+
 void KRuleVisitor::visitFuture(Future *future) {
     future->expr_->accept(this);
     bool success = false;
@@ -129,11 +139,7 @@ void KRuleVisitor::visitFuture(Future *future) {
                         break;
                 }
             }
-            if (overPaths == "A") {
-                success = breakCondition ? false : true;
-            } else if (overPaths == "E") {
-                success = breakCondition ? true : false;
-            }
+            success = handleBreakCondition(breakCondition);
         } else {
             success = false;
         }
@@ -162,11 +168,7 @@ void KRuleVisitor::visitGlobally(Globally *globally) {
                         break;
                 }
             }
-            if (overPaths == "A") {
-                success = breakCondition ? false : true;
-            } else if (overPaths == "E") {
-                success = breakCondition ? true : false;
-            }
+            success = handleBreakCondition(breakCondition);
 
         } else {
             success = true;
@@ -177,16 +179,16 @@ void KRuleVisitor::visitGlobally(Globally *globally) {
 }
 
 void KRuleVisitor::visitUntil(Until *until) {
-    until->expr_1->accept(this);
-    bool r1 = getBoolRet();
-    until->expr_2->accept(this);
-    bool r2 = getBoolRet();
     bool success = false;
 
-    if (r2) {
+    until->expr_2->accept(this);
+    const bool result2 = getBoolRet();
+    if (result2) {
         success = true;
     } else {
-        if (r1) {
+        until->expr_1->accept(this);
+        const bool result1 = getBoolRet();
+        if (result1) {
             QList<QQmlJS::AST::Node*> childrn = children(node);
             if (!childrn.isEmpty()) {
                 bool breakCondition = false;
@@ -200,11 +202,7 @@ void KRuleVisitor::visitUntil(Until *until) {
                             break;
                     }
                 }
-                if (overPaths == "A") {
-                    success = breakCondition ? false : true;
-                } else if (overPaths == "E") {
-                    success = breakCondition ? true : false;
-                }
+                success = handleBreakCondition(breakCondition);
             } else {
                 success = false;
             }
@@ -232,11 +230,7 @@ void KRuleVisitor::visitNext(Next *next) {
                     break;
             }
         }
-        if (overPaths == "A") {
-            success = breakCondition ? false : true;
-        } else if (overPaths == "E") {
-            success = breakCondition ? true : false;
-        }
+        success = handleBreakCondition(breakCondition);
     } else {
         success = false;
     }
