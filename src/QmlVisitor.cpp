@@ -2,34 +2,23 @@
 
 
 void QmlVisitor::endVisit(UiObjectDefinition*) {
-    env->exitCurrentScope();
     deIndent();
 }
 bool QmlVisitor::visit(UiObjectDefinition *exp) {
     debug(exp);
-    QString newScopeName = getSource(exp->qualifiedTypeNameId).toString();
-    env->enterNewScope(newScopeName, filename,
-                       exp->firstSourceLocation().startLine,
-                       exp->firstSourceLocation().startColumn,
-                       getSource(exp).toString());
     return true; }
 
 bool QmlVisitor::visit(IdentifierExpression *exp) {
     debug(exp);
-    notPairedParamValue = getSource(exp).toString();
 
     return true; }
 
 bool QmlVisitor::visit(UiScriptBinding *exp)  {
     debug(exp);
-    notPairedParamName = getSource(exp->qualifiedId).toString();
     return true;
 }
 
 void QmlVisitor::endVisit(UiScriptBinding*) {
-    env->addParam(notPairedParamName, notPairedParamValue);
-    notPairedParamName  = "";
-    notPairedParamValue = "";
     deIndent();
 }
 
@@ -67,12 +56,10 @@ const QStringRef QmlVisitor::getSource(const QQmlJS::AST::Node *exp) {
 
 bool QmlVisitor::visit(TrueLiteral *exp) {
     debug(exp);
-    notPairedParamValue = "true";
     return true;
 }
 
 bool QmlVisitor::visit(FalseLiteral *exp) {
     debug(exp);
-    notPairedParamValue = "false";
     return true;
 }

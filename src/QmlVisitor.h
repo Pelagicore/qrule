@@ -17,7 +17,6 @@
 #include <QtCore/qvarlengtharray.h>
 #include <QFile>
 #include <typeinfo>
-#include "environment/Environment.h"
 
 
 using namespace QQmlJS::AST;
@@ -26,7 +25,6 @@ class QmlVisitor: public QQmlJS::AST::Visitor {
 public:
     QmlVisitor(QString code, QString filename): _code(code), filename(filename){}
     virtual ~QmlVisitor() {
-        delete env;
     }
 
     virtual bool visit(FunctionBody *exp) {
@@ -477,10 +475,7 @@ public:
     virtual bool visit(UiObjectDefinition *);
     virtual void endVisit(UiObjectDefinition *);
 
-    Environment* getEnvironment() { return env; }
-
 private:
-    Environment* env = new Environment();
     QString indent = "";
 
     QString notPairedParamValue = "";

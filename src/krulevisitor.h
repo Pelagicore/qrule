@@ -2,7 +2,6 @@
 #define KRULEENGINE_KRULEVISITOR_H
 
 #include "gen/Absyn.H"
-#include "environment/Environment.h"
 #include "output/KRuleOutput.h"
 #include "retType/RetTypeBool.h"
 #include "retType/RetTypeString.h"

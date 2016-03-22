@@ -45,8 +45,6 @@
 #include <output/xmloutputformatter.h>
 
 #include "ParseException.h"
-#include "environment/Environment.h"
-#include "environment/EnvironmentVerifierQml.h"
 
 #include "QmlVisitor.h"
 #include "private/qqmljslexer_p.h"
@@ -83,6 +81,19 @@ static RuleSet* parseKRuleFile(QString kruleFilename) {
     } else {
         throw ParseException("Could not parse KRulefile");
     }
+}
+
+QMap<QString, KRuleOutput*> mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, QMap<QString, KRuleOutput*> m2) {
+    foreach(QString key, m2.keys()) {
+        if (m1.contains(key)) {
+            KRuleOutput* ko = m1[key];
+            ko->addCodeOccurrances(m2[key]);
+            m1.insert(key, ko);
+        } else {
+            m1.insert(key, m2[key]);
+        }
+    }
+    return m1;
 }
 
 int main(int argv, char *argc[]) {
@@ -137,8 +148,8 @@ int main(int argv, char *argc[]) {
         KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, parser.ast());
 
         // Debugging stuff -----------
-        QmlVisitor *qmlVisitor = new QmlVisitor(code, qmlFilename);
-        parser.ast()->accept(qmlVisitor);
+        QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
+        parser.ast()->accept(&qmlVisitor);
         // ---------------------------
 
         kruleTree->accept(&kruleVisitor);
