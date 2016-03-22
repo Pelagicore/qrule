@@ -47,8 +47,7 @@ void KRuleVisitor::visitRRule(RRule *rrule) {
            * borde kanske inte använda oldNode för att skriva tillbaka
            * för att kunna komma åt var det bråkar
            */
-          outp->addCodeOccurrance(CodeOccurrance(*(getSource(node).string()),
-                                                 filename,
+          outp->addCodeOccurrance(CodeOccurrance(getSource(node).toString(), filename,
                                                  node->firstSourceLocation().startLine,
                                                  node->firstSourceLocation().startColumn));
           failedRules.insert(currentRuleTag, outp);
@@ -62,9 +61,7 @@ const QStringRef KRuleVisitor::printable(const SourceLocation &start, const Sour
 }
 
 const QStringRef KRuleVisitor::getSource(const QQmlJS::AST::Node *exp) {
-    const SourceLocation start = exp->firstSourceLocation();
-    const SourceLocation end = exp->firstSourceLocation();
-    return printable(start, end);
+    return printable(exp->firstSourceLocation(), exp->lastSourceLocation());
 }
 
 void KRuleVisitor::visitASTGlobally(ASTGlobally *astglobally) {
@@ -76,18 +73,19 @@ void KRuleVisitor::visitASTFile(ASTFile *astfile) {
 void KRuleVisitor::visitASTImported(ASTImported *astimported) {
 }
 
-void KRuleVisitor::visitRCLang(RCLang *rclang) {
+void KRuleVisitor::visitRCLang(RCLang *) {
+    currentRuleCause = QString("Language restriction");
 }
 
-void KRuleVisitor::visitRCPolicy(RCPolicy *rcpolicy) {
+void KRuleVisitor::visitRCPolicy(RCPolicy *) {
+    currentRuleCause = QString("Policy");
 }
 
 void KRuleVisitor::visitExplan(Explan *explan) {
-  visitString(explan->string_);
+    currentRuleExplanation = QString(explan->string_.c_str());
 }
 
-void KRuleVisitor::visitNoexplan(Noexplan *noexplan) {
-}
+void KRuleVisitor::visitNoexplan(Noexplan *) {}
 
 void KRuleVisitor::visitTTag(TTag *ttag) {
     currentRuleTag = currentRuleTag.fromStdString(ttag->string_);
@@ -120,12 +118,10 @@ void KRuleVisitor::visitFuture(Future *future) {
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
         if (!childrn.isEmpty()){
-            QQmlJS::AST::Node *oldNode = node;
             bool breakCondition = false;
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
                 visitFuture(future);
-                node = oldNode;
 
                 bool res = getBoolRet();
                 if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
@@ -155,12 +151,10 @@ void KRuleVisitor::visitGlobally(Globally *globally) {
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
         if (!childrn.isEmpty()) {
-            QQmlJS::AST::Node *oldNode = node;
             bool breakCondition = false;
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
                 visitGlobally(globally);
-                node = oldNode;
 
                 bool res = getBoolRet();
                 if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
@@ -195,12 +189,10 @@ void KRuleVisitor::visitUntil(Until *until) {
         if (r1) {
             QList<QQmlJS::AST::Node*> childrn = children(node);
             if (!childrn.isEmpty()) {
-                QQmlJS::AST::Node *oldNode = node;
                 bool breakCondition = false;
                 foreach(QQmlJS::AST::Node *child, childrn) {
                     node = child;
                     visitUntil(until);
-                    node = oldNode;
 
                     bool res = getBoolRet();
                     if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
@@ -229,12 +221,10 @@ void KRuleVisitor::visitNext(Next *next) {
 
     QList<QQmlJS::AST::Node*> childrn = children(node);
     if (!childrn.isEmpty()) {
-        QQmlJS::AST::Node *oldNode = node;
         bool breakCondition = false;
         foreach(QQmlJS::AST::Node *child, childrn) {
             node = child;
             next->expr_->accept(this);
-            node = oldNode;
 
             bool res = getBoolRet();
             if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
@@ -312,11 +302,11 @@ void KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
   QString nodeCode;
 
   nodeCode = getSource(node).toString();
-  qDebug() << nodeCode;
 
   if (regexp.exactMatch(nodeCode)) {
       s = true;
   }
+  qDebug() << regexp.pattern() << " ? " << nodeCode << s;
   changeRet(new RetTypeBool(s));
 }
 
