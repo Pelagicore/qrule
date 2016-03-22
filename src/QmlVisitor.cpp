@@ -34,18 +34,26 @@ void QmlVisitor::endVisit(UiScriptBinding*) {
 }
 
 void QmlVisitor::deIndent() {
-    indent.chop(2);
+    indent.chop(4);
 }
 
 void QmlVisitor::expandIndent() {
-    indent.append("  ");
+    indent.append("    ");
 }
 
 void QmlVisitor::debug(const QQmlJS::AST::Node *exp) {
     QString name = QString(typeid(*exp).name());
     name = name.remove(QRegExp(".*AST[0-9]*"));
+    name.chop(1);
+
+    QString source = getSource(exp).toString();
+    const int max = 70;
+    if (source.length() > max) {
+        source.chop(source.length() - max);
+    }
+
     qDebug() << indent << name
-             << getSource(exp);
+             << source;
     expandIndent();
 }
 
