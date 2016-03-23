@@ -4,36 +4,35 @@
 #include <QRegExp>
 #include "QMLChildren.h"
 
-void KRuleVisitor::visitRuleSet(RuleSet* t) {} //abstract class
-void KRuleVisitor::visitRule(Rule* t) {} //abstract class
-void KRuleVisitor::visitASTScope(ASTScope* t) {} //abstract class
-void KRuleVisitor::visitRuleCause(RuleCause* t) {} //abstract class
-void KRuleVisitor::visitExplanation(Explanation* t) {} //abstract class
-void KRuleVisitor::visitTag(Tag* t) {} //abstract class
-void KRuleVisitor::visitSeverity(Severity* t) {} //abstract class
-void KRuleVisitor::visitOverPaths(OverPaths* t) {} //abstract class
-void KRuleVisitor::visitPathSpecific(PathSpecific* t) {} //abstract class
-void KRuleVisitor::visitIStmnt(IStmnt* t) {} //abstract class
-void KRuleVisitor::visitIExpr(IExpr* t) {} //abstract class
-void KRuleVisitor::visitExpr(Expr* t) {} //abstract class
-void KRuleVisitor::visitType(Type* t) {} //abstract class
-void KRuleVisitor::visitParam(Param* t) {} //abstract class
+RetType* KRuleVisitor::visitRuleSet(RuleSet* t) {} //abstract class
+RetType* KRuleVisitor::visitRule(Rule* t) {} //abstract class
+RetType* KRuleVisitor::visitASTScope(ASTScope* t) {} //abstract class
+RetType* KRuleVisitor::visitRuleCause(RuleCause* t) {} //abstract class
+RetType* KRuleVisitor::visitExplanation(Explanation* t) {} //abstract class
+RetType* KRuleVisitor::visitTag(Tag* t) {} //abstract class
+RetType* KRuleVisitor::visitSeverity(Severity* t) {} //abstract class
+RetType* KRuleVisitor::visitOverPaths(OverPaths* t) {} //abstract class
+RetType* KRuleVisitor::visitPathSpecific(PathSpecific* t) {} //abstract class
+RetType* KRuleVisitor::visitIStmnt(IStmnt* t) {} //abstract class
+RetType* KRuleVisitor::visitIExpr(IExpr* t) {} //abstract class
+RetType* KRuleVisitor::visitExpr(Expr* t) {} //abstract class
+RetType* KRuleVisitor::visitType(Type* t) {} //abstract class
+RetType* KRuleVisitor::visitParam(Param* t) {} //abstract class
 
 
-void KRuleVisitor::visitRSet(RSet *rset) {
+RetType* KRuleVisitor::visitRSet(RSet *rset) {
   rset->listrule_->accept(this);
 }
 
-void KRuleVisitor::visitRRule(RRule *rrule) {
+RetType* KRuleVisitor::visitRRule(RRule *rrule) {
   try {
-      rrule->tag_->accept(this);
-      rrule->severity_->accept(this);
-      rrule->rulecause_->accept(this);
-      rrule->astscope_->accept(this);
-      rrule->explanation_->accept(this);
-      rrule->expr_->accept(this);
+      currentRuleTag = getStringRet(rrule->tag_->accept(this));
+      currentRuleSeverity = getStringRet(rrule->severity_->accept(this));
+      currentRuleCause = getStringRet(rrule->rulecause_->accept(this));
+      currentRuleASTScope = getStringRet(rrule->astscope_->accept(this));
+      currentRuleExplanation = getStringRet(rrule->explanation_->accept(this));
 
-      if (!getBoolRet()) {
+      if (!getBoolRet(rrule->expr_->accept(this))) {
           KRuleOutput* outp;
           if (failedRules.contains(currentRuleTag)) {
               outp = failedRules[currentRuleTag];
@@ -64,49 +63,54 @@ const QStringRef KRuleVisitor::getSource(const QQmlJS::AST::Node *exp) {
     return printable(exp->firstSourceLocation(), exp->lastSourceLocation());
 }
 
-void KRuleVisitor::visitASTGlobally(ASTGlobally *astglobally) {
+RetType* KRuleVisitor::visitASTGlobally(ASTGlobally *) {
+    return new RetTypeString(QString("Globally"));
 }
 
-void KRuleVisitor::visitASTFile(ASTFile *astfile) {
+RetType* KRuleVisitor::visitASTFile(ASTFile *) {
+    return new RetTypeString(QString("File"));
 }
 
-void KRuleVisitor::visitASTImported(ASTImported *astimported) {
+RetType* KRuleVisitor::visitASTImported(ASTImported *) {
+    return new RetTypeString(QString("Imported"));
 }
 
-void KRuleVisitor::visitRCLang(RCLang *) {
-    currentRuleCause = QString("Language restriction");
+RetType* KRuleVisitor::visitRCLang(RCLang *) {
+    return new RetTypeString(QString("Language restriction"));
 }
 
-void KRuleVisitor::visitRCPolicy(RCPolicy *) {
-    currentRuleCause = QString("Policy");
+RetType* KRuleVisitor::visitRCPolicy(RCPolicy *) {
+    return new RetTypeString(QString("Policy"));
 }
 
-void KRuleVisitor::visitExplan(Explan *explan) {
-    currentRuleExplanation = QString(explan->string_.c_str());
+RetType* KRuleVisitor::visitExplan(Explan *explan) {
+    return new RetTypeString(QString(explan->string_.c_str()));
 }
 
-void KRuleVisitor::visitNoexplan(Noexplan *) {}
-
-void KRuleVisitor::visitTTag(TTag *ttag) {
-    currentRuleTag = currentRuleTag.fromStdString(ttag->string_);
+RetType* KRuleVisitor::visitNoexplan(Noexplan *) {
+    return new RetTypeBool(false);
 }
 
-void KRuleVisitor::visitSevWarning(SevWarning *) {
-    currentRuleSeverity = "Warning";
+RetType* KRuleVisitor::visitTTag(TTag *ttag) {
+    return new RetTypeString(QString(ttag->string_.c_str()));
 }
 
-void KRuleVisitor::visitSevCritical(SevCritical *) {
-    currentRuleSeverity = "Critical";
+RetType* KRuleVisitor::visitSevWarning(SevWarning *) {
+    return new RetTypeString(QString("Warning"));
 }
 
-void KRuleVisitor::visitAll(All *all){
+RetType* KRuleVisitor::visitSevCritical(SevCritical *) {
+    return new RetTypeString(QString("Critical"));
+}
+
+RetType* KRuleVisitor::visitAll(All *all){
     overPaths = "A";
-    all->pathspecific_->accept(this);
+    return all->pathspecific_->accept(this);
 }
 
-void KRuleVisitor::visitExist(Exist *exist) {
+RetType* KRuleVisitor::visitExist(Exist *exist) {
     overPaths = "E";
-    exist->pathspecific_->accept(this);
+    return exist->pathspecific_->accept(this);
 }
 
 const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
@@ -119,11 +123,10 @@ const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
     }
 }
 
-void KRuleVisitor::visitFuture(Future *future) {
-    future->expr_->accept(this);
+RetType* KRuleVisitor::visitFuture(Future *future) {
     bool success = false;
 
-    if (getBoolRet()) {
+    if (getBoolRet(future->expr_->accept(this))) {
         success = true;
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
@@ -131,12 +134,11 @@ void KRuleVisitor::visitFuture(Future *future) {
             bool breakCondition = false;
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
-                visitFuture(future);
 
-                bool res = getBoolRet();
+                bool res = getBoolRet(visitFuture(future));
                 if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
-                        breakCondition = true;
-                        break;
+                    breakCondition = true;
+                    break;
                 }
             }
             success = handleBreakCondition(breakCondition);
@@ -145,14 +147,13 @@ void KRuleVisitor::visitFuture(Future *future) {
         }
     }
 
-    changeRet(new RetTypeBool(success));
+    return new RetTypeBool(success);
 }
 
-void KRuleVisitor::visitGlobally(Globally *globally) {
-    globally->expr_->accept(this);
+RetType* KRuleVisitor::visitGlobally(Globally *globally) {
     bool success = false;
 
-    if (!getBoolRet()) {
+    if (!getBoolRet(globally->expr_->accept(this))) {
         success = false;
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
@@ -160,9 +161,8 @@ void KRuleVisitor::visitGlobally(Globally *globally) {
             bool breakCondition = false;
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
-                visitGlobally(globally);
 
-                bool res = getBoolRet();
+                bool res = getBoolRet(visitGlobally(globally));
                 if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                         breakCondition = true;
                         break;
@@ -175,28 +175,25 @@ void KRuleVisitor::visitGlobally(Globally *globally) {
         }
     }
 
-    changeRet(new RetTypeBool(success));
+    return new RetTypeBool(success);
 }
 
-void KRuleVisitor::visitUntil(Until *until) {
+RetType* KRuleVisitor::visitUntil(Until *until) {
     bool success = false;
 
-    until->expr_2->accept(this);
-    const bool result2 = getBoolRet();
+    const bool result2 = getBoolRet(until->expr_2->accept(this));
     if (result2) {
         success = true;
     } else {
-        until->expr_1->accept(this);
-        const bool result1 = getBoolRet();
+        const bool result1 = getBoolRet(until->expr_1->accept(this));
         if (result1) {
             QList<QQmlJS::AST::Node*> childrn = children(node);
             if (!childrn.isEmpty()) {
                 bool breakCondition = false;
                 foreach(QQmlJS::AST::Node *child, childrn) {
                     node = child;
-                    visitUntil(until);
 
-                    bool res = getBoolRet();
+                    bool res = getBoolRet(visitUntil(until));
                     if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                             breakCondition = true;
                             break;
@@ -211,10 +208,10 @@ void KRuleVisitor::visitUntil(Until *until) {
         }
     }
 
-    changeRet(new RetTypeBool(success));
+    return new RetTypeBool(success);
 }
 
-void KRuleVisitor::visitNext(Next *next) {
+RetType* KRuleVisitor::visitNext(Next *next) {
     bool success = true;
 
     QList<QQmlJS::AST::Node*> childrn = children(node);
@@ -222,9 +219,7 @@ void KRuleVisitor::visitNext(Next *next) {
         bool breakCondition = false;
         foreach(QQmlJS::AST::Node *child, childrn) {
             node = child;
-            next->expr_->accept(this);
-
-            bool res = getBoolRet();
+            bool res = getBoolRet(next->expr_->accept(this));
             if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                     breakCondition = true;
                     break;
@@ -235,190 +230,184 @@ void KRuleVisitor::visitNext(Next *next) {
         success = false;
     }
 
-    changeRet(new RetTypeBool(success));
+    return new RetTypeBool(success);
 }
 
-void KRuleVisitor::visitIEInt(IEInt *ieint) {
-  visitInteger(ieint->integer_);
+RetType* KRuleVisitor::visitIEInt(IEInt *ieint) {
+    return visitInteger(ieint->integer_);
 }
 
-void KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
+RetType* KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
+    throw NotImplemented();
 }
 
-void KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
-  throw NotImplemented();
-  ielteq->iexpr_->accept(this);
-  ielteq->istmnt_->accept(this);
+RetType* KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
+    throw NotImplemented();
+    ielteq->iexpr_->accept(this);
+    ielteq->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
-  throw NotImplemented();
-  iegteq->iexpr_->accept(this);
-  iegteq->istmnt_->accept(this);
+RetType* KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
+    throw NotImplemented();
+    iegteq->iexpr_->accept(this);
+    iegteq->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitIELt(IELt *ielt) {
-  throw NotImplemented();
-  ielt->iexpr_->accept(this);
-  ielt->istmnt_->accept(this);
+RetType* KRuleVisitor::visitIELt(IELt *ielt) {
+    throw NotImplemented();
+    ielt->iexpr_->accept(this);
+    ielt->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitIEGt(IEGt *iegt) {
-  throw NotImplemented();
-  iegt->iexpr_->accept(this);
-  iegt->istmnt_->accept(this);
+RetType* KRuleVisitor::visitIEGt(IEGt *iegt) {
+    throw NotImplemented();
+    iegt->iexpr_->accept(this);
+    iegt->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitIEq(IEq *ieq) {
-  throw NotImplemented();
-  ieq->istmnt_1->accept(this);
-  ieq->istmnt_2->accept(this);
+RetType* KRuleVisitor::visitIEq(IEq *ieq) {
+    throw NotImplemented();
+    ieq->istmnt_1->accept(this);
+    ieq->istmnt_2->accept(this);
 }
 
-void KRuleVisitor::visitIEStmnt(IEStmnt *iestmnt) {
-  throw NotImplemented();
-  iestmnt->istmnt_->accept(this);
+RetType* KRuleVisitor::visitIEStmnt(IEStmnt *iestmnt) {
+    throw NotImplemented();
+    iestmnt->istmnt_->accept(this);
 }
 
-void KRuleVisitor::visitETrue(ETrue *) {
-    changeRet(new RetTypeBool(true));
+RetType* KRuleVisitor::visitETrue(ETrue *) {
+    return new RetTypeBool(true);
 }
 
-void KRuleVisitor::visitEFalse(EFalse *) {
-    changeRet(new RetTypeBool(false));
+RetType* KRuleVisitor::visitEFalse(EFalse *) {
+    return new RetTypeBool(false);
 }
 
-void KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
-  visitString(enodeval->string_);
-  bool s = false;
+RetType* KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
+    bool s = false;
 
-  QRegExp regexp = QRegExp(getStringRet());
-  QString nodeCode;
+    QRegExp regexp = QRegExp(QString(enodeval->string_.c_str()));
+    QString nodeCode;
 
-  nodeCode = getSource(node).toString();
+    nodeCode = getSource(node).toString();
 
-  if (regexp.exactMatch(nodeCode)) {
-      s = true;
-  }
-  qDebug() << regexp.pattern() << " ? " << nodeCode << s;
-  changeRet(new RetTypeBool(s));
+    if (regexp.exactMatch(nodeCode)) {
+        s = true;
+    }
+    qDebug() << regexp.pattern() << " ? " << nodeCode << s;
+    return new RetTypeBool(s);
 }
 
-void KRuleVisitor::visitEType(EType *etype) {
-  throw NotImplemented();
-  etype->type_->accept(this);
+RetType* KRuleVisitor::visitEType(EType *etype) {
+    throw NotImplemented();
+    etype->type_->accept(this);
 }
 
-void KRuleVisitor::visitEParant(EParant *eparant) {
-  eparant->expr_->accept(this);
+RetType* KRuleVisitor::visitEParant(EParant *eparant) {
+    eparant->expr_->accept(this);
 }
 
-void KRuleVisitor::visitENot(ENot *enot) {
-  enot->expr_->accept(this);
-  changeRet(new RetTypeBool(!getBoolRet()));
+RetType* KRuleVisitor::visitENot(ENot *enot) {
+    return new RetTypeBool(!getBoolRet(enot->expr_->accept(this)));
 }
 
-void KRuleVisitor::visitEImpl(EImpl *eimpl) {
-  eimpl->expr_1->accept(this);
-  const bool leftExpression = getBoolRet();
-  bool rtBool;
-  if (leftExpression == true) {
-      eimpl->expr_2->accept(this);
-      const bool rightExpression = getBoolRet();
-      rtBool = rightExpression == true;
-  } else {
-      rtBool = true;
-  }
-  changeRet(new RetTypeBool(rtBool));
+RetType* KRuleVisitor::visitEImpl(EImpl *eimpl) {
+    const bool leftExpression = getBoolRet(eimpl->expr_1->accept(this));
+    bool rtBool;
+    if (leftExpression == true) {
+        const bool rightExpression = getBoolRet(eimpl->expr_2->accept(this));
+        rtBool = rightExpression == true;
+    } else {
+        rtBool = true;
+    }
+    return new RetTypeBool(rtBool);
 }
 
-void KRuleVisitor::visitEIExpr(EIExpr *eiexpr) {
-  eiexpr->iexpr_->accept(this);
+RetType* KRuleVisitor::visitEIExpr(EIExpr *eiexpr) {
+    eiexpr->iexpr_->accept(this);
 }
 
-void KRuleVisitor::visitEEq(EEq *eeq){
+RetType* KRuleVisitor::visitEEq(EEq *eeq){
     throw NotImplemented();
     eeq->expr_1->accept(this);
     eeq->expr_2->accept(this);
 }
 
-void KRuleVisitor::visitEAnd(EAnd *eand) {
-  eand->expr_1->accept(this);
-  const bool b1 = getBoolRet();
-  eand->expr_2->accept(this);
-  const bool b2 = getBoolRet();
-  changeRet(new RetTypeBool(b1 && b2));
+RetType* KRuleVisitor::visitEAnd(EAnd *eand) {
+    const bool b1 = getBoolRet(eand->expr_1->accept(this));
+    const bool b2 = getBoolRet(eand->expr_2->accept(this));
+    return new RetTypeBool(b1 && b2);
 }
 
-void KRuleVisitor::visitEOr(EOr *eor) {
-  eor->expr_1->accept(this);
-  const bool b1 = getBoolRet();
-  eor->expr_2->accept(this);
-  const bool b2 = getBoolRet();
-  changeRet(new RetTypeBool(b1 || b2));
+RetType* KRuleVisitor::visitEOr(EOr *eor) {
+    const bool b1 = getBoolRet(eor->expr_1->accept(this));
+    const bool b2 = getBoolRet(eor->expr_2->accept(this));
+    return new RetTypeBool(b1 || b2);
 }
 
-void KRuleVisitor::visitEOverPaths(EOverPaths *eoverpaths)
-{
-  eoverpaths->overpaths_->accept(this);
+RetType* KRuleVisitor::visitEOverPaths(EOverPaths *eoverpaths) {
+    return eoverpaths->overpaths_->accept(this);
 }
 
-void KRuleVisitor::visitTType(TType *ttype) {
-  visitString(ttype->string_);
+RetType* KRuleVisitor::visitTType(TType *ttype) {
+    return new RetTypeString(QString(ttype->string_.c_str()));
 }
 
-void KRuleVisitor::visitPParam(PParam *pparam) {
-  visitString(pparam->string_);
+RetType* KRuleVisitor::visitPParam(PParam *pparam) {
+    return new RetTypeString(QString(pparam->string_.c_str()));
 }
 
-void KRuleVisitor::visitListRule(ListRule* listrule) {
-  for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i){
-    (*i)->accept(this);
-  }
+/**
+ * @brief KRuleVisitor::visitListRule Iterates over the defined rules.
+ * @param listrule
+ * @return
+ */
+RetType* KRuleVisitor::visitListRule(ListRule* listrule) {
+    for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i) {
+      (*i)->accept(this);
+    }
+    return nullptr;
 }
 
-void KRuleVisitor::visitListExpr(ListExpr* listexpr) {
-  for (ListExpr::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i)
-  {
-    (*i)->accept(this);
-  }
+// Not sure if this is actually needed ... maybe delete this?
+RetType* KRuleVisitor::visitListExpr(ListExpr* listexpr) {
+    for (ListExpr::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i) {
+      (*i)->accept(this);
+    }
+    return nullptr;
 }
 
 
-void KRuleVisitor::visitInteger(Integer x) {
-    changeRet(new RetTypeUInt((quint32)x));
+RetType* KRuleVisitor::visitInteger(Integer x) {
+    return new RetTypeUInt((quint32)x);
 }
 
-void KRuleVisitor::visitString(String x) {
-    changeRet(new RetTypeString(QString(x.c_str())));
+RetType* KRuleVisitor::visitString(String x) {
+    return new RetTypeString(QString(x.c_str()));
 }
 
 QMap<QString, KRuleOutput*> KRuleVisitor::getFailures() {
     return failedRules;
 }
 
-void KRuleVisitor::changeRet(RetType *ret) {
-    delete this->ret;
-    this->ret = ret;
-}
-
-void KRuleVisitor::assertType(RetType::RetTypeE type) {
-    if (ret->getType() != type) {
+void KRuleVisitor::assertType(RetType* ret, RetType::RetTypeE type) {
+    if (ret == nullptr || ret->getType() != type) {
         throw BadType();
     }
 }
 
-bool KRuleVisitor::getBoolRet() {
-    assertType(RetType::RetTypeE::RBool);
+const bool KRuleVisitor::getBoolRet(RetType *ret) {
+    assertType(ret, RetType::RetTypeE::RBool);
     return ((RetTypeBool*)ret)->getData();
 }
 
-QString KRuleVisitor::getStringRet() {
-    assertType(RetType::RetTypeE::RString);
+const QString KRuleVisitor::getStringRet(RetType *ret) {
+    assertType(ret, RetType::RetTypeE::RString);
     return ((RetTypeString*)ret)->getData();
 }
 
-quint32 KRuleVisitor::getUIntRet() {
-    assertType(RetType::RetTypeE::RInt);
+const quint32 KRuleVisitor::getUIntRet(RetType *ret) {
+    assertType(ret, RetType::RetTypeE::RInt);
     return ((RetTypeUInt*)ret)->getData();
 }

@@ -27,68 +27,68 @@ class KRuleVisitor : public Visitor {
 public:
     KRuleVisitor(QString filename, QString code, QQmlJS::AST::Node *node):
         filename(filename), code(code), node(node) {}
-    void visitRuleSet(RuleSet* p);
-    void visitRule(Rule* p);
-    void visitASTScope(ASTScope* p);
-    void visitRuleCause(RuleCause* p);
-    void visitExplanation(Explanation* p);
-    void visitTag(Tag* p);
-    void visitSeverity(Severity* p);
-    void visitOverPaths(OverPaths* p);
-    void visitPathSpecific(PathSpecific* p);
-    void visitIStmnt(IStmnt* p);
-    void visitIExpr(IExpr* p);
-    void visitExpr(Expr* p);
-    void visitType(Type* p);
-    void visitParam(Param* p);
-    void visitRSet(RSet* p);
-    void visitRRule(RRule* p);
-    void visitASTGlobally(ASTGlobally* p);
-    void visitASTFile(ASTFile* p);
-    void visitASTImported(ASTImported* p);
-    void visitRCLang(RCLang* p);
-    void visitRCPolicy(RCPolicy* p);
-    void visitExplan(Explan* p);
-    void visitNoexplan(Noexplan* p);
-    void visitTTag(TTag* p);
-    void visitSevWarning(SevWarning* p);
-    void visitSevCritical(SevCritical* p);
-    void visitAll(All* p);
-    void visitExist(Exist* p);
-    void visitFuture(Future* p);
-    void visitGlobally(Globally* p);
-    void visitUntil(Until* p);
-    void visitNext(Next* p);
-    void visitIEInt(IEInt* p);
-    void visitIENrChildren(IENrChildren* p);
-    void visitIELtEq(IELtEq* p);
-    void visitIEGtEq(IEGtEq* p);
-    void visitIELt(IELt* p);
-    void visitIEGt(IEGt* p);
-    void visitIEq(IEq* p);
-    void visitIEStmnt(IEStmnt* p);
-    void visitETrue(ETrue* p);
-    void visitEFalse(EFalse* p);
-    void visitENodeVal(ENodeVal* p);
-    void visitEType(EType* p);
-    void visitEParant(EParant* p);
-    void visitENot(ENot* p);
-    void visitEImpl(EImpl* p);
-    void visitEIExpr(EIExpr* p);
-    void visitEEq(EEq* p);
-    void visitEAnd(EAnd* p);
-    void visitEOr(EOr* p);
-    void visitEOverPaths(EOverPaths* p);
-    void visitTType(TType* p);
-    void visitPParam(PParam* p);
-    void visitListRule(ListRule* p);
-    void visitListExpr(ListExpr* p);
+    RetType* visitRuleSet(RuleSet* p);
+    RetType* visitRule(Rule* p);
+    RetType* visitASTScope(ASTScope* p);
+    RetType* visitRuleCause(RuleCause* p);
+    RetType* visitExplanation(Explanation* p);
+    RetType* visitTag(Tag* p);
+    RetType* visitSeverity(Severity* p);
+    RetType* visitOverPaths(OverPaths* p);
+    RetType* visitPathSpecific(PathSpecific* p);
+    RetType* visitIStmnt(IStmnt* p);
+    RetType* visitIExpr(IExpr* p);
+    RetType* visitExpr(Expr* p);
+    RetType* visitType(Type* p);
+    RetType* visitParam(Param* p);
+    RetType* visitRSet(RSet* p);
+    RetType* visitRRule(RRule* p);
+    RetType* visitASTGlobally(ASTGlobally* p);
+    RetType* visitASTFile(ASTFile* p);
+    RetType* visitASTImported(ASTImported* p);
+    RetType* visitRCLang(RCLang* p);
+    RetType* visitRCPolicy(RCPolicy* p);
+    RetType* visitExplan(Explan* p);
+    RetType* visitNoexplan(Noexplan* p);
+    RetType* visitTTag(TTag* p);
+    RetType* visitSevWarning(SevWarning* p);
+    RetType* visitSevCritical(SevCritical* p);
+    RetType* visitAll(All* p);
+    RetType* visitExist(Exist* p);
+    RetType* visitFuture(Future* p);
+    RetType* visitGlobally(Globally* p);
+    RetType* visitUntil(Until* p);
+    RetType* visitNext(Next* p);
+    RetType* visitIEInt(IEInt* p);
+    RetType* visitIENrChildren(IENrChildren* p);
+    RetType* visitIELtEq(IELtEq* p);
+    RetType* visitIEGtEq(IEGtEq* p);
+    RetType* visitIELt(IELt* p);
+    RetType* visitIEGt(IEGt* p);
+    RetType* visitIEq(IEq* p);
+    RetType* visitIEStmnt(IEStmnt* p);
+    RetType* visitETrue(ETrue* p);
+    RetType* visitEFalse(EFalse* p);
+    RetType* visitENodeVal(ENodeVal* p);
+    RetType* visitEType(EType* p);
+    RetType* visitEParant(EParant* p);
+    RetType* visitENot(ENot* p);
+    RetType* visitEImpl(EImpl* p);
+    RetType* visitEIExpr(EIExpr* p);
+    RetType* visitEEq(EEq* p);
+    RetType* visitEAnd(EAnd* p);
+    RetType* visitEOr(EOr* p);
+    RetType* visitEOverPaths(EOverPaths* p);
+    RetType* visitTType(TType* p);
+    RetType* visitPParam(PParam* p);
+    RetType* visitListRule(ListRule* p);
+    RetType* visitListExpr(ListExpr* p);
 
-    void visitInteger(Integer x);
-    void visitChar(Char x) {}
-    void visitDouble(Double x) {}
-    void visitString(String x);
-    void visitIdent(Ident x) {}
+    RetType* visitInteger(Integer x);
+    RetType* visitChar(Char x) {}
+    RetType* visitDouble(Double x) {}
+    RetType* visitString(String x);
+    RetType* visitIdent(Ident x) {}
 
     QMap<QString, KRuleOutput*> getFailures();
 
@@ -100,23 +100,21 @@ private:
     const bool handleBreakCondition(const bool breakCondition);
 
     QString overPaths;
-    void changeRet(RetType* ret);
-    bool getBoolRet();
-    QString getStringRet();
-    quint32 getUIntRet();
+    const bool getBoolRet(RetType *ret);
+    const QString getStringRet(RetType *ret);
+    const quint32 getUIntRet(RetType *ret);
 
     QString filename;
     QString code;
 
     QQmlJS::AST::Node *node;
 
-    void assertType(RetType::RetTypeE type);
+    void assertType(RetType* ret, RetType::RetTypeE type);
     QString currentRuleTag = "";
     QString currentRuleSeverity = "";
     QString currentRuleASTScope = "";
     QString currentRuleCause = "";
     QString currentRuleExplanation = "";
-    RetType* ret = NULL;
     QMap<QString, KRuleOutput*> failedRules;
 };
 
