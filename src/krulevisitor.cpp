@@ -242,38 +242,37 @@ RetType* KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
 }
 
 RetType* KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
-    throw NotImplemented();
-    ielteq->iexpr_->accept(this);
-    ielteq->istmnt_->accept(this);
+    quint32 i1 = getUIntRet(ielteq->iexpr_->accept(this));
+    quint32 i2 = getUIntRet(ielteq->istmnt_->accept(this));
+    return new RetTypeBool(i1 <= i2);
 }
 
 RetType* KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
-    throw NotImplemented();
-    iegteq->iexpr_->accept(this);
-    iegteq->istmnt_->accept(this);
+    quint32 i1 = getUIntRet(iegteq->iexpr_->accept(this));
+    quint32 i2 = getUIntRet(ieqteq->istmnt_->accept(this));
+    return new RetTypeBool(i1 >= i2);
 }
 
 RetType* KRuleVisitor::visitIELt(IELt *ielt) {
-    throw NotImplemented();
-    ielt->iexpr_->accept(this);
-    ielt->istmnt_->accept(this);
+    quint32 i1 = getUIntRet(ielt->iexpr_->accept(this));
+    quint32 i2 = getUIntRet(ielt->istmnt_->accept(this));
+    return new RetTypeBool(i1 < i2);
 }
 
 RetType* KRuleVisitor::visitIEGt(IEGt *iegt) {
-    throw NotImplemented();
-    iegt->iexpr_->accept(this);
-    iegt->istmnt_->accept(this);
+    quint32 i1 = getUIntRet(iegt->iexpr_->accept(this));
+    quint32 i2 = getUIntRet(iegt->istmnt_->accept(this));
+    return new RetTypeBool(i1 > i2);
 }
 
 RetType* KRuleVisitor::visitIEq(IEq *ieq) {
-    throw NotImplemented();
-    ieq->istmnt_1->accept(this);
-    ieq->istmnt_2->accept(this);
+    quint32 i1 = getUIntRet(ieq->iexpr_->accept(this));
+    quint32 i2 = getUIntRet(ieq->istmnt_->accept(this));
+    return new RetTypeBool(i1 == i2);
 }
 
 RetType* KRuleVisitor::visitIEStmnt(IEStmnt *iestmnt) {
-    throw NotImplemented();
-    iestmnt->istmnt_->accept(this);
+    return iestmnt->istmnt_->accept(this);
 }
 
 RetType* KRuleVisitor::visitETrue(ETrue *) {
