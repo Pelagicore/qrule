@@ -328,9 +328,9 @@ RetType* KRuleVisitor::visitEIExpr(EIExpr *eiexpr) {
 }
 
 RetType* KRuleVisitor::visitEEq(EEq *eeq){
-    throw NotImplemented();
-    eeq->expr_1->accept(this);
-    eeq->expr_2->accept(this);
+    const bool b1 = extractBool(eeq->expr_1->accept(this));
+    const bool b2 = extractBool(eeq->expr_2->accept(this));
+    return new RetTypeBool(b1 == b2);
 }
 
 RetType* KRuleVisitor::visitEAnd(EAnd *eand) {
