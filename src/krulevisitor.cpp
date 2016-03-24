@@ -300,11 +300,11 @@ RetType* KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
 
 RetType* KRuleVisitor::visitEType(EType *etype) {
     throw NotImplemented();
-    etype->type_->accept(this);
+    return etype->type_->accept(this);
 }
 
 RetType* KRuleVisitor::visitEParant(EParant *eparant) {
-    eparant->expr_->accept(this);
+    return eparant->expr_->accept(this);
 }
 
 RetType* KRuleVisitor::visitENot(ENot *enot) {
@@ -324,7 +324,7 @@ RetType* KRuleVisitor::visitEImpl(EImpl *eimpl) {
 }
 
 RetType* KRuleVisitor::visitEIExpr(EIExpr *eiexpr) {
-    eiexpr->iexpr_->accept(this);
+    return eiexpr->iexpr_->accept(this);
 }
 
 RetType* KRuleVisitor::visitEEq(EEq *eeq){
