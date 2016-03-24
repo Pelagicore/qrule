@@ -21,38 +21,38 @@ RetType* KRuleVisitor::visitParam(Param* t) {} //abstract class
 
 
 RetType* KRuleVisitor::visitRSet(RSet *rset) {
-  rset->listrule_->accept(this);
+    return rset->listrule_->accept(this);
 }
 
 RetType* KRuleVisitor::visitRRule(RRule *rrule) {
-  try {
-      currentRuleTag = extractQString(rrule->tag_->accept(this));
-      currentRuleSeverity = extractQString(rrule->severity_->accept(this));
-      currentRuleCause = extractQString(rrule->rulecause_->accept(this));
-      currentRuleASTScope = extractQString(rrule->astscope_->accept(this));
-      currentRuleExplanation = extractQString(rrule->explanation_->accept(this));
+    try {
+        currentRuleTag = extractQString(rrule->tag_->accept(this));
+        currentRuleSeverity = extractQString(rrule->severity_->accept(this));
+        currentRuleCause = extractQString(rrule->rulecause_->accept(this));
+        currentRuleASTScope = extractQString(rrule->astscope_->accept(this));
+        currentRuleExplanation = extractQString(rrule->explanation_->accept(this));
 
-      if (!extractBool(rrule->expr_->accept(this))) {
-          KRuleOutput* outp;
-          if (failedRules.contains(currentRuleTag)) {
-              outp = failedRules[currentRuleTag];
-          } else {
-              outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
-                                     currentRuleASTScope, currentRuleCause, currentRuleExplanation);
-          }
-          /*
-           * NEEDS MOAR WORK
-           * kolla upp hur node sätts på tillbaka vägen
-           * borde kanske inte använda oldNode för att skriva tillbaka
-           * för att kunna komma åt var det bråkar
-           */
-          outp->addCodeOccurrance(CodeOccurrance(getSource(node).toString(), filename,
-                                                 node->firstSourceLocation().startLine,
-                                                 node->firstSourceLocation().startColumn));
-          failedRules.insert(currentRuleTag, outp);
-      }
-  }
-  catch(NotImplemented &) {}
+        if (!extractBool(rrule->expr_->accept(this))) {
+            KRuleOutput* outp;
+            if (failedRules.contains(currentRuleTag)) {
+                outp = failedRules[currentRuleTag];
+            } else {
+                outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
+                                       currentRuleASTScope, currentRuleCause, currentRuleExplanation);
+            }
+            /*
+             * NEEDS MOAR WORK
+             * kolla upp hur node sätts på tillbaka vägen
+             * borde kanske inte använda oldNode för att skriva tillbaka
+             * för att kunna komma åt var det bråkar
+             */
+            outp->addCodeOccurrance(CodeOccurrance(getSource(node).toString(), filename,
+                                                   node->firstSourceLocation().startLine,
+                                                   node->firstSourceLocation().startColumn));
+            failedRules.insert(currentRuleTag, outp);
+        }
+    }
+    catch(NotImplemented &) {}
 }
 
 const QStringRef KRuleVisitor::printable(const SourceLocation &start, const SourceLocation &end) {
@@ -400,8 +400,8 @@ void KRuleVisitor::assertType(RetType* ret, RetType::RetTypeE type) {
  * @brief KRuleVisitor::extractBool Tries to extract boolean data from the provided RetType.
  *
  * Tries to extract boolean data from the provided RetType.
- * If this is not possible BadType will be thrown.
  * If this is successfull then the pointer will be deleted.
+ * Else if this is not possible BadType will be thrown.
  *
  * @param ret The RetType to extract data from and finally delete.
  * @return The extracted boolean data.
@@ -418,8 +418,8 @@ const bool KRuleVisitor::extractBool(RetType *ret) {
  * @brief KRuleVisitor::extractQString Tries to extract QString data from the provided RetType.
  *
  * Tries to extract QString data from the provided RetType.
- * If this is not possible BadType will be thrown.
  * If this is successfull then the pointer will be deleted.
+ * Else if this is not possible BadType will be thrown.
  *
  * @param ret The RetType to extract data from and finally delete.
  * @return The extracted QString data.
@@ -436,8 +436,8 @@ const QString KRuleVisitor::extractQString(RetType *ret) {
  * @brief KRuleVisitor::extractUInt Tries to extract 32 bits unsigned integer data from the provided RetType.
  *
  * Tries to extract 32 bits unsigned integer data from the provided RetType.
- * If this is not possible BadType will be thrown.
  * If this is successfull then the pointer will be deleted.
+ * Else if this is not possible BadType will be thrown.
  *
  * @param ret The RetType to extract data from and finally delete.
  * @return The extracted 32 bit unsigned integer.
