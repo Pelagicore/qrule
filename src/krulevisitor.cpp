@@ -26,13 +26,13 @@ RetType* KRuleVisitor::visitRSet(RSet *rset) {
 
 RetType* KRuleVisitor::visitRRule(RRule *rrule) {
   try {
-      currentRuleTag = getStringRet(rrule->tag_->accept(this));
-      currentRuleSeverity = getStringRet(rrule->severity_->accept(this));
-      currentRuleCause = getStringRet(rrule->rulecause_->accept(this));
-      currentRuleASTScope = getStringRet(rrule->astscope_->accept(this));
-      currentRuleExplanation = getStringRet(rrule->explanation_->accept(this));
+      currentRuleTag = extractQString(rrule->tag_->accept(this));
+      currentRuleSeverity = extractQString(rrule->severity_->accept(this));
+      currentRuleCause = extractQString(rrule->rulecause_->accept(this));
+      currentRuleASTScope = extractQString(rrule->astscope_->accept(this));
+      currentRuleExplanation = extractQString(rrule->explanation_->accept(this));
 
-      if (!getBoolRet(rrule->expr_->accept(this))) {
+      if (!extractBool(rrule->expr_->accept(this))) {
           KRuleOutput* outp;
           if (failedRules.contains(currentRuleTag)) {
               outp = failedRules[currentRuleTag];
@@ -126,7 +126,7 @@ const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
 RetType* KRuleVisitor::visitFuture(Future *future) {
     bool success = false;
 
-    if (getBoolRet(future->expr_->accept(this))) {
+    if (extractBool(future->expr_->accept(this))) {
         success = true;
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
@@ -135,7 +135,7 @@ RetType* KRuleVisitor::visitFuture(Future *future) {
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
 
-                bool res = getBoolRet(visitFuture(future));
+                bool res = extractBool(visitFuture(future));
                 if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                     breakCondition = true;
                     break;
@@ -153,7 +153,7 @@ RetType* KRuleVisitor::visitFuture(Future *future) {
 RetType* KRuleVisitor::visitGlobally(Globally *globally) {
     bool success = false;
 
-    if (!getBoolRet(globally->expr_->accept(this))) {
+    if (!extractBool(globally->expr_->accept(this))) {
         success = false;
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
@@ -162,7 +162,7 @@ RetType* KRuleVisitor::visitGlobally(Globally *globally) {
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
 
-                bool res = getBoolRet(visitGlobally(globally));
+                bool res = extractBool(visitGlobally(globally));
                 if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                         breakCondition = true;
                         break;
@@ -181,11 +181,11 @@ RetType* KRuleVisitor::visitGlobally(Globally *globally) {
 RetType* KRuleVisitor::visitUntil(Until *until) {
     bool success = false;
 
-    const bool result2 = getBoolRet(until->expr_2->accept(this));
+    const bool result2 = extractBool(until->expr_2->accept(this));
     if (result2) {
         success = true;
     } else {
-        const bool result1 = getBoolRet(until->expr_1->accept(this));
+        const bool result1 = extractBool(until->expr_1->accept(this));
         if (result1) {
             QList<QQmlJS::AST::Node*> childrn = children(node);
             if (!childrn.isEmpty()) {
@@ -193,7 +193,7 @@ RetType* KRuleVisitor::visitUntil(Until *until) {
                 foreach(QQmlJS::AST::Node *child, childrn) {
                     node = child;
 
-                    bool res = getBoolRet(visitUntil(until));
+                    bool res = extractBool(visitUntil(until));
                     if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                             breakCondition = true;
                             break;
@@ -219,7 +219,7 @@ RetType* KRuleVisitor::visitNext(Next *next) {
         bool breakCondition = false;
         foreach(QQmlJS::AST::Node *child, childrn) {
             node = child;
-            bool res = getBoolRet(next->expr_->accept(this));
+            bool res = extractBool(next->expr_->accept(this));
             if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
                     breakCondition = true;
                     break;
@@ -242,32 +242,32 @@ RetType* KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
 }
 
 RetType* KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
-    quint32 i1 = getUIntRet(ielteq->iexpr_->accept(this));
-    quint32 i2 = getUIntRet(ielteq->istmnt_->accept(this));
+    quint32 i1 = extractUInt(ielteq->iexpr_->accept(this));
+    quint32 i2 = extractUInt(ielteq->istmnt_->accept(this));
     return new RetTypeBool(i1 <= i2);
 }
 
 RetType* KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
-    quint32 i1 = getUIntRet(iegteq->iexpr_->accept(this));
-    quint32 i2 = getUIntRet(ieqteq->istmnt_->accept(this));
+    quint32 i1 = extractUInt(iegteq->iexpr_->accept(this));
+    quint32 i2 = extractUInt(ieqteq->istmnt_->accept(this));
     return new RetTypeBool(i1 >= i2);
 }
 
 RetType* KRuleVisitor::visitIELt(IELt *ielt) {
-    quint32 i1 = getUIntRet(ielt->iexpr_->accept(this));
-    quint32 i2 = getUIntRet(ielt->istmnt_->accept(this));
+    quint32 i1 = extractUInt(ielt->iexpr_->accept(this));
+    quint32 i2 = extractUInt(ielt->istmnt_->accept(this));
     return new RetTypeBool(i1 < i2);
 }
 
 RetType* KRuleVisitor::visitIEGt(IEGt *iegt) {
-    quint32 i1 = getUIntRet(iegt->iexpr_->accept(this));
-    quint32 i2 = getUIntRet(iegt->istmnt_->accept(this));
+    quint32 i1 = extractUInt(iegt->iexpr_->accept(this));
+    quint32 i2 = extractUInt(iegt->istmnt_->accept(this));
     return new RetTypeBool(i1 > i2);
 }
 
 RetType* KRuleVisitor::visitIEq(IEq *ieq) {
-    quint32 i1 = getUIntRet(ieq->iexpr_->accept(this));
-    quint32 i2 = getUIntRet(ieq->istmnt_->accept(this));
+    quint32 i1 = extractUInt(ieq->iexpr_->accept(this));
+    quint32 i2 = extractUInt(ieq->istmnt_->accept(this));
     return new RetTypeBool(i1 == i2);
 }
 
@@ -308,14 +308,14 @@ RetType* KRuleVisitor::visitEParant(EParant *eparant) {
 }
 
 RetType* KRuleVisitor::visitENot(ENot *enot) {
-    return new RetTypeBool(!getBoolRet(enot->expr_->accept(this)));
+    return new RetTypeBool(!extractBool(enot->expr_->accept(this)));
 }
 
 RetType* KRuleVisitor::visitEImpl(EImpl *eimpl) {
-    const bool leftExpression = getBoolRet(eimpl->expr_1->accept(this));
+    const bool leftExpression = extractBool(eimpl->expr_1->accept(this));
     bool rtBool;
     if (leftExpression == true) {
-        const bool rightExpression = getBoolRet(eimpl->expr_2->accept(this));
+        const bool rightExpression = extractBool(eimpl->expr_2->accept(this));
         rtBool = rightExpression == true;
     } else {
         rtBool = true;
@@ -334,14 +334,14 @@ RetType* KRuleVisitor::visitEEq(EEq *eeq){
 }
 
 RetType* KRuleVisitor::visitEAnd(EAnd *eand) {
-    const bool b1 = getBoolRet(eand->expr_1->accept(this));
-    const bool b2 = getBoolRet(eand->expr_2->accept(this));
+    const bool b1 = extractBool(eand->expr_1->accept(this));
+    const bool b2 = extractBool(eand->expr_2->accept(this));
     return new RetTypeBool(b1 && b2);
 }
 
 RetType* KRuleVisitor::visitEOr(EOr *eor) {
-    const bool b1 = getBoolRet(eor->expr_1->accept(this));
-    const bool b2 = getBoolRet(eor->expr_2->accept(this));
+    const bool b1 = extractBool(eor->expr_1->accept(this));
+    const bool b2 = extractBool(eor->expr_2->accept(this));
     return new RetTypeBool(b1 || b2);
 }
 
@@ -396,17 +396,56 @@ void KRuleVisitor::assertType(RetType* ret, RetType::RetTypeE type) {
     }
 }
 
-const bool KRuleVisitor::getBoolRet(RetType *ret) {
+/**
+ * @brief KRuleVisitor::extractBool Tries to extract boolean data from the provided RetType.
+ *
+ * Tries to extract boolean data from the provided RetType.
+ * If this is not possible BadType will be thrown.
+ * If this is successfull then the pointer will be deleted.
+ *
+ * @param ret The RetType to extract data from and finally delete.
+ * @return The extracted boolean data.
+ * @throws BadType if the provided RetType does not contain boolean data.
+ */
+const bool KRuleVisitor::extractBool(RetType *ret) {
     assertType(ret, RetType::RetTypeE::RBool);
-    return ((RetTypeBool*)ret)->getData();
+    const bool b = ((RetTypeBool*)ret)->getData();
+    delete ret;
+    return b;
 }
 
-const QString KRuleVisitor::getStringRet(RetType *ret) {
+/**
+ * @brief KRuleVisitor::extractQString Tries to extract QString data from the provided RetType.
+ *
+ * Tries to extract QString data from the provided RetType.
+ * If this is not possible BadType will be thrown.
+ * If this is successfull then the pointer will be deleted.
+ *
+ * @param ret The RetType to extract data from and finally delete.
+ * @return The extracted QString data.
+ * @throws BadType if the provided RetType does not contain QString data.
+ */
+const QString KRuleVisitor::extractQString(RetType *ret) {
     assertType(ret, RetType::RetTypeE::RString);
-    return ((RetTypeString*)ret)->getData();
+    const QString str = ((RetTypeString*)ret)->getData();
+    delete ret;
+    return str;
 }
 
-const quint32 KRuleVisitor::getUIntRet(RetType *ret) {
+/**
+ * @brief KRuleVisitor::extractUInt Tries to extract 32 bits unsigned integer data from the provided RetType.
+ *
+ * Tries to extract 32 bits unsigned integer data from the provided RetType.
+ * If this is not possible BadType will be thrown.
+ * If this is successfull then the pointer will be deleted.
+ *
+ * @param ret The RetType to extract data from and finally delete.
+ * @return The extracted 32 bit unsigned integer.
+ * @throws BadType if the provided RetType does not contain an integer.
+ */
+const quint32 KRuleVisitor::extractUInt(RetType *ret) {
     assertType(ret, RetType::RetTypeE::RInt);
-    return ((RetTypeUInt*)ret)->getData();
+    const quint32 i = ((RetTypeUInt*)ret)->getData();
+    delete ret;
+    return i;
 }
