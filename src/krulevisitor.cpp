@@ -249,7 +249,7 @@ RetType* KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
 
 RetType* KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
     quint32 i1 = extractUInt(iegteq->iexpr_->accept(this));
-    quint32 i2 = extractUInt(ieqteq->istmnt_->accept(this));
+    quint32 i2 = extractUInt(iegteq->istmnt_->accept(this));
     return new RetTypeBool(i1 >= i2);
 }
 
@@ -266,8 +266,8 @@ RetType* KRuleVisitor::visitIEGt(IEGt *iegt) {
 }
 
 RetType* KRuleVisitor::visitIEq(IEq *ieq) {
-    quint32 i1 = extractUInt(ieq->iexpr_->accept(this));
-    quint32 i2 = extractUInt(ieq->istmnt_->accept(this));
+    quint32 i1 = extractUInt(ieq->istmnt_1->accept(this));
+    quint32 i2 = extractUInt(ieq->istmnt_2->accept(this));
     return new RetTypeBool(i1 == i2);
 }
 

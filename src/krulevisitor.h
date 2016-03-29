@@ -100,9 +100,9 @@ private:
     const bool handleBreakCondition(const bool breakCondition);
 
     QString overPaths;
-    const bool getBoolRet(RetType *ret);
-    const QString getStringRet(RetType *ret);
-    const quint32 getUIntRet(RetType *ret);
+    const bool extractBool(RetType *ret);
+    const QString extractQString(RetType *ret);
+    const quint32 extractUInt(RetType *ret);
 
     QString filename;
     QString code;
