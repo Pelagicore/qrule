@@ -10,7 +10,7 @@ void NodeWrapper::addChild(NodeWrapper *node) {
     children.append(node);
 }
 
-const QString NodeWrapper::getSource() {
+const QStringRef NodeWrapper::getSource() {
     return source;
 }
 

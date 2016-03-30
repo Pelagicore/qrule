@@ -33,7 +33,7 @@ void QmlVisitor::expandIndent() {
 bool QmlVisitor::visit(FunctionBody *exp) {
     debug(exp);
     QList<QStringRef> tokens;
-    NodeWrapper *n = new NodeWrapper(QStringRef(), QStringRef(), QStringRef("FunctionBody"),
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionBody"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
@@ -50,7 +50,7 @@ bool QmlVisitor::visit(UiImport *exp) {
     tokens.append(toQStringRef(exp->semicolonToken));
     tokens.append(toQStringRef(exp->versionToken));
     tokens.append(toQStringRef(exp->fileNameToken));
-    NodeWrapper *n = new NodeWrapper(exp->importId, QStringRef("String"), QStringRef("Import"),
+    NodeWrapper *n = new NodeWrapper(exp->importId.toString(), QString("String"), QString("Import"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
@@ -69,7 +69,7 @@ bool QmlVisitor::visit(UiQualifiedId *exp) {
     QList<QStringRef> tokens;
     tokens.append(toQStringRef(exp->identifierToken));
 
-    NodeWrapper *n = new NodeWrapper(exp->name, QStringRef("String"), QStringRef("QualifiedId"),
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("QualifiedId"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
@@ -83,7 +83,7 @@ bool QmlVisitor::visit(UiObjectInitializer *exp) {
     tokens.append(toQStringRef(exp->lbraceToken));
     tokens.append(toQStringRef(exp->rbraceToken));
 
-    NodeWrapper *n = new NodeWrapper(QStringRef(), QStringRef(), QStringRef("ObjectInitializer"),
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectInitializer"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
@@ -126,11 +126,6 @@ bool QmlVisitor::visit(UiPublicMember *exp) {
 bool QmlVisitor::visit(UiObjectBinding *exp) {
     debug(exp);
     return true; }
-
-bool QmlVisitor::visit(UiScriptBinding *exp) {
-    debug(exp);
-    return true;
-}
 
 bool QmlVisitor::visit(UiParameterList *exp) {
     debug(exp);
@@ -456,14 +451,4 @@ const QStringRef QmlVisitor::printable(const SourceLocation &start, const Source
 
 const QStringRef QmlVisitor::getSource(const QQmlJS::AST::Node *exp) {
     return printable(exp->firstSourceLocation(), exp->lastSourceLocation());
-}
-
-bool QmlVisitor::visit(TrueLiteral *exp) {
-    debug(exp);
-    return true;
-}
-
-bool QmlVisitor::visit(FalseLiteral *exp) {
-    debug(exp);
-    return true;
 }

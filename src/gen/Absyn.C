@@ -1381,6 +1381,138 @@ EFalse *EFalse::clone() const
 {
   return new EFalse(*this);
 }
+
+
+
+/********************   EValue    ********************/
+EValue::EValue(String p1)
+{
+  string_ = p1;
+
+}
+
+EValue::EValue(const EValue & other)
+{
+  string_ = other.string_;
+
+}
+
+EValue &EValue::operator=(const EValue & other)
+{
+  EValue tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EValue::swap(EValue & other)
+{
+  std::swap(string_, other.string_);
+
+}
+
+EValue::~EValue()
+{
+
+}
+
+RetType* EValue::accept(Visitor *v)
+{
+  v->visitEValue(this);
+}
+
+EValue *EValue::clone() const
+{
+  return new EValue(*this);
+}
+
+
+
+/********************   EValueType    ********************/
+EValueType::EValueType(String p1)
+{
+  string_ = p1;
+
+}
+
+EValueType::EValueType(const EValueType & other)
+{
+  string_ = other.string_;
+
+}
+
+EValueType &EValueType::operator=(const EValueType & other)
+{
+  EValueType tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EValueType::swap(EValueType & other)
+{
+  std::swap(string_, other.string_);
+
+}
+
+EValueType::~EValueType()
+{
+
+}
+
+RetType* EValueType::accept(Visitor *v)
+{
+  v->visitEValueType(this);
+}
+
+EValueType *EValueType::clone() const
+{
+  return new EValueType(*this);
+}
+
+
+
+/********************   ENodeType    ********************/
+ENodeType::ENodeType(String p1)
+{
+  string_ = p1;
+
+}
+
+ENodeType::ENodeType(const ENodeType & other)
+{
+  string_ = other.string_;
+
+}
+
+ENodeType &ENodeType::operator=(const ENodeType & other)
+{
+  ENodeType tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void ENodeType::swap(ENodeType & other)
+{
+  std::swap(string_, other.string_);
+
+}
+
+ENodeType::~ENodeType()
+{
+
+}
+
+RetType* ENodeType::accept(Visitor *v)
+{
+  v->visitENodeType(this);
+}
+
+ENodeType *ENodeType::clone() const
+{
+  return new ENodeType(*this);
+}
+
+
+
 /********************   EParant    ********************/
 EParant::EParant(Expr *p1)
 {

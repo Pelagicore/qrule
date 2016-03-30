@@ -270,6 +270,14 @@ RetType* KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
     throw NotImplemented();
 }
 
+RetType* KRuleVisitor::visitIERow(IERow *) {
+    return new RetTypeUInt(node->getRow());
+}
+
+RetType* KRuleVisitor::visitIECol(IECol *) {
+    return new RetTypeUInt(node->getCol());
+}
+
 RetType* KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
     quint32 i1 = extractUInt(ielteq->iexpr_->accept(this));
     quint32 i2 = extractUInt(ielteq->istmnt_->accept(this));
@@ -320,7 +328,7 @@ RetType* KRuleVisitor::visitEValue(EValue *enodeval) {
 
     // nodeCode = getSource(node).toString();
 
-    if (regexp.exactMatch(node->getValue().toString())) {
+    if (regexp.exactMatch(node->getValue())) {
         s = true;
     }
     qDebug() << regexp.pattern() << " ? " << nodeCode << s;
@@ -328,11 +336,11 @@ RetType* KRuleVisitor::visitEValue(EValue *enodeval) {
 }
 
 RetType* KRuleVisitor::visitEValueType(EValueType *) {
-    return new RetTypeString(node->getValueType().toString());
+    return new RetTypeString(node->getValueType());
 }
 
 RetType* KRuleVisitor::visitENodeType(ENodeType *) {
-    return new RetTypeString(node->getNodeType().toString());
+    return new RetTypeString(node->getNodeType());
 }
 
 RetType* KRuleVisitor::visitEParant(EParant *eparant) {
