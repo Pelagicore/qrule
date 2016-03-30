@@ -3,6 +3,7 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QStack>
 #include "private/qqmljsengine_p.h"
 #include "private/qqmljslexer_p.h"
 #include "private/qqmljsast_p.h"
@@ -14,6 +15,7 @@
 #include <QDebug>
 #include <QtCore/QCoreApplication>
 #include "private/qqmljsparser_p.h"
+#include "nodewrapper.h"
 #include <QtCore/qvarlengtharray.h>
 #include <QFile>
 #include <typeinfo>
@@ -27,453 +29,190 @@ public:
     virtual ~QmlVisitor() {
     }
 
-    virtual bool visit(FunctionBody *exp) {
-        debug(exp);
-        return true;
-    }
-
-
-    virtual bool visit(UiImport *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiQualifiedId *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiObjectInitializer *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiObjectMember *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiQualifiedPragmaId *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiSourceElement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiArrayBinding *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiProgram *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiHeaderItemList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiPragma *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiPublicMember *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiObjectBinding *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiScriptBinding *exp);
-
-    virtual bool visit(UiParameterList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiObjectMemberList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UiArrayMemberList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(VariableStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ThisExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NullExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(TrueLiteral *exp);
-
-    virtual bool visit(FalseLiteral *exp);
-
-    virtual bool visit(StringLiteral *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NumericLiteral *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(RegExpLiteral *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ArrayLiteral *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ObjectLiteral *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ElementList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(Elision *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(PropertyAssignmentList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(PropertyGetterSetter *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NestedExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(IdentifierPropertyName *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(StringLiteralPropertyName *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NumericLiteralPropertyName *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ArrayMemberExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(FieldMemberExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NewMemberExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NewExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(CallExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ArgumentList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(PostIncrementExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(PostDecrementExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(DeleteExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(VoidExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(TypeOfExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(PreIncrementExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(PreDecrementExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UnaryPlusExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(UnaryMinusExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(TildeExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(NotExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(BinaryExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ConditionalExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(Block *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(StatementList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(VariableDeclarationList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(VariableDeclaration *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(EmptyStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ExpressionStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(IfStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(DoWhileStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(WhileStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ForStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(LocalForStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ForEachStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(LocalForEachStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ContinueStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(BreakStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ReturnStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(WithStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(SwitchStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(CaseBlock *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(CaseClauses *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(CaseClause *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(DefaultClause *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(LabelledStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(ThrowStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(TryStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(Catch *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(Finally *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(FunctionDeclaration *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(FunctionExpression *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(FormalParameterList *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(Program *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(SourceElements *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(FunctionSourceElement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(StatementSourceElement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual bool visit(DebuggerStatement *exp) {
-        debug(exp);
-        return true; }
-
-    virtual void endVisit(UiProgram *){ deIndent(); }
-    virtual void endVisit(UiImport *){ deIndent(); }
-    virtual void endVisit(UiHeaderItemList *){ deIndent(); }
-    virtual void endVisit(UiPragma *){ deIndent(); }
-    virtual void endVisit(UiPublicMember *){ deIndent(); }
-    virtual void endVisit(UiSourceElement *){ deIndent(); }
-    virtual void endVisit(UiObjectInitializer *){ deIndent(); }
-    virtual void endVisit(UiObjectBinding *){ deIndent(); }
-    virtual void endVisit(UiScriptBinding *);
-    virtual void endVisit(UiArrayBinding *){ deIndent(); }
-    virtual void endVisit(UiParameterList *){ deIndent(); }
-    virtual void endVisit(UiObjectMemberList *){ deIndent(); }
-    virtual void endVisit(UiArrayMemberList *){ deIndent(); }
-    virtual void endVisit(UiQualifiedId *){ deIndent(); }
-    virtual void endVisit(UiQualifiedPragmaId *){ deIndent(); }
-    virtual void endVisit(ThisExpression *){ deIndent(); }
-    virtual void endVisit(IdentifierExpression *){ deIndent(); }
-    virtual void endVisit(NullExpression *){ deIndent(); }
-    virtual void endVisit(TrueLiteral *){ deIndent(); }
-    virtual void endVisit(FalseLiteral *){ deIndent(); }
-    virtual void endVisit(StringLiteral *){ deIndent(); }
-    virtual void endVisit(NumericLiteral *){ deIndent(); }
-    virtual void endVisit(RegExpLiteral *){ deIndent(); }
-    virtual void endVisit(ArrayLiteral *){ deIndent(); }
-    virtual void endVisit(ObjectLiteral *){ deIndent(); }
-    virtual void endVisit(ElementList *){ deIndent(); }
-    virtual void endVisit(Elision *){ deIndent(); }
-    virtual void endVisit(PropertyAssignmentList *){ deIndent(); }
-    virtual void endVisit(PropertyNameAndValue *){ deIndent(); }
-    virtual void endVisit(PropertyGetterSetter *){ deIndent(); }
-    virtual void endVisit(NestedExpression *){ deIndent(); }
-    virtual void endVisit(IdentifierPropertyName *){ deIndent(); }
-    virtual void endVisit(StringLiteralPropertyName *){ deIndent(); }
-    virtual void endVisit(NumericLiteralPropertyName *){ deIndent(); }
-    virtual void endVisit(ArrayMemberExpression *){ deIndent(); }
-    virtual void endVisit(FieldMemberExpression *){ deIndent(); }
-    virtual void endVisit(NewMemberExpression *){ deIndent(); }
-    virtual void endVisit(NewExpression *){ deIndent(); }
-    virtual void endVisit(CallExpression *){ deIndent(); }
-    virtual void endVisit(ArgumentList *){ deIndent(); }
-    virtual void endVisit(PostIncrementExpression *){ deIndent(); }
-    virtual void endVisit(PostDecrementExpression *){ deIndent(); }
-    virtual void endVisit(DeleteExpression *){ deIndent(); }
-    virtual void endVisit(VoidExpression *){ deIndent(); }
-    virtual void endVisit(TypeOfExpression *){ deIndent(); }
-    virtual void endVisit(PreIncrementExpression *){ deIndent(); }
-    virtual void endVisit(PreDecrementExpression *){ deIndent(); }
-    virtual void endVisit(UnaryPlusExpression *){ deIndent(); }
-    virtual void endVisit(UnaryMinusExpression *){ deIndent(); }
-    virtual void endVisit(TildeExpression *){ deIndent(); }
-    virtual void endVisit(NotExpression *){ deIndent(); }
-    virtual void endVisit(BinaryExpression *){ deIndent(); }
-    virtual void endVisit(ConditionalExpression *){ deIndent(); }
-    virtual void endVisit(Expression *){ deIndent(); }
-    virtual void endVisit(Block *){ deIndent(); }
-    virtual void endVisit(StatementList *){ deIndent(); }
-    virtual void endVisit(VariableStatement *){ deIndent(); }
-    virtual void endVisit(VariableDeclarationList *){ deIndent(); }
-    virtual void endVisit(VariableDeclaration *){ deIndent(); }
-    virtual void endVisit(EmptyStatement *){ deIndent(); }
-    virtual void endVisit(ExpressionStatement *){ deIndent(); }
-    virtual void endVisit(IfStatement *){ deIndent(); }
-    virtual void endVisit(DoWhileStatement *){ deIndent(); }
-    virtual void endVisit(WhileStatement *){ deIndent(); }
-    virtual void endVisit(ForStatement *){ deIndent(); }
-    virtual void endVisit(LocalForStatement *){ deIndent(); }
-    virtual void endVisit(ForEachStatement *){ deIndent(); }
-    virtual void endVisit(LocalForEachStatement *){ deIndent(); }
-    virtual void endVisit(ContinueStatement *){ deIndent(); }
-    virtual void endVisit(BreakStatement *){ deIndent(); }
-    virtual void endVisit(ReturnStatement *){ deIndent(); }
-    virtual void endVisit(WithStatement *){ deIndent(); }
-    virtual void endVisit(SwitchStatement *){ deIndent(); }
-    virtual void endVisit(CaseBlock *){ deIndent(); }
-    virtual void endVisit(CaseClauses *){ deIndent(); }
-    virtual void endVisit(CaseClause *){ deIndent(); }
-    virtual void endVisit(DefaultClause *){ deIndent(); }
-    virtual void endVisit(LabelledStatement *){ deIndent(); }
-    virtual void endVisit(ThrowStatement *){ deIndent(); }
-    virtual void endVisit(TryStatement *){ deIndent(); }
-    virtual void endVisit(Catch *){ deIndent(); }
-    virtual void endVisit(Finally *){ deIndent(); }
-    virtual void endVisit(FunctionDeclaration *){ deIndent(); }
-    virtual void endVisit(FunctionExpression *){ deIndent(); }
-    virtual void endVisit(FormalParameterList *){ deIndent(); }
-    virtual void endVisit(FunctionBody *){ deIndent(); }
-    virtual void endVisit(Program *){ deIndent(); }
-    virtual void endVisit(SourceElements *){ deIndent(); }
-    virtual void endVisit(FunctionSourceElement *){ deIndent(); }
-    virtual void endVisit(StatementSourceElement *){ deIndent(); }
-    virtual void endVisit(DebuggerStatement *){ deIndent(); }
-
-    virtual bool visit(IdentifierExpression *);
-    virtual bool visit(UiObjectDefinition *);
-    virtual void endVisit(UiObjectDefinition *);
+    bool visit(FunctionBody *);
+    bool visit(UiImport *);
+    bool visit(UiQualifiedId *);
+    bool visit(UiObjectInitializer *);
+    bool visit(UiObjectMember *);
+    bool visit(UiQualifiedPragmaId *);
+    bool visit(UiSourceElement *);
+    bool visit(UiArrayBinding *);
+    bool visit(UiProgram *);
+    bool visit(UiHeaderItemList *);
+    bool visit(UiPragma *);
+    bool visit(UiPublicMember *);
+    bool visit(UiObjectBinding *);
+    bool visit(UiScriptBinding *exp);
+    bool visit(UiParameterList *);
+    bool visit(UiObjectMemberList *);
+    bool visit(UiArrayMemberList *);
+    bool visit(VariableStatement *);
+    bool visit(ThisExpression *);
+    bool visit(NullExpression *);
+    bool visit(TrueLiteral *exp);
+    bool visit(FalseLiteral *exp);
+    bool visit(StringLiteral *);
+    bool visit(NumericLiteral *);
+    bool visit(RegExpLiteral *);
+    bool visit(ArrayLiteral *);
+    bool visit(ObjectLiteral *);
+    bool visit(ElementList *);
+    bool visit(Elision *);
+    bool visit(PropertyAssignmentList *);
+    bool visit(PropertyGetterSetter *);
+    bool visit(NestedExpression *);
+    bool visit(IdentifierPropertyName *);
+    bool visit(StringLiteralPropertyName *);
+    bool visit(NumericLiteralPropertyName *);
+    bool visit(ArrayMemberExpression *);
+    bool visit(FieldMemberExpression *);
+    bool visit(NewMemberExpression *);
+    bool visit(NewExpression *);
+    bool visit(CallExpression *);
+    bool visit(ArgumentList *);
+    bool visit(PostIncrementExpression *);
+    bool visit(PostDecrementExpression *);
+    bool visit(DeleteExpression *);
+    bool visit(VoidExpression *);
+    bool visit(TypeOfExpression *);
+    bool visit(PreIncrementExpression *);
+    bool visit(PreDecrementExpression *);
+    bool visit(UnaryPlusExpression *);
+    bool visit(UnaryMinusExpression *);
+    bool visit(TildeExpression *);
+    bool visit(NotExpression *);
+    bool visit(BinaryExpression *);
+    bool visit(ConditionalExpression *);
+    bool visit(Block *);
+    bool visit(StatementList *);
+    bool visit(VariableDeclarationList *);
+    bool visit(VariableDeclaration *);
+    bool visit(EmptyStatement *);
+    bool visit(ExpressionStatement *);
+    bool visit(IfStatement *);
+    bool visit(DoWhileStatement *);
+    bool visit(WhileStatement *);
+    bool visit(ForStatement *);
+    bool visit(LocalForStatement *);
+    bool visit(ForEachStatement *);
+    bool visit(LocalForEachStatement *);
+    bool visit(ContinueStatement *);
+    bool visit(BreakStatement *);
+    bool visit(ReturnStatement *);
+    bool visit(WithStatement *);
+    bool visit(SwitchStatement *);
+    bool visit(CaseBlock *);
+    bool visit(CaseClauses *);
+    bool visit(CaseClause *);
+    bool visit(DefaultClause *);
+    bool visit(LabelledStatement *);
+    bool visit(ThrowStatement *);
+    bool visit(TryStatement *);
+    bool visit(Catch *);
+    bool visit(Finally *);
+    bool visit(FunctionDeclaration *);
+    bool visit(FunctionExpression *);
+    bool visit(FormalParameterList *);
+    bool visit(Program *);
+    bool visit(SourceElements *);
+    bool visit(FunctionSourceElement *);
+    bool visit(StatementSourceElement *);
+    bool visit(DebuggerStatement *);
+    bool visit(IdentifierExpression *);
+    bool visit(UiObjectDefinition *);
+
+    void endVisit(UiProgram *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiImport *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiHeaderItemList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiPragma *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiPublicMember *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiSourceElement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiObjectInitializer *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiObjectBinding *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiScriptBinding *);
+    void endVisit(UiArrayBinding *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiParameterList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiObjectMemberList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiArrayMemberList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiQualifiedId *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiQualifiedPragmaId *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ThisExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(IdentifierExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NullExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(TrueLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FalseLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(StringLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NumericLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(RegExpLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ArrayLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ObjectLiteral *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ElementList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(Elision *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PropertyAssignmentList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PropertyNameAndValue *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PropertyGetterSetter *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NestedExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(IdentifierPropertyName *){ deIndent(); nodeStack.pop(); }
+    void endVisit(StringLiteralPropertyName *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NumericLiteralPropertyName *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ArrayMemberExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FieldMemberExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NewMemberExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NewExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(CallExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ArgumentList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PostIncrementExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PostDecrementExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(DeleteExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(VoidExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(TypeOfExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PreIncrementExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(PreDecrementExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UnaryPlusExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UnaryMinusExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(TildeExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(NotExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(BinaryExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ConditionalExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(Expression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(Block *){ deIndent(); nodeStack.pop(); }
+    void endVisit(StatementList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(VariableStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(VariableDeclarationList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(VariableDeclaration *){ deIndent(); nodeStack.pop(); }
+    void endVisit(EmptyStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ExpressionStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(IfStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(DoWhileStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(WhileStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ForStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(LocalForStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ForEachStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(LocalForEachStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ContinueStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(BreakStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ReturnStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(WithStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(SwitchStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(CaseBlock *){ deIndent(); nodeStack.pop(); }
+    void endVisit(CaseClauses *){ deIndent(); nodeStack.pop(); }
+    void endVisit(CaseClause *){ deIndent(); nodeStack.pop(); }
+    void endVisit(DefaultClause *){ deIndent(); nodeStack.pop(); }
+    void endVisit(LabelledStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(ThrowStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(TryStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(Catch *){ deIndent(); nodeStack.pop(); }
+    void endVisit(Finally *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FunctionDeclaration *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FunctionExpression *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FormalParameterList *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FunctionBody *){ deIndent(); nodeStack.pop(); }
+    void endVisit(Program *){ deIndent(); nodeStack.pop(); }
+    void endVisit(SourceElements *){ deIndent(); nodeStack.pop(); }
+    void endVisit(FunctionSourceElement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(StatementSourceElement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(DebuggerStatement *){ deIndent(); nodeStack.pop(); }
+    void endVisit(UiObjectDefinition *);
 
 private:
     QString indent = "";
@@ -484,6 +223,9 @@ private:
 
     QString filename;
 
+    QStack<NodeWrapper*> nodeStack;
+
+    QStringRef toQStringRef(const SourceLocation &sl);
     const QStringRef getSource(const QQmlJS::AST::Node *);
     const QStringRef printable(const SourceLocation &start, const SourceLocation &end);
     void debug(const QQmlJS::AST::Node *);
