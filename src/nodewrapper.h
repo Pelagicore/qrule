@@ -7,19 +7,32 @@
 
 class NodeWrapper {
 public:
-    NodeWrapper(QString value, QString type, quint32 row, quint32 col, QString context):
-        value(value), type(type), row(row), col(col), context(context) {}
+    NodeWrapper(const QStringRef value, const QStringRef valueType, const QStringRef nodeType,
+                quint32 row, quint32 col, const QStringRef source, const QList<QStringRef> tokens):
+        value(value), valueType(valueType), nodeType(nodeType), row(row), col(col),
+        source(source), tokens(tokens) {}
 
-    void addChild(const NodeWrapper &node);
-    void flushLabels();
+    ~NodeWrapper();
+
+    void addChild(const NodeWrapper *node);
+    const QStringRef getValue();
+    const QStringRef getValueType();
+    const QStringRef getNodeType();
+    const QStringRef getSource();
+    const quint32 getRow();
+    const quint32 getCol();
+    const QList<const NodeWrapper *>& getChildren();
+    const QList<QStringRef>& getTokens();
 
 private:
-    QList<const NodeWrapper &> children;
-    QString value;
-    QString type;
-    quint32 row;
-    quint32 col;
-    QString context;
+    QList<const NodeWrapper *> children;
+    const QList<QStringRef> tokens;
+    const QStringRef value;
+    const QStringRef valueType;
+    const QStringRef nodeType;
+    const quint32 row;
+    const quint32 col;
+    const QStringRef source;
 };
 
 #endif // NODEWRAPPER_H
