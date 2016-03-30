@@ -10,19 +10,19 @@ void NodeWrapper::addChild(NodeWrapper *node) {
     children.append(node);
 }
 
-const QStringRef NodeWrapper::getSource() {
+const QString NodeWrapper::getSource() {
     return source;
 }
 
-const QStringRef NodeWrapper::getValue() {
+const QString NodeWrapper::getValue() {
     return value;
 }
 
-const QStringRef NodeWrapper::getValueType() {
+const QString NodeWrapper::getValueType() {
     return valueType;
 }
 
-const QStringRef NodeWrapper::getNodeType() {
+const QString NodeWrapper::getNodeType() {
     return nodeType;
 }
 
