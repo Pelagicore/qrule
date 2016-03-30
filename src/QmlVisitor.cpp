@@ -37,7 +37,10 @@ bool QmlVisitor::visit(FunctionBody *exp) {
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
-    nodeStack.last()->addChild(n);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+
     nodeStack.push(n);
     return true;
 }
@@ -55,7 +58,10 @@ bool QmlVisitor::visit(UiImport *exp) {
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
 
-    nodeStack.last()->addChild(n);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+
     nodeStack.push(n);
     return true; }
 
@@ -73,7 +79,9 @@ bool QmlVisitor::visit(UiQualifiedId *exp) {
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
-    nodeStack.last()->addChild(n);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
     nodeStack.push(n);
     return true; }
 
@@ -87,7 +95,9 @@ bool QmlVisitor::visit(UiObjectInitializer *exp) {
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
-    nodeStack.last()->addChild(n);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
     nodeStack.push(n);
     return true; }
 
@@ -97,6 +107,17 @@ bool QmlVisitor::visit(UiObjectMember *exp) {
 
 bool QmlVisitor::visit(UiQualifiedPragmaId *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("QualifiedId"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(UiSourceElement *exp) {
@@ -105,18 +126,67 @@ bool QmlVisitor::visit(UiSourceElement *exp) {
 
 bool QmlVisitor::visit(UiArrayBinding *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->colonToken));
+    tokens.append(toQStringRef(exp->lbracketToken));
+    tokens.append(toQStringRef(exp->rbracketToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayBinding"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(UiProgram *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ProgramRoot"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(UiHeaderItemList *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    const QString nodeType = QString("HeaderItemList");
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        NodeWrapper *t = nodeStack.top();
+        t->addChild(n);
+
+        if (t->getNodeType().compare(nodeType) != 0) {
+            nodeStack.push(n);
+        }
+    } else {
+        nodeStack.push(n);
+    }
     return true; }
 
 bool QmlVisitor::visit(UiPragma *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("Pragma"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(UiPublicMember *exp) {
@@ -451,4 +521,11 @@ const QStringRef QmlVisitor::printable(const SourceLocation &start, const Source
 
 const QStringRef QmlVisitor::getSource(const QQmlJS::AST::Node *exp) {
     return printable(exp->firstSourceLocation(), exp->lastSourceLocation());
+}
+
+void QmlVisitor::allEnd() {
+    deIndent();
+    if (nodeStack.length() > 1) {
+        nodeStack.pop();
+    }
 }
