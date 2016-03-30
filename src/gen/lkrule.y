@@ -20,7 +20,7 @@ int yywrap(void)
 void yyerror(const char *str)
 {
   extern char *yytext;
-  fprintf(stderr,"error: line %d: %s at %s\n", 
+  fprintf(stderr,"error: line %d: %s at %s\n",
     yy_mylinenumber, str, yytext);
 }
 
@@ -290,8 +290,8 @@ Severity* pSeverity(const char *str)
   }
 }
 
-static OverPaths* YY_RESULT_OverPaths_ = 0;
-OverPaths* pOverPaths(FILE *inp)
+static PathQuantifier* YY_RESULT_PathQuantifier_ = 0;
+PathQuantifier* pPathQuantifier(FILE *inp)
 {
   yy_mylinenumber = 1;
   initialize_lexer(inp);
@@ -301,10 +301,10 @@ OverPaths* pOverPaths(FILE *inp)
   }
   else
   { /* Success */
-    return YY_RESULT_OverPaths_;
+    return YY_RESULT_PathQuantifier_;
   }
 }
-OverPaths* pOverPaths(const char *str)
+PathQuantifier* pPathQuantifier(const char *str)
 {
   YY_BUFFER_STATE buf;
   int result;
@@ -319,40 +319,7 @@ OverPaths* pOverPaths(const char *str)
   }
   else
   { /* Success */
-    return YY_RESULT_OverPaths_;
-  }
-}
-
-static PathSpecific* YY_RESULT_PathSpecific_ = 0;
-PathSpecific* pPathSpecific(FILE *inp)
-{
-  yy_mylinenumber = 1;
-  initialize_lexer(inp);
-  if (yyparse())
-  { /* Failure */
-    return 0;
-  }
-  else
-  { /* Success */
-    return YY_RESULT_PathSpecific_;
-  }
-}
-PathSpecific* pPathSpecific(const char *str)
-{
-  YY_BUFFER_STATE buf;
-  int result;
-  yy_mylinenumber = 1;
-  initialize_lexer(0);
-  buf = yy_scan_string(str);
-  result = yyparse();
-  yy_delete_buffer(buf);
-  if (result)
-  { /* Failure */
-    return 0;
-  }
-  else
-  { /* Success */
-    return YY_RESULT_PathSpecific_;
+    return YY_RESULT_PathQuantifier_;
   }
 }
 
@@ -488,72 +455,6 @@ ListExpr* pListExpr(const char *str)
   }
 }
 
-static Type* YY_RESULT_Type_ = 0;
-Type* pType(FILE *inp)
-{
-  yy_mylinenumber = 1;
-  initialize_lexer(inp);
-  if (yyparse())
-  { /* Failure */
-    return 0;
-  }
-  else
-  { /* Success */
-    return YY_RESULT_Type_;
-  }
-}
-Type* pType(const char *str)
-{
-  YY_BUFFER_STATE buf;
-  int result;
-  yy_mylinenumber = 1;
-  initialize_lexer(0);
-  buf = yy_scan_string(str);
-  result = yyparse();
-  yy_delete_buffer(buf);
-  if (result)
-  { /* Failure */
-    return 0;
-  }
-  else
-  { /* Success */
-    return YY_RESULT_Type_;
-  }
-}
-
-static Param* YY_RESULT_Param_ = 0;
-Param* pParam(FILE *inp)
-{
-  yy_mylinenumber = 1;
-  initialize_lexer(inp);
-  if (yyparse())
-  { /* Failure */
-    return 0;
-  }
-  else
-  { /* Success */
-    return YY_RESULT_Param_;
-  }
-}
-Param* pParam(const char *str)
-{
-  YY_BUFFER_STATE buf;
-  int result;
-  yy_mylinenumber = 1;
-  initialize_lexer(0);
-  buf = yy_scan_string(str);
-  result = yyparse();
-  yy_delete_buffer(buf);
-  if (result)
-  { /* Failure */
-    return 0;
-  }
-  else
-  { /* Success */
-    return YY_RESULT_Param_;
-  }
-}
-
 
 
 %}
@@ -572,20 +473,17 @@ Param* pParam(const char *str)
   ListRule* listrule_;
   Tag* tag_;
   Severity* severity_;
-  OverPaths* overpaths_;
-  PathSpecific* pathspecific_;
+  PathQuantifier* pathquantifier_;
   IStmnt* istmnt_;
   IExpr* iexpr_;
   Expr* expr_;
   ListExpr* listexpr_;
-  Type* type_;
-  Param* param_;
 }
 
 %token _ERROR_
 %token _SYMB_0    //   ::
 %token _SYMB_1    //   ??
-%token _SYMB_2    //   
+%token _SYMB_2    //
 %token _SYMB_3    //   ,
 %token _SYMB_4    //   <=
 %token _SYMB_5    //   >=
@@ -599,23 +497,29 @@ Param* pParam(const char *str)
 %token _SYMB_13    //   &
 %token _SYMB_14    //   |
 %token _SYMB_15    //   A
-%token _SYMB_16    //   Critical
-%token _SYMB_17    //   E
-%token _SYMB_18    //   F
-%token _SYMB_19    //   False
-%token _SYMB_20    //   File
-%token _SYMB_21    //   G
-%token _SYMB_22    //   Globally
-%token _SYMB_23    //   Imported
-%token _SYMB_24    //   Language
-%token _SYMB_25    //   Policy
-%token _SYMB_26    //   True
-%token _SYMB_27    //   U
-%token _SYMB_28    //   Warning
-%token _SYMB_29    //   X
-%token _SYMB_30    //   nrChildren
-%token _SYMB_31    //   type
-%token _SYMB_32    //   value
+%token _SYMB_16    //   AF
+%token _SYMB_17    //   AG
+%token _SYMB_18    //   AX
+%token _SYMB_19    //   Critical
+%token _SYMB_20    //   E
+%token _SYMB_21    //   EF
+%token _SYMB_22    //   EG
+%token _SYMB_23    //   EX
+%token _SYMB_24    //   False
+%token _SYMB_25    //   File
+%token _SYMB_26    //   Globally
+%token _SYMB_27    //   Imported
+%token _SYMB_28    //   Language
+%token _SYMB_29    //   Policy
+%token _SYMB_30    //   True
+%token _SYMB_31    //   U
+%token _SYMB_32    //   Warning
+%token _SYMB_33    //   col
+%token _SYMB_34    //   nodeType
+%token _SYMB_35    //   nrChildren
+%token _SYMB_36    //   row
+%token _SYMB_37    //   value
+%token _SYMB_38    //   valueType
 
 %type <ruleset_> RuleSet
 %type <rule_> Rule
@@ -625,8 +529,7 @@ Param* pParam(const char *str)
 %type <listrule_> ListRule
 %type <tag_> Tag
 %type <severity_> Severity
-%type <overpaths_> OverPaths
-%type <pathspecific_> PathSpecific
+%type <pathquantifier_> PathQuantifier
 %type <istmnt_> IStmnt
 %type <iexpr_> IExpr2
 %type <iexpr_> IExpr1
@@ -643,99 +546,97 @@ Param* pParam(const char *str)
 %type <expr_> Expr3
 %type <expr_> Expr5
 %type <listexpr_> ListExpr
-%type <type_> Type
-%type <param_> Param
 
 %start RuleSet
 %token<string_> _STRING_
 %token<int_> _INTEGER_
 
 %%
-RuleSet : ListRule {  std::reverse($1->begin(),$1->end()) ;$$ = new RSet($1); YY_RESULT_RuleSet_= $$; } 
+RuleSet : ListRule {  std::reverse($1->begin(),$1->end()) ;$$ = new RSet($1); YY_RESULT_RuleSet_= $$; }
 ;
-Rule : Tag Severity RuleCause ASTScope Explanation _SYMB_0 Expr {  $$ = new RRule($1, $2, $3, $4, $5, $7); YY_RESULT_Rule_= $$; } 
+Rule : Tag Severity RuleCause ASTScope Explanation _SYMB_0 Expr {  $$ = new RRule($1, $2, $3, $4, $5, $7); YY_RESULT_Rule_= $$; }
 ;
-ASTScope : _SYMB_22 {  $$ = new ASTGlobally(); YY_RESULT_ASTScope_= $$; } 
-  | _SYMB_20 {  $$ = new ASTFile(); YY_RESULT_ASTScope_= $$; }
-  | _SYMB_23 {  $$ = new ASTImported(); YY_RESULT_ASTScope_= $$; }
+ASTScope : _SYMB_26 {  $$ = new ASTGlobally(); YY_RESULT_ASTScope_= $$; }
+  | _SYMB_25 {  $$ = new ASTFile(); YY_RESULT_ASTScope_= $$; }
+  | _SYMB_27 {  $$ = new ASTImported(); YY_RESULT_ASTScope_= $$; }
 ;
-RuleCause : _SYMB_24 {  $$ = new RCLang(); YY_RESULT_RuleCause_= $$; } 
-  | _SYMB_25 {  $$ = new RCPolicy(); YY_RESULT_RuleCause_= $$; }
+RuleCause : _SYMB_28 {  $$ = new RCLang(); YY_RESULT_RuleCause_= $$; }
+  | _SYMB_29 {  $$ = new RCPolicy(); YY_RESULT_RuleCause_= $$; }
 ;
-Explanation : _SYMB_1 _STRING_ {  $$ = new Explan($2); YY_RESULT_Explanation_= $$; } 
+Explanation : _SYMB_1 _STRING_ {  $$ = new Explan($2); YY_RESULT_Explanation_= $$; }
   | _SYMB_2 {  $$ = new Noexplan(); YY_RESULT_Explanation_= $$; }
 ;
-ListRule : /* empty */ {  $$ = new ListRule(); YY_RESULT_ListRule_= $$; } 
+ListRule : /* empty */ {  $$ = new ListRule(); YY_RESULT_ListRule_= $$; }
   | Rule {  $$ = new ListRule() ; $$->push_back($1); YY_RESULT_ListRule_= $$; }
   | Rule _SYMB_3 ListRule {  $3->push_back($1) ; $$ = $3 ; YY_RESULT_ListRule_= $$; }
 ;
-Tag : _STRING_ {  $$ = new TTag($1); YY_RESULT_Tag_= $$; } 
+Tag : _STRING_ {  $$ = new TTag($1); YY_RESULT_Tag_= $$; }
 ;
-Severity : _SYMB_28 {  $$ = new SevWarning(); YY_RESULT_Severity_= $$; } 
-  | _SYMB_16 {  $$ = new SevCritical(); YY_RESULT_Severity_= $$; }
+Severity : _SYMB_32 {  $$ = new SevWarning(); YY_RESULT_Severity_= $$; }
+  | _SYMB_19 {  $$ = new SevCritical(); YY_RESULT_Severity_= $$; }
 ;
-OverPaths : _SYMB_15 PathSpecific {  $$ = new All($2); YY_RESULT_OverPaths_= $$; } 
-  | _SYMB_17 PathSpecific {  $$ = new Exist($2); YY_RESULT_OverPaths_= $$; }
+PathQuantifier : _SYMB_17 Expr {  $$ = new AG($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_16 Expr {  $$ = new AF($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_18 Expr {  $$ = new AX($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_15 Expr _SYMB_31 Expr {  $$ = new AU($2, $4); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_22 Expr {  $$ = new EG($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_21 Expr {  $$ = new EF($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_23 Expr {  $$ = new EX($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_20 Expr _SYMB_31 Expr {  $$ = new EU($2, $4); YY_RESULT_PathQuantifier_= $$; }
 ;
-PathSpecific : _SYMB_18 Expr {  $$ = new Future($2); YY_RESULT_PathSpecific_= $$; } 
-  | _SYMB_21 Expr {  $$ = new Globally($2); YY_RESULT_PathSpecific_= $$; }
-  | Expr _SYMB_27 Expr {  $$ = new Until($1, $3); YY_RESULT_PathSpecific_= $$; }
-  | _SYMB_29 Expr {  $$ = new Next($2); YY_RESULT_PathSpecific_= $$; }
+IStmnt : _INTEGER_ {  $$ = new IEInt($1); YY_RESULT_IStmnt_= $$; }
+  | _SYMB_35 {  $$ = new IENrChildren(); YY_RESULT_IStmnt_= $$; }
+  | _SYMB_36 {  $$ = new IERow(); YY_RESULT_IStmnt_= $$; }
+  | _SYMB_33 {  $$ = new IECol(); YY_RESULT_IStmnt_= $$; }
 ;
-IStmnt : _INTEGER_ {  $$ = new IEInt($1); YY_RESULT_IStmnt_= $$; } 
-  | _SYMB_30 {  $$ = new IENrChildren(); YY_RESULT_IStmnt_= $$; }
-;
-IExpr2 : IExpr1 _SYMB_4 IStmnt {  $$ = new IELtEq($1, $3); YY_RESULT_IExpr_= $$; } 
+IExpr2 : IExpr1 _SYMB_4 IStmnt {  $$ = new IELtEq($1, $3); YY_RESULT_IExpr_= $$; }
   | IExpr1 _SYMB_5 IStmnt {  $$ = new IEGtEq($1, $3); YY_RESULT_IExpr_= $$; }
   | IExpr1 _SYMB_6 IStmnt {  $$ = new IELt($1, $3); YY_RESULT_IExpr_= $$; }
   | IExpr1 _SYMB_7 IStmnt {  $$ = new IEGt($1, $3); YY_RESULT_IExpr_= $$; }
   | IStmnt _SYMB_8 IStmnt {  $$ = new IEq($1, $3); YY_RESULT_IExpr_= $$; }
   | _SYMB_9 IExpr _SYMB_10 {  $$ = $2; YY_RESULT_IExpr_= $$; }
 ;
-IExpr1 : IStmnt {  $$ = new IEStmnt($1); YY_RESULT_IExpr_= $$; } 
+IExpr1 : IStmnt {  $$ = new IEStmnt($1); YY_RESULT_IExpr_= $$; }
   | IExpr2 {  $$ = $1; YY_RESULT_IExpr_= $$; }
 ;
-IExpr : IExpr1 {  $$ = $1; YY_RESULT_IExpr_= $$; } 
+IExpr : IExpr1 {  $$ = $1; YY_RESULT_IExpr_= $$; }
 ;
-Expr10 : _SYMB_26 {  $$ = new ETrue(); YY_RESULT_Expr_= $$; } 
-  | _SYMB_19 {  $$ = new EFalse(); YY_RESULT_Expr_= $$; }
-  | _SYMB_32 _STRING_ {  $$ = new ENodeVal($2); YY_RESULT_Expr_= $$; }
-  | _SYMB_31 Type {  $$ = new EType($2); YY_RESULT_Expr_= $$; }
+Expr10 : _SYMB_30 {  $$ = new ETrue(); YY_RESULT_Expr_= $$; }
+  | _SYMB_24 {  $$ = new EFalse(); YY_RESULT_Expr_= $$; }
+  | _SYMB_37 _STRING_ {  $$ = new EValue($2); YY_RESULT_Expr_= $$; }
+  | _SYMB_38 _STRING_ {  $$ = new EValueType($2); YY_RESULT_Expr_= $$; }
+  | _SYMB_34 _STRING_ {  $$ = new ENodeType($2); YY_RESULT_Expr_= $$; }
   | _SYMB_9 Expr1 _SYMB_10 {  $$ = new EParant($2); YY_RESULT_Expr_= $$; }
   | _SYMB_9 Expr _SYMB_10 {  $$ = $2; YY_RESULT_Expr_= $$; }
 ;
-Expr9 : _SYMB_11 Expr10 {  $$ = new ENot($2); YY_RESULT_Expr_= $$; } 
+Expr9 : _SYMB_11 Expr10 {  $$ = new ENot($2); YY_RESULT_Expr_= $$; }
   | Expr10 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr8 : Expr8 _SYMB_12 Expr9 {  $$ = new EImpl($1, $3); YY_RESULT_Expr_= $$; } 
+Expr8 : Expr8 _SYMB_12 Expr9 {  $$ = new EImpl($1, $3); YY_RESULT_Expr_= $$; }
   | Expr9 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr7 : IExpr2 {  $$ = new EIExpr($1); YY_RESULT_Expr_= $$; } 
+Expr7 : IExpr2 {  $$ = new EIExpr($1); YY_RESULT_Expr_= $$; }
   | Expr8 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr6 : Expr6 _SYMB_8 Expr7 {  $$ = new EEq($1, $3); YY_RESULT_Expr_= $$; } 
+Expr6 : Expr6 _SYMB_8 Expr7 {  $$ = new EEq($1, $3); YY_RESULT_Expr_= $$; }
   | Expr7 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr4 : Expr4 _SYMB_13 Expr5 {  $$ = new EAnd($1, $3); YY_RESULT_Expr_= $$; } 
+Expr4 : Expr4 _SYMB_13 Expr5 {  $$ = new EAnd($1, $3); YY_RESULT_Expr_= $$; }
   | Expr4 _SYMB_14 Expr5 {  $$ = new EOr($1, $3); YY_RESULT_Expr_= $$; }
   | Expr5 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr2 : OverPaths {  $$ = new EOverPaths($1); YY_RESULT_Expr_= $$; } 
+Expr2 : PathQuantifier {  $$ = new EPQ($1); YY_RESULT_Expr_= $$; }
   | Expr3 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr : Expr1 {  $$ = $1; YY_RESULT_Expr_= $$; } 
+Expr : Expr1 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr1 : Expr2 {  $$ = $1; YY_RESULT_Expr_= $$; } 
+Expr1 : Expr2 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr3 : Expr4 {  $$ = $1; YY_RESULT_Expr_= $$; } 
+Expr3 : Expr4 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr5 : Expr6 {  $$ = $1; YY_RESULT_Expr_= $$; } 
+Expr5 : Expr6 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-ListExpr : /* empty */ {  $$ = new ListExpr(); YY_RESULT_ListExpr_= $$; } 
+ListExpr : /* empty */ {  $$ = new ListExpr(); YY_RESULT_ListExpr_= $$; }
   | ListExpr Expr {  $1->push_back($2) ; $$ = $1 ; YY_RESULT_ListExpr_= $$; }
-;
-Type : _STRING_ {  $$ = new TType($1); YY_RESULT_Type_= $$; } 
-;
-Param : _STRING_ {  $$ = new PParam($1); YY_RESULT_Param_= $$; } 
 ;
 

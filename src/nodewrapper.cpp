@@ -6,7 +6,7 @@ NodeWrapper::~NodeWrapper() {
     }
 }
 
-void NodeWrapper::addChild(const NodeWrapper *node) {
+void NodeWrapper::addChild(NodeWrapper *node) {
     children.append(node);
 }
 
@@ -34,7 +34,7 @@ const quint32 NodeWrapper::getCol() {
     return col;
 }
 
-const QList<const NodeWrapper *>& NodeWrapper::getChildren() {
+const QList<NodeWrapper *>& NodeWrapper::getChildren() {
     return children;
 }
 

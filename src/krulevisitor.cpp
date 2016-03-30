@@ -4,20 +4,17 @@
 #include <QRegExp>
 #include "QMLChildren.h"
 
-RetType* KRuleVisitor::visitRuleSet(RuleSet* t) {} //abstract class
-RetType* KRuleVisitor::visitRule(Rule* t) {} //abstract class
-RetType* KRuleVisitor::visitASTScope(ASTScope* t) {} //abstract class
-RetType* KRuleVisitor::visitRuleCause(RuleCause* t) {} //abstract class
-RetType* KRuleVisitor::visitExplanation(Explanation* t) {} //abstract class
-RetType* KRuleVisitor::visitTag(Tag* t) {} //abstract class
-RetType* KRuleVisitor::visitSeverity(Severity* t) {} //abstract class
-RetType* KRuleVisitor::visitOverPaths(OverPaths* t) {} //abstract class
-RetType* KRuleVisitor::visitPathSpecific(PathSpecific* t) {} //abstract class
-RetType* KRuleVisitor::visitIStmnt(IStmnt* t) {} //abstract class
-RetType* KRuleVisitor::visitIExpr(IExpr* t) {} //abstract class
-RetType* KRuleVisitor::visitExpr(Expr* t) {} //abstract class
-RetType* KRuleVisitor::visitType(Type* t) {} //abstract class
-RetType* KRuleVisitor::visitParam(Param* t) {} //abstract class
+RetType* KRuleVisitor::visitRuleSet(RuleSet *) {} //abstract class
+RetType* KRuleVisitor::visitRule(Rule *) {} //abstract class
+RetType* KRuleVisitor::visitASTScope(ASTScope *) {} //abstract class
+RetType* KRuleVisitor::visitRuleCause(RuleCause *) {} //abstract class
+RetType* KRuleVisitor::visitExplanation(Explanation *) {} //abstract class
+RetType* KRuleVisitor::visitTag(Tag *) {} //abstract class
+RetType* KRuleVisitor::visitSeverity(Severity *) {} //abstract class
+RetType* KRuleVisitor::visitIStmnt(IStmnt *) {} //abstract class
+RetType* KRuleVisitor::visitIExpr(IExpr *) {} //abstract class
+RetType* KRuleVisitor::visitExpr(Expr *) {} //abstract class
+RetType* KRuleVisitor::visitPathQuantifier(PathQuantifier *) {}
 
 
 RetType* KRuleVisitor::visitRSet(RSet *rset) {
@@ -46,9 +43,9 @@ RetType* KRuleVisitor::visitRRule(RRule *rrule) {
              * borde kanske inte använda oldNode för att skriva tillbaka
              * för att kunna komma åt var det bråkar
              */
-            outp->addCodeOccurrance(CodeOccurrance(getSource(node).toString(), filename,
-                                                   node->firstSourceLocation().startLine,
-                                                   node->firstSourceLocation().startColumn));
+            outp->addCodeOccurrance(CodeOccurrance(node->getSource().toString(), filename,
+                                                   node->getRow(),
+                                                   node->getCol()));
             failedRules.insert(currentRuleTag, outp);
         }
     }
@@ -103,16 +100,6 @@ RetType* KRuleVisitor::visitSevCritical(SevCritical *) {
     return new RetTypeString(QString("Critical"));
 }
 
-RetType* KRuleVisitor::visitAll(All *all){
-    overPaths = "A";
-    return all->pathspecific_->accept(this);
-}
-
-RetType* KRuleVisitor::visitExist(Exist *exist) {
-    overPaths = "E";
-    return exist->pathspecific_->accept(this);
-}
-
 const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
     if (overPaths == "A") {
         return breakCondition ? false : true;
@@ -123,10 +110,51 @@ const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
     }
 }
 
-RetType* KRuleVisitor::visitFuture(Future *future) {
+RetType* KRuleVisitor::visitAF(AF *p) {
+    ENot *v = new ENot(new EPQ(new EG(new ENot(p->expr_->clone()))));
+    RetType *r = v->accept(this);
+    delete v;
+    return r;
+}
+
+RetType* KRuleVisitor::visitAG(AG *p) {
+    ENot *v = new ENot(new EPQ(new EU(new ETrue, new ENot(p->expr_->clone()))));
+    RetType *r = v->accept(this);
+    delete v;
+    return r;
+}
+
+RetType* KRuleVisitor::visitAX(AX *p) {
+    ENot *v = new ENot(new EPQ(new EX(new ENot(p->expr_->clone()))));
+    RetType *r = v->accept(this);
+    delete v;
+    return r;
+}
+
+RetType* KRuleVisitor::visitAU(AU *p) {
+    Expr *e1 = p->expr_1->clone();
+    Expr *e2 = p->expr_2->clone();
+    ENot *v = new ENot(new EPQ(new EU(new ENot(e2), new ENot(new EOr(e1, e2)))));
+    RetType *r = v->accept(this);
+    delete v;
+    delete e1;
+    delete e2;
+    return r;
+}
+
+RetType* KRuleVisitor::visitEF(EF *p) {
+    EU *v = new EU(new ETrue, p->expr_);
+    RetType *r = v->accept(this);
+    v->expr_2 = nullptr;
+    delete v;
+    return r;
+}
+
+/*
+RetType* KRuleVisitor::visitEF(EF *ef) {
     bool success = false;
 
-    if (extractBool(future->expr_->accept(this))) {
+    if (extractBool(ef->expr_->accept(this))) {
         success = true;
     } else {
         QList<QQmlJS::AST::Node*> childrn = children(node);
@@ -135,8 +163,8 @@ RetType* KRuleVisitor::visitFuture(Future *future) {
             foreach(QQmlJS::AST::Node *child, childrn) {
                 node = child;
 
-                bool res = extractBool(visitFuture(future));
-                if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                bool res = extractBool(visitEF(ef));
+                if (res) {
                     breakCondition = true;
                     break;
                 }
@@ -149,21 +177,22 @@ RetType* KRuleVisitor::visitFuture(Future *future) {
 
     return new RetTypeBool(success);
 }
+*/
 
-RetType* KRuleVisitor::visitGlobally(Globally *globally) {
+RetType* KRuleVisitor::visitEG(EG *eg) {
     bool success = false;
 
-    if (!extractBool(globally->expr_->accept(this))) {
+    if (!extractBool(eg->expr_->accept(this))) {
         success = false;
     } else {
-        QList<QQmlJS::AST::Node*> childrn = children(node);
+        const QList<NodeWrapper*> childrn = node->getChildren();
         if (!childrn.isEmpty()) {
             bool breakCondition = false;
-            foreach(QQmlJS::AST::Node *child, childrn) {
+            foreach(NodeWrapper *child, childrn) {
                 node = child;
 
-                bool res = extractBool(visitGlobally(globally));
-                if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                bool res = extractBool(visitEG(eg));
+                if (res) {
                         breakCondition = true;
                         break;
                 }
@@ -178,23 +207,23 @@ RetType* KRuleVisitor::visitGlobally(Globally *globally) {
     return new RetTypeBool(success);
 }
 
-RetType* KRuleVisitor::visitUntil(Until *until) {
+RetType* KRuleVisitor::visitEU(EU *eu) {
     bool success = false;
 
-    const bool result2 = extractBool(until->expr_2->accept(this));
+    const bool result2 = extractBool(eu->expr_2->accept(this));
     if (result2) {
         success = true;
     } else {
-        const bool result1 = extractBool(until->expr_1->accept(this));
+        const bool result1 = extractBool(eu->expr_1->accept(this));
         if (result1) {
-            QList<QQmlJS::AST::Node*> childrn = children(node);
+            const QList<NodeWrapper*> childrn = node->getChildren();
             if (!childrn.isEmpty()) {
                 bool breakCondition = false;
-                foreach(QQmlJS::AST::Node *child, childrn) {
+                foreach(NodeWrapper *child, childrn) {
                     node = child;
 
-                    bool res = extractBool(visitUntil(until));
-                    if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+                    bool res = extractBool(visitEU(eu));
+                    if (res) {
                             breakCondition = true;
                             break;
                     }
@@ -211,16 +240,16 @@ RetType* KRuleVisitor::visitUntil(Until *until) {
     return new RetTypeBool(success);
 }
 
-RetType* KRuleVisitor::visitNext(Next *next) {
+RetType* KRuleVisitor::visitEX(EX *ex) {
     bool success = true;
 
-    QList<QQmlJS::AST::Node*> childrn = children(node);
+    const QList<NodeWrapper*> childrn = node->getChildren();
     if (!childrn.isEmpty()) {
         bool breakCondition = false;
-        foreach(QQmlJS::AST::Node *child, childrn) {
+        foreach(NodeWrapper *child, childrn) {
             node = child;
-            bool res = extractBool(next->expr_->accept(this));
-            if ((overPaths == "A" && !res) ||( overPaths == "E" && res)) {
+            bool res = extractBool(ex->expr_->accept(this));
+            if (res) {
                     breakCondition = true;
                     break;
             }
@@ -283,24 +312,27 @@ RetType* KRuleVisitor::visitEFalse(EFalse *) {
     return new RetTypeBool(false);
 }
 
-RetType* KRuleVisitor::visitENodeVal(ENodeVal *enodeval) {
+RetType* KRuleVisitor::visitEValue(EValue *enodeval) {
     bool s = false;
 
     QRegExp regexp = QRegExp(QString(enodeval->string_.c_str()));
     QString nodeCode;
 
-    nodeCode = getSource(node).toString();
+    // nodeCode = getSource(node).toString();
 
-    if (regexp.exactMatch(nodeCode)) {
+    if (regexp.exactMatch(node->getValue().toString())) {
         s = true;
     }
     qDebug() << regexp.pattern() << " ? " << nodeCode << s;
     return new RetTypeBool(s);
 }
 
-RetType* KRuleVisitor::visitEType(EType *etype) {
-    throw NotImplemented();
-    return etype->type_->accept(this);
+RetType* KRuleVisitor::visitEValueType(EValueType *) {
+    return new RetTypeString(node->getValueType().toString());
+}
+
+RetType* KRuleVisitor::visitENodeType(ENodeType *) {
+    return new RetTypeString(node->getNodeType().toString());
 }
 
 RetType* KRuleVisitor::visitEParant(EParant *eparant) {
@@ -345,16 +377,8 @@ RetType* KRuleVisitor::visitEOr(EOr *eor) {
     return new RetTypeBool(b1 || b2);
 }
 
-RetType* KRuleVisitor::visitEOverPaths(EOverPaths *eoverpaths) {
-    return eoverpaths->overpaths_->accept(this);
-}
-
-RetType* KRuleVisitor::visitTType(TType *ttype) {
-    return new RetTypeString(QString(ttype->string_.c_str()));
-}
-
-RetType* KRuleVisitor::visitPParam(PParam *pparam) {
-    return new RetTypeString(QString(pparam->string_.c_str()));
+RetType* KRuleVisitor::visitEPQ(EPQ *epq) {
+    return epq->pathquantifier_->accept(this);
 }
 
 /**

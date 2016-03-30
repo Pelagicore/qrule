@@ -2,6 +2,7 @@
 #define KRULEENGINE_KRULEVISITOR_H
 
 #include "gen/Absyn.H"
+#include "nodewrapper.h"
 #include "output/KRuleOutput.h"
 #include "retType/RetTypeBool.h"
 #include "retType/RetTypeString.h"
@@ -25,7 +26,7 @@ public:
 
 class KRuleVisitor : public Visitor {
 public:
-    KRuleVisitor(QString filename, QString code, QQmlJS::AST::Node *node):
+    KRuleVisitor(QString filename, QString code, NodeWrapper *node):
         filename(filename), code(code), node(node) {}
     RetType* visitRuleSet(RuleSet* p);
     RetType* visitRule(Rule* p);
@@ -34,13 +35,10 @@ public:
     RetType* visitExplanation(Explanation* p);
     RetType* visitTag(Tag* p);
     RetType* visitSeverity(Severity* p);
-    RetType* visitOverPaths(OverPaths* p);
-    RetType* visitPathSpecific(PathSpecific* p);
+    RetType* visitPathQuantifier(PathQuantifier *p);
     RetType* visitIStmnt(IStmnt* p);
     RetType* visitIExpr(IExpr* p);
     RetType* visitExpr(Expr* p);
-    RetType* visitType(Type* p);
-    RetType* visitParam(Param* p);
     RetType* visitRSet(RSet* p);
     RetType* visitRRule(RRule* p);
     RetType* visitASTGlobally(ASTGlobally* p);
@@ -53,14 +51,18 @@ public:
     RetType* visitTTag(TTag* p);
     RetType* visitSevWarning(SevWarning* p);
     RetType* visitSevCritical(SevCritical* p);
-    RetType* visitAll(All* p);
-    RetType* visitExist(Exist* p);
-    RetType* visitFuture(Future* p);
-    RetType* visitGlobally(Globally* p);
-    RetType* visitUntil(Until* p);
-    RetType* visitNext(Next* p);
+    RetType* visitAG(AG *p);
+    RetType* visitAF(AF *p);
+    RetType* visitAX(AX *p);
+    RetType* visitAU(AU *p);
+    RetType* visitEG(EG *p);
+    RetType* visitEF(EF *p);
+    RetType* visitEX(EX *p);
+    RetType* visitEU(EU *p);
     RetType* visitIEInt(IEInt* p);
     RetType* visitIENrChildren(IENrChildren* p);
+    RetType* visitIERow(IERow *p);
+    RetType* visitIECol(IECol *p);
     RetType* visitIELtEq(IELtEq* p);
     RetType* visitIEGtEq(IEGtEq* p);
     RetType* visitIELt(IELt* p);
@@ -69,8 +71,9 @@ public:
     RetType* visitIEStmnt(IEStmnt* p);
     RetType* visitETrue(ETrue* p);
     RetType* visitEFalse(EFalse* p);
-    RetType* visitENodeVal(ENodeVal* p);
-    RetType* visitEType(EType* p);
+    RetType* visitEValue(EValue *p);
+    RetType* visitEValueType(EValueType *p);
+    RetType* visitENodeType(ENodeType *p);
     RetType* visitEParant(EParant* p);
     RetType* visitENot(ENot* p);
     RetType* visitEImpl(EImpl* p);
@@ -78,9 +81,7 @@ public:
     RetType* visitEEq(EEq* p);
     RetType* visitEAnd(EAnd* p);
     RetType* visitEOr(EOr* p);
-    RetType* visitEOverPaths(EOverPaths* p);
-    RetType* visitTType(TType* p);
-    RetType* visitPParam(PParam* p);
+    RetType* visitEPQ(EPQ *p);
     RetType* visitListRule(ListRule* p);
     RetType* visitListExpr(ListExpr* p);
 
@@ -107,7 +108,7 @@ private:
     QString filename;
     QString code;
 
-    QQmlJS::AST::Node *node;
+    NodeWrapper *node;
 
     void assertType(RetType* ret, RetType::RetTypeE type);
     QString currentRuleTag = "";

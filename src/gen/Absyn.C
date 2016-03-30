@@ -507,264 +507,362 @@ SevCritical *SevCritical::clone() const
 
 
 
-/********************   All    ********************/
-All::All(PathSpecific *p1)
-{
-  pathspecific_ = p1;
-
-}
-
-All::All(const All & other)
-{
-  pathspecific_ = other.pathspecific_->clone();
-
-}
-
-All &All::operator=(const All & other)
-{
-  All tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void All::swap(All & other)
-{
-  std::swap(pathspecific_, other.pathspecific_);
-
-}
-
-All::~All()
-{
-  delete(pathspecific_);
-
-}
-
-RetType* All::accept(Visitor *v) {
-    return v->visitAll(this);
-}
-
-All *All::clone() const
-{
-  return new All(*this);
-}
-
-
-
-/********************   Exist    ********************/
-Exist::Exist(PathSpecific *p1)
-{
-  pathspecific_ = p1;
-
-}
-
-Exist::Exist(const Exist & other)
-{
-  pathspecific_ = other.pathspecific_->clone();
-
-}
-
-Exist &Exist::operator=(const Exist & other)
-{
-  Exist tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void Exist::swap(Exist & other)
-{
-  std::swap(pathspecific_, other.pathspecific_);
-
-}
-
-Exist::~Exist()
-{
-  delete(pathspecific_);
-
-}
-
-RetType* Exist::accept(Visitor *v) {
-    return v->visitExist(this);
-}
-
-Exist *Exist::clone() const
-{
-  return new Exist(*this);
-}
-
-
-
-/********************   Future    ********************/
-Future::Future(Expr *p1)
+/********************   AG    ********************/
+AG::AG(Expr *p1)
 {
   expr_ = p1;
 
 }
 
-Future::Future(const Future & other)
+AG::AG(const AG & other)
 {
   expr_ = other.expr_->clone();
 
 }
 
-Future &Future::operator=(const Future & other)
+AG &AG::operator=(const AG & other)
 {
-  Future tmp(other);
+  AG tmp(other);
   swap(tmp);
   return *this;
 }
 
-void Future::swap(Future & other)
+void AG::swap(AG & other)
 {
   std::swap(expr_, other.expr_);
 
 }
 
-Future::~Future()
+AG::~AG()
 {
   delete(expr_);
 
 }
 
-RetType* Future::accept(Visitor *v) {
-    return v->visitFuture(this);
-}
-
-Future *Future::clone() const
+RetType* AG::accept(Visitor *v)
 {
-  return new Future(*this);
+  v->visitAG(this);
+}
+
+AG *AG::clone() const
+{
+  return new AG(*this);
 }
 
 
 
-/********************   Globally    ********************/
-Globally::Globally(Expr *p1)
+/********************   AF    ********************/
+AF::AF(Expr *p1)
 {
   expr_ = p1;
 
 }
 
-Globally::Globally(const Globally & other)
+AF::AF(const AF & other)
 {
   expr_ = other.expr_->clone();
 
 }
 
-Globally &Globally::operator=(const Globally & other)
+AF &AF::operator=(const AF & other)
 {
-  Globally tmp(other);
+  AF tmp(other);
   swap(tmp);
   return *this;
 }
 
-void Globally::swap(Globally & other)
+void AF::swap(AF & other)
 {
   std::swap(expr_, other.expr_);
 
 }
 
-Globally::~Globally()
+AF::~AF()
 {
   delete(expr_);
 
 }
 
-RetType* Globally::accept(Visitor *v) {
-    return v->visitGlobally(this);
-}
-
-Globally *Globally::clone() const
+RetType* AF::accept(Visitor *v)
 {
-  return new Globally(*this);
+  v->visitAF(this);
+}
+
+AF *AF::clone() const
+{
+  return new AF(*this);
 }
 
 
 
-/********************   Until    ********************/
-Until::Until(Expr *p1, Expr *p2)
+/********************   AX    ********************/
+AX::AX(Expr *p1)
+{
+  expr_ = p1;
+
+}
+
+AX::AX(const AX & other)
+{
+  expr_ = other.expr_->clone();
+
+}
+
+AX &AX::operator=(const AX & other)
+{
+  AX tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void AX::swap(AX & other)
+{
+  std::swap(expr_, other.expr_);
+
+}
+
+AX::~AX()
+{
+  delete(expr_);
+
+}
+
+RetType* AX::accept(Visitor *v)
+{
+  v->visitAX(this);
+}
+
+AX *AX::clone() const
+{
+  return new AX(*this);
+}
+
+
+
+/********************   AU    ********************/
+AU::AU(Expr *p1, Expr *p2)
 {
   expr_1 = p1;
   expr_2 = p2;
 
 }
 
-Until::Until(const Until & other)
+AU::AU(const AU & other)
 {
   expr_1 = other.expr_1->clone();
   expr_2 = other.expr_2->clone();
 
 }
 
-Until &Until::operator=(const Until & other)
+AU &AU::operator=(const AU & other)
 {
-  Until tmp(other);
+  AU tmp(other);
   swap(tmp);
   return *this;
 }
 
-void Until::swap(Until & other)
+void AU::swap(AU & other)
 {
   std::swap(expr_1, other.expr_1);
   std::swap(expr_2, other.expr_2);
 
 }
 
-Until::~Until()
+AU::~AU()
 {
   delete(expr_1);
   delete(expr_2);
 
 }
 
-RetType* Until::accept(Visitor *v) {
-    return v->visitUntil(this);
-}
-
-Until *Until::clone() const
+RetType* AU::accept(Visitor *v)
 {
-  return new Until(*this);
+  v->visitAU(this);
+}
+
+AU *AU::clone() const
+{
+  return new AU(*this);
 }
 
 
 
-/********************   Next    ********************/
-Next::Next(Expr *p1)
+/********************   EG    ********************/
+EG::EG(Expr *p1)
 {
   expr_ = p1;
 
 }
 
-Next::Next(const Next & other)
+EG::EG(const EG & other)
 {
   expr_ = other.expr_->clone();
 
 }
 
-Next &Next::operator=(const Next & other)
+EG &EG::operator=(const EG & other)
 {
-  Next tmp(other);
+  EG tmp(other);
   swap(tmp);
   return *this;
 }
 
-void Next::swap(Next & other)
+void EG::swap(EG & other)
 {
   std::swap(expr_, other.expr_);
 
 }
 
-Next::~Next()
+EG::~EG()
 {
   delete(expr_);
 
 }
 
-RetType* Next::accept(Visitor *v) {
-    return v->visitNext(this);
+RetType* EG::accept(Visitor *v)
+{
+  v->visitEG(this);
 }
 
-Next *Next::clone() const
+EG *EG::clone() const
 {
-  return new Next(*this);
+  return new EG(*this);
+}
+
+
+
+/********************   EF    ********************/
+EF::EF(Expr *p1)
+{
+  expr_ = p1;
+
+}
+
+EF::EF(const EF & other)
+{
+  expr_ = other.expr_->clone();
+
+}
+
+EF &EF::operator=(const EF & other)
+{
+  EF tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EF::swap(EF & other)
+{
+  std::swap(expr_, other.expr_);
+
+}
+
+EF::~EF()
+{
+  delete(expr_);
+
+}
+
+RetType* EF::accept(Visitor *v)
+{
+  v->visitEF(this);
+}
+
+EF *EF::clone() const
+{
+  return new EF(*this);
+}
+
+
+
+/********************   EX    ********************/
+EX::EX(Expr *p1)
+{
+  expr_ = p1;
+
+}
+
+EX::EX(const EX & other)
+{
+  expr_ = other.expr_->clone();
+
+}
+
+EX &EX::operator=(const EX & other)
+{
+  EX tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EX::swap(EX & other)
+{
+  std::swap(expr_, other.expr_);
+
+}
+
+EX::~EX()
+{
+  delete(expr_);
+
+}
+
+RetType* EX::accept(Visitor *v)
+{
+  v->visitEX(this);
+}
+
+EX *EX::clone() const
+{
+  return new EX(*this);
+}
+
+
+
+/********************   EU    ********************/
+EU::EU(Expr *p1, Expr *p2)
+{
+  expr_1 = p1;
+  expr_2 = p2;
+
+}
+
+EU::EU(const EU & other)
+{
+  expr_1 = other.expr_1->clone();
+  expr_2 = other.expr_2->clone();
+
+}
+
+EU &EU::operator=(const EU & other)
+{
+  EU tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EU::swap(EU & other)
+{
+  std::swap(expr_1, other.expr_1);
+  std::swap(expr_2, other.expr_2);
+
+}
+
+EU::~EU()
+{
+  delete(expr_1);
+  delete(expr_2);
+
+}
+
+RetType* EU::accept(Visitor *v)
+{
+  v->visitEU(this);
+}
+
+EU *EU::clone() const
+{
+  return new EU(*this);
 }
 
 
@@ -846,6 +944,86 @@ RetType* IENrChildren::accept(Visitor *v) {
 IENrChildren *IENrChildren::clone() const
 {
   return new IENrChildren(*this);
+}
+
+
+
+/********************   IERow    ********************/
+IERow::IERow()
+{
+
+}
+
+IERow::IERow(const IERow & other)
+{
+
+}
+
+IERow &IERow::operator=(const IERow & other)
+{
+  IERow tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void IERow::swap(IERow & other)
+{
+
+}
+
+IERow::~IERow()
+{
+
+}
+
+RetType* IERow::accept(Visitor *v)
+{
+  v->visitIERow(this);
+}
+
+IERow *IERow::clone() const
+{
+  return new IERow(*this);
+}
+
+
+
+/********************   IECol    ********************/
+IECol::IECol()
+{
+
+}
+
+IECol::IECol(const IECol & other)
+{
+
+}
+
+IECol &IECol::operator=(const IECol & other)
+{
+  IECol tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void IECol::swap(IECol & other)
+{
+
+}
+
+IECol::~IECol()
+{
+
+}
+
+RetType* IECol::accept(Visitor *v)
+{
+  v->visitIECol(this);
+}
+
+IECol *IECol::clone() const
+{
+  return new IECol(*this);
 }
 
 
@@ -1203,94 +1381,6 @@ EFalse *EFalse::clone() const
 {
   return new EFalse(*this);
 }
-
-
-
-/********************   ENodeVal    ********************/
-ENodeVal::ENodeVal(String p1)
-{
-  string_ = p1;
-
-}
-
-ENodeVal::ENodeVal(const ENodeVal & other)
-{
-  string_ = other.string_;
-
-}
-
-ENodeVal &ENodeVal::operator=(const ENodeVal & other)
-{
-  ENodeVal tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void ENodeVal::swap(ENodeVal & other)
-{
-  std::swap(string_, other.string_);
-
-}
-
-ENodeVal::~ENodeVal()
-{
-
-}
-
-RetType* ENodeVal::accept(Visitor *v) {
-    return v->visitENodeVal(this);
-}
-
-ENodeVal *ENodeVal::clone() const
-{
-  return new ENodeVal(*this);
-}
-
-
-
-/********************   EType    ********************/
-EType::EType(Type *p1)
-{
-  type_ = p1;
-
-}
-
-EType::EType(const EType & other)
-{
-  type_ = other.type_->clone();
-
-}
-
-EType &EType::operator=(const EType & other)
-{
-  EType tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void EType::swap(EType & other)
-{
-  std::swap(type_, other.type_);
-
-}
-
-EType::~EType()
-{
-  delete(type_);
-
-}
-
-RetType* EType::accept(Visitor *v) {
-  v->visitEType(this);
-}
-
-EType *EType::clone() const
-{
-  return new EType(*this);
-}
-
-
-
 /********************   EParant    ********************/
 EParant::EParant(Expr *p1)
 {
@@ -1608,129 +1698,46 @@ EOr *EOr::clone() const
 
 
 
-/********************   EOverPaths    ********************/
-EOverPaths::EOverPaths(OverPaths *p1)
+/********************   EPQ    ********************/
+EPQ::EPQ(PathQuantifier *p1)
 {
-  overpaths_ = p1;
+  pathquantifier_ = p1;
 
 }
 
-EOverPaths::EOverPaths(const EOverPaths & other)
+EPQ::EPQ(const EPQ & other)
 {
-  overpaths_ = other.overpaths_->clone();
+  pathquantifier_ = other.pathquantifier_->clone();
 
 }
 
-EOverPaths &EOverPaths::operator=(const EOverPaths & other)
+EPQ &EPQ::operator=(const EPQ & other)
 {
-  EOverPaths tmp(other);
+  EPQ tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EOverPaths::swap(EOverPaths & other)
+void EPQ::swap(EPQ & other)
 {
-  std::swap(overpaths_, other.overpaths_);
+  std::swap(pathquantifier_, other.pathquantifier_);
 
 }
 
-EOverPaths::~EOverPaths()
+EPQ::~EPQ()
 {
-  delete(overpaths_);
+  delete(pathquantifier_);
 
 }
 
-RetType* EOverPaths::accept(Visitor *v) {
-    return v->visitEOverPaths(this);
-}
-
-EOverPaths *EOverPaths::clone() const
+RetType* EPQ::accept(Visitor *v)
 {
-  return new EOverPaths(*this);
+  v->visitEPQ(this);
 }
 
-
-
-/********************   TType    ********************/
-TType::TType(String p1)
+EPQ *EPQ::clone() const
 {
-  string_ = p1;
-
-}
-
-TType::TType(const TType & other)
-{
-  string_ = other.string_;
-
-}
-
-TType &TType::operator=(const TType & other)
-{
-  TType tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void TType::swap(TType & other)
-{
-  std::swap(string_, other.string_);
-
-}
-
-TType::~TType()
-{
-
-}
-
-RetType* TType::accept(Visitor *v) {
-    return v->visitTType(this);
-}
-
-TType *TType::clone() const
-{
-  return new TType(*this);
-}
-
-
-
-/********************   PParam    ********************/
-PParam::PParam(String p1)
-{
-  string_ = p1;
-
-}
-
-PParam::PParam(const PParam & other)
-{
-  string_ = other.string_;
-
-}
-
-PParam &PParam::operator=(const PParam & other)
-{
-  PParam tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void PParam::swap(PParam & other)
-{
-  std::swap(string_, other.string_);
-
-}
-
-PParam::~PParam()
-{
-
-}
-
-RetType* PParam::accept(Visitor *v) {
-    return v->visitPParam(this);
-}
-
-PParam *PParam::clone() const
-{
-  return new PParam(*this);
+  return new EPQ(*this);
 }
 
 

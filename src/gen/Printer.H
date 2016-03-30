@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+
 /* Certain applications may improve performance by changing the buffer size */
 #define BUFFER_INITIAL 2000
 /* You may wish to change _L_PAREN or _R_PAREN */
@@ -48,17 +49,20 @@ void render(char* s);
   RetType* visitSeverity(Severity *p); /* abstract class */
   RetType* visitSevWarning(SevWarning *p);
   RetType* visitSevCritical(SevCritical *p);
-  RetType* visitOverPaths(OverPaths *p); /* abstract class */
-  RetType* visitAll(All *p);
-  RetType* visitExist(Exist *p);
-  RetType* visitPathSpecific(PathSpecific *p); /* abstract class */
-  RetType* visitFuture(Future *p);
-  RetType* visitGlobally(Globally *p);
-  RetType* visitUntil(Until *p);
-  RetType* visitNext(Next *p);
+  RetType* visitPathQuantifier(PathQuantifier *p); /* abstract class */
+  RetType* visitAG(AG *p);
+  RetType* visitAF(AF *p);
+  RetType* visitAX(AX *p);
+  RetType* visitAU(AU *p);
+  RetType* visitEG(EG *p);
+  RetType* visitEF(EF *p);
+  RetType* visitEX(EX *p);
+  RetType* visitEU(EU *p);
   RetType* visitIStmnt(IStmnt *p); /* abstract class */
   RetType* visitIEInt(IEInt *p);
   RetType* visitIENrChildren(IENrChildren *p);
+  RetType* visitIERow(IERow *p);
+  RetType* visitIECol(IECol *p);
   RetType* visitIExpr(IExpr *p); /* abstract class */
   RetType* visitIELtEq(IELtEq *p);
   RetType* visitIEGtEq(IEGtEq *p);
@@ -69,8 +73,9 @@ void render(char* s);
   RetType* visitExpr(Expr *p); /* abstract class */
   RetType* visitETrue(ETrue *p);
   RetType* visitEFalse(EFalse *p);
-  RetType* visitENodeVal(ENodeVal *p);
-  RetType* visitEType(EType *p);
+  RetType* visitEValue(EValue *p);
+  RetType* visitEValueType(EValueType *p);
+  RetType* visitENodeType(ENodeType *p);
   RetType* visitEParant(EParant *p);
   RetType* visitENot(ENot *p);
   RetType* visitEImpl(EImpl *p);
@@ -78,12 +83,8 @@ void render(char* s);
   RetType* visitEEq(EEq *p);
   RetType* visitEAnd(EAnd *p);
   RetType* visitEOr(EOr *p);
-  RetType* visitEOverPaths(EOverPaths *p);
+  RetType* visitEPQ(EPQ *p);
   RetType* visitListExpr(ListExpr* p);
-  RetType* visitType(Type *p); /* abstract class */
-  RetType* visitTType(TType *p);
-  RetType* visitParam(Param *p); /* abstract class */
-  RetType* visitPParam(PParam *p);
 
   RetType* visitInteger(Integer i);
   RetType* visitDouble(Double d);
@@ -177,17 +178,20 @@ class ShowAbsyn : public Visitor
   RetType* visitSeverity(Severity *p); /* abstract class */
   RetType* visitSevWarning(SevWarning *p);
   RetType* visitSevCritical(SevCritical *p);
-  RetType* visitOverPaths(OverPaths *p); /* abstract class */
-  RetType* visitAll(All *p);
-  RetType* visitExist(Exist *p);
-  RetType* visitPathSpecific(PathSpecific *p); /* abstract class */
-  RetType* visitFuture(Future *p);
-  RetType* visitGlobally(Globally *p);
-  RetType* visitUntil(Until *p);
-  RetType* visitNext(Next *p);
+  RetType* visitPathQuantifier(PathQuantifier *p); /* abstract class */
+  RetType* visitAG(AG *p);
+  RetType* visitAF(AF *p);
+  RetType* visitAX(AX *p);
+  RetType* visitAU(AU *p);
+  RetType* visitEG(EG *p);
+  RetType* visitEF(EF *p);
+  RetType* visitEX(EX *p);
+  RetType* visitEU(EU *p);
   RetType* visitIStmnt(IStmnt *p); /* abstract class */
   RetType* visitIEInt(IEInt *p);
   RetType* visitIENrChildren(IENrChildren *p);
+  RetType* visitIERow(IERow *p);
+  RetType* visitIECol(IECol *p);
   RetType* visitIExpr(IExpr *p); /* abstract class */
   RetType* visitIELtEq(IELtEq *p);
   RetType* visitIEGtEq(IEGtEq *p);
@@ -198,8 +202,9 @@ class ShowAbsyn : public Visitor
   RetType* visitExpr(Expr *p); /* abstract class */
   RetType* visitETrue(ETrue *p);
   RetType* visitEFalse(EFalse *p);
-  RetType* visitENodeVal(ENodeVal *p);
-  RetType* visitEType(EType *p);
+  RetType* visitEValue(EValue *p);
+  RetType* visitEValueType(EValueType *p);
+  RetType* visitENodeType(ENodeType *p);
   RetType* visitEParant(EParant *p);
   RetType* visitENot(ENot *p);
   RetType* visitEImpl(EImpl *p);
@@ -207,12 +212,8 @@ class ShowAbsyn : public Visitor
   RetType* visitEEq(EEq *p);
   RetType* visitEAnd(EAnd *p);
   RetType* visitEOr(EOr *p);
-  RetType* visitEOverPaths(EOverPaths *p);
+  RetType* visitEPQ(EPQ *p);
   RetType* visitListExpr(ListExpr* p);
-  RetType* visitType(Type *p); /* abstract class */
-  RetType* visitTType(TType *p);
-  RetType* visitParam(Param *p); /* abstract class */
-  RetType* visitPParam(PParam *p);
 
   RetType* visitInteger(Integer i);
   RetType* visitDouble(Double d);

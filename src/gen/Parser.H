@@ -13,14 +13,11 @@ class Explanation;
 class ListRule;
 class Tag;
 class Severity;
-class OverPaths;
-class PathSpecific;
+class PathQuantifier;
 class IStmnt;
 class IExpr;
 class Expr;
 class ListExpr;
-class Type;
-class Param;
 
 typedef union
 {
@@ -36,14 +33,11 @@ typedef union
   ListRule* listrule_;
   Tag* tag_;
   Severity* severity_;
-  OverPaths* overpaths_;
-  PathSpecific* pathspecific_;
+  PathQuantifier* pathquantifier_;
   IStmnt* istmnt_;
   IExpr* iexpr_;
   Expr* expr_;
   ListExpr* listexpr_;
-  Type* type_;
-  Param* param_;
 } YYSTYPE;
 
 RuleSet* pRuleSet(FILE *inp);
@@ -62,10 +56,8 @@ Tag* pTag(FILE *inp);
 Tag* pTag(const char *str);
 Severity* pSeverity(FILE *inp);
 Severity* pSeverity(const char *str);
-OverPaths* pOverPaths(FILE *inp);
-OverPaths* pOverPaths(const char *str);
-PathSpecific* pPathSpecific(FILE *inp);
-PathSpecific* pPathSpecific(const char *str);
+PathQuantifier* pPathQuantifier(FILE *inp);
+PathQuantifier* pPathQuantifier(const char *str);
 IStmnt* pIStmnt(FILE *inp);
 IStmnt* pIStmnt(const char *str);
 IExpr* pIExpr(FILE *inp);
@@ -74,10 +66,6 @@ Expr* pExpr(FILE *inp);
 Expr* pExpr(const char *str);
 ListExpr* pListExpr(FILE *inp);
 ListExpr* pListExpr(const char *str);
-Type* pType(FILE *inp);
-Type* pType(const char *str);
-Param* pParam(FILE *inp);
-Param* pParam(const char *str);
 
 
 
@@ -115,8 +103,14 @@ Param* pParam(const char *str);
 #define _SYMB_30 289
 #define _SYMB_31 290
 #define _SYMB_32 291
-#define _STRING_ 292
-#define _INTEGER_ 293
+#define _SYMB_33 292
+#define _SYMB_34 293
+#define _SYMB_35 294
+#define _SYMB_36 295
+#define _SYMB_37 296
+#define _SYMB_38 297
+#define _STRING_ 298
+#define _INTEGER_ 299
 
 extern YYSTYPE yylval;
 

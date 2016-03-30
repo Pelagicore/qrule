@@ -14,18 +14,18 @@ public:
 
     ~NodeWrapper();
 
-    void addChild(const NodeWrapper *node);
+    void addChild(NodeWrapper *node);
     const QStringRef getValue();
     const QStringRef getValueType();
     const QStringRef getNodeType();
     const QStringRef getSource();
     const quint32 getRow();
     const quint32 getCol();
-    const QList<const NodeWrapper *>& getChildren();
+    const QList<NodeWrapper *>& getChildren();
     const QList<QStringRef>& getTokens();
 
 private:
-    QList<const NodeWrapper *> children;
+    QList<NodeWrapper *> children;
     const QList<QStringRef> tokens;
     const QStringRef value;
     const QStringRef valueType;

@@ -279,67 +279,53 @@ RetType* PrintAbsyn::visitSevCritical(SevCritical* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitOverPaths(OverPaths*p) {} //abstract class
+RetType* PrintAbsyn::visitPathQuantifier(PathQuantifier*p) {} //abstract class
 
-RetType* PrintAbsyn::visitAll(All* p)
+RetType* PrintAbsyn::visitAG(AG* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("AG");
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitAF(AF* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("AF");
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitAX(AX* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("AX");
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitAU(AU* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
   render('A');
-  _i_ = 0; p->pathspecific_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-RetType* PrintAbsyn::visitExist(Exist* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('E');
-  _i_ = 0; p->pathspecific_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-RetType* PrintAbsyn::visitPathSpecific(PathSpecific*p) {} //abstract class
-
-RetType* PrintAbsyn::visitFuture(Future* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('F');
-  _i_ = 0; p->expr_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-RetType* PrintAbsyn::visitGlobally(Globally* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('G');
-  _i_ = 0; p->expr_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-RetType* PrintAbsyn::visitUntil(Until* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
   _i_ = 0; p->expr_1->accept(this);
   render('U');
   _i_ = 0; p->expr_2->accept(this);
@@ -349,13 +335,54 @@ RetType* PrintAbsyn::visitUntil(Until* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitNext(Next* p)
+RetType* PrintAbsyn::visitEG(EG* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
 
-  render('X');
+  render("EG");
   _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitEF(EF* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("EF");
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitEX(EX* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("EX");
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitEU(EU* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render('E');
+  _i_ = 0; p->expr_1->accept(this);
+  render('U');
+  _i_ = 0; p->expr_2->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -382,6 +409,30 @@ RetType* PrintAbsyn::visitIENrChildren(IENrChildren* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("nrChildren");
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitIERow(IERow* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("row");
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitIECol(IECol* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  render("col");
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -498,7 +549,7 @@ RetType* PrintAbsyn::visitEFalse(EFalse* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitENodeVal(ENodeVal* p)
+RetType* PrintAbsyn::visitEValue(EValue* p)
 {
   int oldi = _i_;
   if (oldi > 10) render(_L_PAREN);
@@ -511,13 +562,26 @@ RetType* PrintAbsyn::visitENodeVal(ENodeVal* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEType(EType* p)
+RetType* PrintAbsyn::visitEValueType(EValueType* p)
 {
   int oldi = _i_;
   if (oldi > 10) render(_L_PAREN);
 
-  render("type");
-  _i_ = 0; p->type_->accept(this);
+  render("valueType");
+  visitString(p->string_);
+
+  if (oldi > 10) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+RetType* PrintAbsyn::visitENodeType(ENodeType* p)
+{
+  int oldi = _i_;
+  if (oldi > 10) render(_L_PAREN);
+
+  render("nodeType");
+  visitString(p->string_);
 
   if (oldi > 10) render(_R_PAREN);
 
@@ -619,12 +683,12 @@ RetType* PrintAbsyn::visitEOr(EOr* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEOverPaths(EOverPaths* p)
+RetType* PrintAbsyn::visitEPQ(EPQ* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
 
-  _i_ = 0; p->overpaths_->accept(this);
+  _i_ = 0; p->pathquantifier_->accept(this);
 
   if (oldi > 2) render(_R_PAREN);
 
@@ -638,35 +702,7 @@ RetType* PrintAbsyn::visitListExpr(ListExpr *listexpr)
     (*i)->accept(this);
     render("");
   }
-}RetType* PrintAbsyn::visitType(Type*p) {} //abstract class
-
-RetType* PrintAbsyn::visitTType(TType* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  visitString(p->string_);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-RetType* PrintAbsyn::visitParam(Param*p) {} //abstract class
-
-RetType* PrintAbsyn::visitPParam(PParam* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  visitString(p->string_);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-RetType* PrintAbsyn::visitInteger(Integer i)
+}RetType* PrintAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
   sprintf(tmp, "%d", i);
@@ -822,68 +858,86 @@ RetType* ShowAbsyn::visitSevCritical(SevCritical* p)
 {
   bufAppend("SevCritical");
 }
-RetType* ShowAbsyn::visitOverPaths(OverPaths* p) {} //abstract class
+RetType* ShowAbsyn::visitPathQuantifier(PathQuantifier* p) {} //abstract class
 
-RetType* ShowAbsyn::visitAll(All* p)
+RetType* ShowAbsyn::visitAG(AG* p)
 {
   bufAppend('(');
-  bufAppend("All");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->pathspecific_)  p->pathspecific_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-RetType* ShowAbsyn::visitExist(Exist* p)
-{
-  bufAppend('(');
-  bufAppend("Exist");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->pathspecific_)  p->pathspecific_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-RetType* ShowAbsyn::visitPathSpecific(PathSpecific* p) {} //abstract class
-
-RetType* ShowAbsyn::visitFuture(Future* p)
-{
-  bufAppend('(');
-  bufAppend("Future");
+  bufAppend("AG");
   bufAppend(' ');
   bufAppend('[');
   if (p->expr_)  p->expr_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitGlobally(Globally* p)
+RetType* ShowAbsyn::visitAF(AF* p)
 {
   bufAppend('(');
-  bufAppend("Globally");
+  bufAppend("AF");
   bufAppend(' ');
   bufAppend('[');
   if (p->expr_)  p->expr_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitUntil(Until* p)
+RetType* ShowAbsyn::visitAX(AX* p)
 {
   bufAppend('(');
-  bufAppend("Until");
+  bufAppend("AX");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->expr_)  p->expr_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+RetType* ShowAbsyn::visitAU(AU* p)
+{
+  bufAppend('(');
+  bufAppend("AU");
   bufAppend(' ');
   p->expr_1->accept(this);
   bufAppend(' ');
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitNext(Next* p)
+RetType* ShowAbsyn::visitEG(EG* p)
 {
   bufAppend('(');
-  bufAppend("Next");
+  bufAppend("EG");
   bufAppend(' ');
   bufAppend('[');
   if (p->expr_)  p->expr_->accept(this);
   bufAppend(']');
+  bufAppend(')');
+}
+RetType* ShowAbsyn::visitEF(EF* p)
+{
+  bufAppend('(');
+  bufAppend("EF");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->expr_)  p->expr_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+RetType* ShowAbsyn::visitEX(EX* p)
+{
+  bufAppend('(');
+  bufAppend("EX");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->expr_)  p->expr_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+RetType* ShowAbsyn::visitEU(EU* p)
+{
+  bufAppend('(');
+  bufAppend("EU");
+  bufAppend(' ');
+  p->expr_1->accept(this);
+  bufAppend(' ');
+  p->expr_2->accept(this);
   bufAppend(')');
 }
 RetType* ShowAbsyn::visitIStmnt(IStmnt* p) {} //abstract class
@@ -899,6 +953,14 @@ RetType* ShowAbsyn::visitIEInt(IEInt* p)
 RetType* ShowAbsyn::visitIENrChildren(IENrChildren* p)
 {
   bufAppend("IENrChildren");
+}
+RetType* ShowAbsyn::visitIERow(IERow* p)
+{
+  bufAppend("IERow");
+}
+RetType* ShowAbsyn::visitIECol(IECol* p)
+{
+  bufAppend("IECol");
 }
 RetType* ShowAbsyn::visitIExpr(IExpr* p) {} //abstract class
 
@@ -988,22 +1050,28 @@ RetType* ShowAbsyn::visitEFalse(EFalse* p)
 {
   bufAppend("EFalse");
 }
-RetType* ShowAbsyn::visitENodeVal(ENodeVal* p)
+RetType* ShowAbsyn::visitEValue(EValue* p)
 {
   bufAppend('(');
-  bufAppend("ENodeVal");
+  bufAppend("EValue");
   bufAppend(' ');
   visitString(p->string_);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEType(EType* p)
+RetType* ShowAbsyn::visitEValueType(EValueType* p)
 {
   bufAppend('(');
-  bufAppend("EType");
+  bufAppend("EValueType");
   bufAppend(' ');
-  bufAppend('[');
-  if (p->type_)  p->type_->accept(this);
-  bufAppend(']');
+  visitString(p->string_);
+  bufAppend(')');
+}
+RetType* ShowAbsyn::visitENodeType(ENodeType* p)
+{
+  bufAppend('(');
+  bufAppend("ENodeType");
+  bufAppend(' ');
+  visitString(p->string_);
   bufAppend(')');
 }
 RetType* ShowAbsyn::visitEParant(EParant* p)
@@ -1077,13 +1145,13 @@ RetType* ShowAbsyn::visitEOr(EOr* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEOverPaths(EOverPaths* p)
+RetType* ShowAbsyn::visitEPQ(EPQ* p)
 {
   bufAppend('(');
-  bufAppend("EOverPaths");
+  bufAppend("EPQ");
   bufAppend(' ');
   bufAppend('[');
-  if (p->overpaths_)  p->overpaths_->accept(this);
+  if (p->pathquantifier_)  p->pathquantifier_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -1096,26 +1164,6 @@ RetType* ShowAbsyn::visitListExpr(ListExpr *listexpr)
   }
 }
 
-RetType* ShowAbsyn::visitType(Type* p) {} //abstract class
-
-RetType* ShowAbsyn::visitTType(TType* p)
-{
-  bufAppend('(');
-  bufAppend("TType");
-  bufAppend(' ');
-  visitString(p->string_);
-  bufAppend(')');
-}
-RetType* ShowAbsyn::visitParam(Param* p) {} //abstract class
-
-RetType* ShowAbsyn::visitPParam(PParam* p)
-{
-  bufAppend('(');
-  bufAppend("PParam");
-  bufAppend(' ');
-  visitString(p->string_);
-  bufAppend(')');
-}
 RetType* ShowAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
