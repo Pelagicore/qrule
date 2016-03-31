@@ -214,6 +214,8 @@ public:
     void endVisit(DebuggerStatement *){ allEnd(); }
     void endVisit(UiObjectDefinition *);
 
+    NodeWrapper* getWrappedRoot();
+
 private:
     QString indent = "";
 

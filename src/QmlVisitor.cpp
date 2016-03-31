@@ -662,3 +662,7 @@ void QmlVisitor::allEnd() {
         nodeStack.pop();
     }
 }
+
+NodeWrapper* QmlVisitor::getWrappedRoot() {
+    return nodeStack.first();
+}

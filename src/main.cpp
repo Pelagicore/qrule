@@ -145,12 +145,12 @@ int main(int argv, char *argc[]) {
             }
         }
 
-        KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, parser.ast());
 
         // Debugging stuff -----------
         QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
         parser.ast()->accept(&qmlVisitor);
         // ---------------------------
+        KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, qmlVisitor.getWrappedRoot());
 
         kruleTree->accept(&kruleVisitor);
         ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, kruleVisitor.getFailures());
