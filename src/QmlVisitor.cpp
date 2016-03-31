@@ -191,43 +191,176 @@ bool QmlVisitor::visit(UiPragma *exp) {
 
 bool QmlVisitor::visit(UiPublicMember *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+    tokens.append(toQStringRef(exp->colonToken));
+    tokens.append(toQStringRef(exp->defaultToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+    tokens.append(toQStringRef(exp->propertyToken));
+    tokens.append(toQStringRef(exp->readonlyToken));
+    tokens.append(toQStringRef(exp->typeModifierToken));
+    tokens.append(toQStringRef(exp->typeToken));
+    NodeWrapper *n = new NodeWrapper(exp->memberType.toString(), QString("String"), QString("PublicMember"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(UiObjectBinding *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->colonToken));
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectBinding"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(UiParameterList *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->commaToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+    tokens.append(toQStringRef(exp->propertyTypeToken));
+    NodeWrapper *p = new NodeWrapper(QString(), QString(), QString("Parameter"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("Name"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), QList<QStringRef>());
+    NodeWrapper *t = new NodeWrapper(exp->type.toString(), QString("String"), QString("Type"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), QList<QStringRef>());
+    p->addChild(n);
+    p->addChild(t);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(p);
+    }
     return true; }
 
 bool QmlVisitor::visit(UiObjectMemberList *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    const QString nodeType = QString("ObjectMemberList");
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        NodeWrapper *t = nodeStack.top();
+        t->addChild(n);
+
+        if (t->getNodeType().compare(nodeType) != 0) {
+            nodeStack.push(n);
+        }
+    } else {
+        nodeStack.push(n);
+    }
     return true; }
 
 bool QmlVisitor::visit(UiArrayMemberList *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    const QString nodeType = QString("ArrayMemberList");
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        NodeWrapper *t = nodeStack.top();
+        t->addChild(n);
+
+        if (t->getNodeType().compare(nodeType) != 0) {
+            nodeStack.push(n);
+        }
+    } else {
+        nodeStack.push(n);
+    }
     return true; }
 
 bool QmlVisitor::visit(VariableStatement *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->declarationKindToken));
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("VariableStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(ThisExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->thisToken));
+    NodeWrapper *n = new NodeWrapper(QString("this"), QString("Token"), QString("ThisExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(NullExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->nullToken));
+    NodeWrapper *n = new NodeWrapper(QString("null"), QString("Token"), QString("NullExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(TrueLiteral *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->trueToken));
+    NodeWrapper *n = new NodeWrapper(QString("true"), QString("bool"), QString("TrueLiteral"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true;
 }
 
 bool QmlVisitor::visit(FalseLiteral *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->falseToken));
+    NodeWrapper *n = new NodeWrapper(QString("false"), QString("bool"), QString("FalseLiteral"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true;
 }
 
