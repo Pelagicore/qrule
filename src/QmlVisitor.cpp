@@ -506,126 +506,609 @@ bool QmlVisitor::visit(VariableDeclarationList *exp) {
 
 bool QmlVisitor::visit(VariableDeclaration *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String"), QString("VariableDeclaration"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
+
     return true; }
 
 bool QmlVisitor::visit(EmptyStatement *exp) {
     debug(exp);
+    //ok
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("EmptyStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(ExpressionStatement *exp) {
     debug(exp);
+    //ok
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ExpressionStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(IfStatement *exp) {
     debug(exp);
+    //ok
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->ifToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+    tokens.append(toQStringRef(exp->elseToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("IfStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(DoWhileStatement *exp) {
     debug(exp);
+    //ok
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->whileToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+    tokens.append(toQStringRef(exp->semicolonToken));
+    tokens.append(toQStringRef(exp->doToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("DoWhileStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(WhileStatement *exp) {
     debug(exp);
+    //ok
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->whileToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("WhileStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(ForStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->forToken));
+    tokens.append(toQStringRef(exp->firstSemicolonToken));
+    tokens.append(toQStringRef(exp->secondSemicolonToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ForStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(LocalForStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->forToken));
+    tokens.append(toQStringRef(exp->firstSemicolonToken));
+    tokens.append(toQStringRef(exp->varToken));
+    tokens.append(toQStringRef(exp->secondSemicolonToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("LocalForStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(ForEachStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->forToken));
+    tokens.append(toQStringRef(exp->inToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ForEachStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(LocalForEachStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->forToken));
+    tokens.append(toQStringRef(exp->inToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->varToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("LocalForEachStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(ContinueStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+    tokens.append(toQStringRef(exp->continueToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("ContinueStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(BreakStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+    tokens.append(toQStringRef(exp->breakToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("BreakStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(ReturnStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+    tokens.append(toQStringRef(exp->returnToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ReturnStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(WithStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+    tokens.append(toQStringRef(exp->withToken));
+
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("WithStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(SwitchStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+    tokens.append(toQStringRef(exp->switchToken));
+
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("SwitchStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(CaseBlock *exp) {
     debug(exp);
+    //maybe remove and add all children to SwitchStatement instead
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->lbraceToken));
+    tokens.append(toQStringRef(exp->rbraceToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseBlock"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(CaseClauses *exp) {
     debug(exp);
+    //Holder for lists of CaseClause
+    QList<QStringRef> tokens;
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClauses"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+
     return true; }
 
 bool QmlVisitor::visit(CaseClause *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->colonToken));
+    tokens.append(toQStringRef(exp->caseToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClause"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(DefaultClause *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->colonToken));
+    tokens.append(toQStringRef(exp->defaultToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("DefaultClause"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(LabelledStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->colonToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("LabelledStatement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(ThrowStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->semicolonToken));
+    tokens.append(toQStringRef(exp->throwToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Throw"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(TryStatement *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->tryToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Try"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(Catch *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->catchToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String"), QString("Catch"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(Finally *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->finallyToken));
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Finally"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(FunctionDeclaration *exp) {
     debug(exp);
+    // should be empty, removed from wrapped-AST.
     return true; }
 
 bool QmlVisitor::visit(FunctionExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->functionToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+    tokens.append(toQStringRef(exp->lbraceToken));
+    tokens.append(toQStringRef(exp->rparenToken));
+    tokens.append(toQStringRef(exp->lparenToken));
+    tokens.append(toQStringRef(exp->rbraceToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String") , QString("FunctionExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(FormalParameterList *exp) {
     debug(exp);
+    // should add children to parent.
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->commaToken));
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("FormalParameterList"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    //nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(Program *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("Program"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(SourceElements *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("SourceElements"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(FunctionSourceElement *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionSourceElement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(StatementSourceElement *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("StatementSourceElement"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
+    /*
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->identifierToken));
+
+    NodeWrapper *n = new NodeWrapper(exp->name, QStringRef("String"), QStringRef("QualifiedId"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    nodeStack.last()->addChild(n);
+    nodeStack.push(n);
+    */
+
     return true; }
 
 bool QmlVisitor::visit(DebuggerStatement *exp) {
