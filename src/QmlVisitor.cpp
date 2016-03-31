@@ -763,22 +763,94 @@ bool QmlVisitor::visit(UnaryMinusExpression *exp) {
 
 bool QmlVisitor::visit(TildeExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+
+    tokens.append(toQStringRef(exp->tildeToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("TildeExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(NotExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+
+    tokens.append(toQStringRef(exp->notToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("NotExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
     return true; }
 
 bool QmlVisitor::visit(BinaryExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->operatorToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("BinaryExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(ConditionalExpression *exp) {
     debug(exp);
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->questionToken));
+    tokens.append(toQStringRef(exp->colonToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ConditionalExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(Block *exp) {
     debug(exp);
+
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->lbraceToken));
+    tokens.append(toQStringRef(exp->rbraceToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Block"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+
+
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
     return true; }
 
 bool QmlVisitor::visit(StatementList *exp) {
@@ -787,6 +859,23 @@ bool QmlVisitor::visit(StatementList *exp) {
 
 bool QmlVisitor::visit(VariableDeclarationList *exp) {
     debug(exp);
+    // not done crap
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->commaToken));
+
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("VariableDeclaration"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+
+
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    nodeStack.push(n);
+
+
     return true; }
 
 bool QmlVisitor::visit(VariableDeclaration *exp) {
@@ -914,7 +1003,7 @@ bool QmlVisitor::visit(WhileStatement *exp) {
 
 bool QmlVisitor::visit(ForStatement *exp) {
     debug(exp);
-
+    //ok
     QList<QStringRef> tokens;
     tokens.append(toQStringRef(exp->forToken));
     tokens.append(toQStringRef(exp->firstSemicolonToken));
