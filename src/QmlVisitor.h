@@ -121,98 +121,99 @@ public:
     bool visit(IdentifierExpression *);
     bool visit(UiObjectDefinition *);
 
-    void endVisit(UiProgram *){ allEnd(); }
-    void endVisit(UiImport *){ allEnd(); }
-    void endVisit(UiHeaderItemList *){ allEnd(); }
-    void endVisit(UiPragma *){ allEnd(); }
-    void endVisit(UiPublicMember *){ allEnd(); }
-    void endVisit(UiSourceElement *){ allEnd(); }
-    void endVisit(UiObjectInitializer *){ allEnd(); }
-    void endVisit(UiObjectBinding *){ allEnd(); }
+    void endVisit(UiProgram *);
+    void endVisit(UiImport *);
+    void endVisit(UiHeaderItemList *);
+    void endVisit(UiPragma *);
+    void endVisit(UiPublicMember *);
+    void endVisit(UiSourceElement *);
+    void endVisit(UiObjectInitializer *);
+    void endVisit(UiObjectBinding *);
     void endVisit(UiScriptBinding *);
-    void endVisit(UiArrayBinding *){ allEnd(); }
-    void endVisit(UiParameterList *){ allEnd(); }
-    void endVisit(UiObjectMemberList *){ allEnd(); }
-    void endVisit(UiArrayMemberList *){ allEnd(); }
-    void endVisit(UiQualifiedId *){ allEnd(); }
-    void endVisit(UiQualifiedPragmaId *){ allEnd(); }
-    void endVisit(ThisExpression *){ allEnd(); }
-    void endVisit(IdentifierExpression *){ allEnd(); }
-    void endVisit(NullExpression *){ allEnd(); }
-    void endVisit(TrueLiteral *){ allEnd(); }
-    void endVisit(FalseLiteral *){ allEnd(); }
-    void endVisit(StringLiteral *){ allEnd(); }
-    void endVisit(NumericLiteral *){ allEnd(); }
-    void endVisit(RegExpLiteral *){ allEnd(); }
-    void endVisit(ArrayLiteral *){ allEnd(); }
-    void endVisit(ObjectLiteral *){ allEnd(); }
-    void endVisit(ElementList *){ allEnd(); }
-    void endVisit(Elision *){ allEnd(); }
-    void endVisit(PropertyAssignmentList *){ allEnd(); }
-    void endVisit(PropertyNameAndValue *){ allEnd(); }
-    void endVisit(PropertyGetterSetter *){ allEnd(); }
-    void endVisit(NestedExpression *){ allEnd(); }
-    void endVisit(IdentifierPropertyName *){ allEnd(); }
-    void endVisit(StringLiteralPropertyName *){ allEnd(); }
-    void endVisit(NumericLiteralPropertyName *){ allEnd(); }
-    void endVisit(ArrayMemberExpression *){ allEnd(); }
-    void endVisit(FieldMemberExpression *){ allEnd(); }
-    void endVisit(NewMemberExpression *){ allEnd(); }
-    void endVisit(NewExpression *){ allEnd(); }
-    void endVisit(CallExpression *){ allEnd(); }
-    void endVisit(ArgumentList *){ allEnd(); }
-    void endVisit(PostIncrementExpression *){ allEnd(); }
-    void endVisit(PostDecrementExpression *){ allEnd(); }
-    void endVisit(DeleteExpression *){ allEnd(); }
-    void endVisit(VoidExpression *){ allEnd(); }
-    void endVisit(TypeOfExpression *){ allEnd(); }
-    void endVisit(PreIncrementExpression *){ allEnd(); }
-    void endVisit(PreDecrementExpression *){ allEnd(); }
-    void endVisit(UnaryPlusExpression *){ allEnd(); }
-    void endVisit(UnaryMinusExpression *){ allEnd(); }
-    void endVisit(TildeExpression *){ allEnd(); }
-    void endVisit(NotExpression *){ allEnd(); }
-    void endVisit(BinaryExpression *){ allEnd(); }
-    void endVisit(ConditionalExpression *){ allEnd(); }
-    void endVisit(Expression *){ allEnd(); }
-    void endVisit(Block *){ allEnd(); }
-    void endVisit(StatementList *){ allEnd(); }
-    void endVisit(VariableStatement *){ allEnd(); }
-    void endVisit(VariableDeclarationList *){ allEnd(); }
-    void endVisit(VariableDeclaration *){ allEnd(); }
-    void endVisit(EmptyStatement *){ allEnd(); }
-    void endVisit(ExpressionStatement *){ allEnd(); }
-    void endVisit(IfStatement *){ allEnd(); }
-    void endVisit(DoWhileStatement *){ allEnd(); }
-    void endVisit(WhileStatement *){ allEnd(); }
-    void endVisit(ForStatement *){ allEnd(); }
-    void endVisit(LocalForStatement *){ allEnd(); }
-    void endVisit(ForEachStatement *){ allEnd(); }
-    void endVisit(LocalForEachStatement *){ allEnd(); }
-    void endVisit(ContinueStatement *){ allEnd(); }
-    void endVisit(BreakStatement *){ allEnd(); }
-    void endVisit(ReturnStatement *){ allEnd(); }
-    void endVisit(WithStatement *){ allEnd(); }
-    void endVisit(SwitchStatement *){ allEnd(); }
-    void endVisit(CaseBlock *){ allEnd(); }
-    void endVisit(CaseClauses *){ allEnd(); }
-    void endVisit(CaseClause *){ allEnd(); }
-    void endVisit(DefaultClause *){ allEnd(); }
-    void endVisit(LabelledStatement *){ allEnd(); }
-    void endVisit(ThrowStatement *){ allEnd(); }
-    void endVisit(TryStatement *){ allEnd(); }
-    void endVisit(Catch *){ allEnd(); }
-    void endVisit(Finally *){ allEnd(); }
-    void endVisit(FunctionDeclaration *){ allEnd(); }
-    void endVisit(FunctionExpression *){ allEnd(); }
-    void endVisit(FormalParameterList *){ allEnd(); }
-    void endVisit(FunctionBody *){ allEnd(); }
-    void endVisit(Program *){ allEnd(); }
-    void endVisit(SourceElements *){ allEnd(); }
-    void endVisit(FunctionSourceElement *){ allEnd(); }
-    void endVisit(StatementSourceElement *){ allEnd(); }
-    void endVisit(DebuggerStatement *){ allEnd(); }
+    void endVisit(UiArrayBinding *);
+    void endVisit(UiParameterList *);
+    void endVisit(UiObjectMemberList *);
+    void endVisit(UiArrayMemberList *);
+    void endVisit(UiQualifiedId *);
+    void endVisit(UiQualifiedPragmaId *);
+    void endVisit(ThisExpression *);
+    void endVisit(IdentifierExpression *);
+    void endVisit(NullExpression *);
+    void endVisit(TrueLiteral *);
+    void endVisit(FalseLiteral *);
+    void endVisit(StringLiteral *);
+    void endVisit(NumericLiteral *);
+    void endVisit(RegExpLiteral *);
+    void endVisit(ArrayLiteral *);
+    void endVisit(ObjectLiteral *);
+    void endVisit(ElementList *);
+    void endVisit(Elision *);
+    void endVisit(PropertyAssignmentList *);
+    void endVisit(PropertyNameAndValue *);
+    void endVisit(PropertyGetterSetter *);
+    void endVisit(NestedExpression *);
+    void endVisit(IdentifierPropertyName *);
+    void endVisit(StringLiteralPropertyName *);
+    void endVisit(NumericLiteralPropertyName *);
+    void endVisit(ArrayMemberExpression *);
+    void endVisit(FieldMemberExpression *);
+    void endVisit(NewMemberExpression *);
+    void endVisit(NewExpression *);
+    void endVisit(CallExpression *);
+    void endVisit(ArgumentList *);
+    void endVisit(PostIncrementExpression *);
+    void endVisit(PostDecrementExpression *);
+    void endVisit(DeleteExpression *);
+    void endVisit(VoidExpression *);
+    void endVisit(TypeOfExpression *);
+    void endVisit(PreIncrementExpression *);
+    void endVisit(PreDecrementExpression *);
+    void endVisit(UnaryPlusExpression *);
+    void endVisit(UnaryMinusExpression *);
+    void endVisit(TildeExpression *);
+    void endVisit(NotExpression *);
+    void endVisit(BinaryExpression *);
+    void endVisit(ConditionalExpression *);
+    void endVisit(Expression *);
+    void endVisit(Block *);
+    void endVisit(StatementList *);
+    void endVisit(VariableStatement *);
+    void endVisit(VariableDeclarationList *);
+    void endVisit(VariableDeclaration *);
+    void endVisit(EmptyStatement *);
+    void endVisit(ExpressionStatement *);
+    void endVisit(IfStatement *);
+    void endVisit(DoWhileStatement *);
+    void endVisit(WhileStatement *);
+    void endVisit(ForStatement *);
+    void endVisit(LocalForStatement *);
+    void endVisit(ForEachStatement *);
+    void endVisit(LocalForEachStatement *);
+    void endVisit(ContinueStatement *);
+    void endVisit(BreakStatement *);
+    void endVisit(ReturnStatement *);
+    void endVisit(WithStatement *);
+    void endVisit(SwitchStatement *);
+    void endVisit(CaseBlock *);
+    void endVisit(CaseClauses *);
+    void endVisit(CaseClause *);
+    void endVisit(DefaultClause *);
+    void endVisit(LabelledStatement *);
+    void endVisit(ThrowStatement *);
+    void endVisit(TryStatement *);
+    void endVisit(Catch *);
+    void endVisit(Finally *);
+    void endVisit(FunctionDeclaration *);
+    void endVisit(FunctionExpression *);
+    void endVisit(FormalParameterList *);
+    void endVisit(FunctionBody *);
+    void endVisit(Program *);
+    void endVisit(SourceElements *);
+    void endVisit(FunctionSourceElement *);
+    void endVisit(StatementSourceElement *);
+    void endVisit(DebuggerStatement *);
     void endVisit(UiObjectDefinition *);
+
 
     NodeWrapper* getWrappedRoot();
 
@@ -225,14 +226,19 @@ private:
 
     QString filename;
 
+    NodeWrapper *rootNode = nullptr;
     QStack<NodeWrapper*> nodeStack;
+    void pushStack(NodeWrapper*);
+    void popStack();
+
+    void addWrapper(NodeWrapper *n);
 
     QStringRef toQStringRef(const SourceLocation &sl);
     const QStringRef getSource(const QQmlJS::AST::Node *);
     const QStringRef printable(const SourceLocation &start, const SourceLocation &end);
+
     void debug(const QQmlJS::AST::Node *);
     void deIndent();
-    void allEnd();
     void expandIndent();
 };
 
