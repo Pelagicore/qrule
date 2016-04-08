@@ -228,8 +228,10 @@ private:
 
     NodeWrapper *rootNode = nullptr;
     QStack<NodeWrapper*> nodeStack;
+    QStack<bool> shouldPopStack;
     void pushStack(NodeWrapper*);
-    void popStack();
+    void commonEndVisit();
+    void dontPopAtEnd();
 
     void addWrapper(NodeWrapper *n);
 

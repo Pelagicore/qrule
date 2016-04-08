@@ -3,21 +3,23 @@
 
 bool QmlVisitor::visit(UiObjectDefinition *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
 
-void QmlVisitor::endVisit(UiObjectDefinition*) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiObjectDefinition*) { commonEndVisit(); }
 
 bool QmlVisitor::visit(IdentifierExpression *exp) {
     debug(exp);
-
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(IdentifierExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(IdentifierExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiScriptBinding *exp)  {
     debug(exp);
+    dontPopAtEnd();
     return true;
 }
-void QmlVisitor::endVisit(UiScriptBinding *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiScriptBinding *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FunctionBody *exp) {
     debug(exp);
@@ -33,7 +35,7 @@ bool QmlVisitor::visit(FunctionBody *exp) {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(FunctionBody *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FunctionBody *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiImport *exp) {
     debug(exp);
@@ -54,7 +56,7 @@ bool QmlVisitor::visit(UiImport *exp) {
 
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiImport *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiImport *) { commonEndVisit(); }
 
 QStringRef QmlVisitor::toQStringRef(const SourceLocation &sl) {
     return QStringRef(&_code, sl.offset, sl.length);
@@ -75,7 +77,7 @@ bool QmlVisitor::visit(UiQualifiedId *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiQualifiedId *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiQualifiedId *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiObjectInitializer *exp) {
     debug(exp);
@@ -92,10 +94,11 @@ bool QmlVisitor::visit(UiObjectInitializer *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiObjectInitializer *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiObjectInitializer *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiObjectMember *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
 
 bool QmlVisitor::visit(UiQualifiedPragmaId *exp) {
@@ -112,12 +115,13 @@ bool QmlVisitor::visit(UiQualifiedPragmaId *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiQualifiedPragmaId *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiQualifiedPragmaId *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiSourceElement *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(UiSourceElement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiSourceElement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiArrayBinding *exp) {
     debug(exp);
@@ -135,7 +139,7 @@ bool QmlVisitor::visit(UiArrayBinding *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiArrayBinding *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiArrayBinding *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiProgram *exp) {
     debug(exp);
@@ -150,7 +154,7 @@ bool QmlVisitor::visit(UiProgram *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiProgram *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiProgram *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiHeaderItemList *exp) {
     debug(exp);
@@ -166,12 +170,14 @@ bool QmlVisitor::visit(UiHeaderItemList *exp) {
 
         if (t->getNodeType().compare(nodeType) != 0) {
             pushStack(n);
+        } else {
+            dontPopAtEnd();
         }
     } else {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(UiHeaderItemList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiHeaderItemList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiPragma *exp) {
     debug(exp);
@@ -186,7 +192,7 @@ bool QmlVisitor::visit(UiPragma *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiPragma *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiPragma *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiPublicMember *exp) {
     debug(exp);
@@ -208,7 +214,7 @@ bool QmlVisitor::visit(UiPublicMember *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiPublicMember *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiPublicMember *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiObjectBinding *exp) {
     debug(exp);
@@ -223,7 +229,7 @@ bool QmlVisitor::visit(UiObjectBinding *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiObjectBinding *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiObjectBinding *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiParameterList *exp) {
     debug(exp);
@@ -250,7 +256,7 @@ bool QmlVisitor::visit(UiParameterList *exp) {
     }
     pushStack(p);
     return true; }
-void QmlVisitor::endVisit(UiParameterList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiParameterList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiObjectMemberList *exp) {
     debug(exp);
@@ -266,12 +272,14 @@ bool QmlVisitor::visit(UiObjectMemberList *exp) {
 
         if (t->getNodeType().compare(nodeType) != 0) {
             pushStack(n);
+        } else {
+            dontPopAtEnd();
         }
     } else {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(UiObjectMemberList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiObjectMemberList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiArrayMemberList *exp) {
     debug(exp);
@@ -287,12 +295,14 @@ bool QmlVisitor::visit(UiArrayMemberList *exp) {
 
         if (t->getNodeType().compare(nodeType) != 0) {
             pushStack(n);
+        } else {
+            dontPopAtEnd();
         }
     } else {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(UiArrayMemberList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UiArrayMemberList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(VariableStatement *exp) {
     debug(exp);
@@ -308,7 +318,7 @@ bool QmlVisitor::visit(VariableStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(VariableStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(VariableStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ThisExpression *exp) {
     debug(exp);
@@ -324,7 +334,7 @@ bool QmlVisitor::visit(ThisExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ThisExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ThisExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NullExpression *exp) {
     debug(exp);
@@ -340,7 +350,7 @@ bool QmlVisitor::visit(NullExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(NullExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NullExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(TrueLiteral *exp) {
     debug(exp);
@@ -356,7 +366,7 @@ bool QmlVisitor::visit(TrueLiteral *exp) {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(TrueLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(TrueLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FalseLiteral *exp) {
     debug(exp);
@@ -372,7 +382,7 @@ bool QmlVisitor::visit(FalseLiteral *exp) {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(FalseLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FalseLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(StringLiteral *exp) {
     debug(exp);
@@ -387,7 +397,7 @@ bool QmlVisitor::visit(StringLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(StringLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(StringLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NumericLiteral *exp) {
     debug(exp);
@@ -402,7 +412,7 @@ bool QmlVisitor::visit(NumericLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NumericLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NumericLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(RegExpLiteral *exp) {
     debug(exp);
@@ -417,7 +427,7 @@ bool QmlVisitor::visit(RegExpLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(RegExpLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(RegExpLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ArrayLiteral *exp) {
     debug(exp);
@@ -434,7 +444,7 @@ bool QmlVisitor::visit(ArrayLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(ArrayLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ArrayLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ObjectLiteral *exp) {
     debug(exp);
@@ -450,17 +460,19 @@ bool QmlVisitor::visit(ObjectLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(ObjectLiteral *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ObjectLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ElementList *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(ElementList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ElementList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(Elision *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(Elision *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(Elision *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(PropertyAssignmentList *exp) {
     debug(exp);
@@ -476,12 +488,14 @@ bool QmlVisitor::visit(PropertyAssignmentList *exp) {
 
         if (t->getNodeType().compare(nodeType) != 0) {
             pushStack(n);
+        } else {
+            dontPopAtEnd();
         }
     } else {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(PropertyAssignmentList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(PropertyAssignmentList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(PropertyGetterSetter *exp) {
     debug(exp);
@@ -500,8 +514,8 @@ bool QmlVisitor::visit(PropertyGetterSetter *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PropertyGetterSetter *) { deIndent(); popStack(); }
-void QmlVisitor::endVisit(PropertyNameAndValue *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(PropertyGetterSetter *) { commonEndVisit(); }
+void QmlVisitor::endVisit(PropertyNameAndValue *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NestedExpression *exp) {
     debug(exp);
@@ -517,7 +531,7 @@ bool QmlVisitor::visit(NestedExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NestedExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NestedExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(IdentifierPropertyName *exp) {
     debug(exp);
@@ -532,7 +546,7 @@ bool QmlVisitor::visit(IdentifierPropertyName *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(IdentifierPropertyName *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(IdentifierPropertyName *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(StringLiteralPropertyName *exp) {
     debug(exp);
@@ -547,7 +561,7 @@ bool QmlVisitor::visit(StringLiteralPropertyName *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(StringLiteralPropertyName *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(StringLiteralPropertyName *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NumericLiteralPropertyName *exp) {
     debug(exp);
@@ -562,7 +576,7 @@ bool QmlVisitor::visit(NumericLiteralPropertyName *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NumericLiteralPropertyName *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NumericLiteralPropertyName *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ArrayMemberExpression *exp) {
     debug(exp);
@@ -578,7 +592,7 @@ bool QmlVisitor::visit(ArrayMemberExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(ArrayMemberExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ArrayMemberExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FieldMemberExpression *exp) {
     debug(exp);
@@ -594,7 +608,7 @@ bool QmlVisitor::visit(FieldMemberExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(FieldMemberExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FieldMemberExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NewMemberExpression *exp) {
     debug(exp);
@@ -611,7 +625,7 @@ bool QmlVisitor::visit(NewMemberExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NewMemberExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NewMemberExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NewExpression *exp) {
     debug(exp);
@@ -626,7 +640,7 @@ bool QmlVisitor::visit(NewExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NewExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NewExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(CallExpression *exp) {
     debug(exp);
@@ -642,7 +656,7 @@ bool QmlVisitor::visit(CallExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(CallExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(CallExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ArgumentList *exp) {
     debug(exp);
@@ -658,12 +672,14 @@ bool QmlVisitor::visit(ArgumentList *exp) {
 
         if (t->getNodeType().compare(nodeType) != 0) {
             pushStack(n);
+        } else {
+            dontPopAtEnd();
         }
     } else {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(ArgumentList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ArgumentList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(PostIncrementExpression *exp) {
     debug(exp);
@@ -678,7 +694,7 @@ bool QmlVisitor::visit(PostIncrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PostIncrementExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(PostIncrementExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(PostDecrementExpression *exp) {
     debug(exp);
@@ -693,7 +709,7 @@ bool QmlVisitor::visit(PostDecrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PostDecrementExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(PostDecrementExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(DeleteExpression *exp) {
     debug(exp);
@@ -708,7 +724,7 @@ bool QmlVisitor::visit(DeleteExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(DeleteExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(DeleteExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(VoidExpression *exp) {
     debug(exp);
@@ -723,7 +739,7 @@ bool QmlVisitor::visit(VoidExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(VoidExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(VoidExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(TypeOfExpression *exp) {
     debug(exp);
@@ -738,7 +754,7 @@ bool QmlVisitor::visit(TypeOfExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(TypeOfExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(TypeOfExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(PreIncrementExpression *exp) {
     debug(exp);
@@ -753,7 +769,7 @@ bool QmlVisitor::visit(PreIncrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PreIncrementExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(PreIncrementExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(PreDecrementExpression *exp) {
     debug(exp);
@@ -768,7 +784,7 @@ bool QmlVisitor::visit(PreDecrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PreDecrementExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(PreDecrementExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UnaryPlusExpression *exp) {
     debug(exp);
@@ -783,7 +799,7 @@ bool QmlVisitor::visit(UnaryPlusExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UnaryPlusExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UnaryPlusExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UnaryMinusExpression *exp) {
     debug(exp);
@@ -794,8 +810,9 @@ bool QmlVisitor::visit(UnaryMinusExpression *exp) {
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);
     addWrapper(n);
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(UnaryMinusExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(UnaryMinusExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(TildeExpression *exp) {
     debug(exp);
@@ -814,7 +831,7 @@ bool QmlVisitor::visit(TildeExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(TildeExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(TildeExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(NotExpression *exp) {
     debug(exp);
@@ -833,7 +850,7 @@ bool QmlVisitor::visit(NotExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(NotExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(NotExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(BinaryExpression *exp) {
     debug(exp);
@@ -851,7 +868,7 @@ bool QmlVisitor::visit(BinaryExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(BinaryExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(BinaryExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ConditionalExpression *exp) {
     debug(exp);
@@ -870,7 +887,7 @@ bool QmlVisitor::visit(ConditionalExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ConditionalExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ConditionalExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(Block *exp) {
     debug(exp);
@@ -892,12 +909,13 @@ bool QmlVisitor::visit(Block *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(Block *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(Block *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(StatementList *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(StatementList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(StatementList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(VariableDeclarationList *exp) {
     debug(exp);
@@ -919,7 +937,7 @@ bool QmlVisitor::visit(VariableDeclarationList *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(VariableDeclarationList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(VariableDeclarationList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(VariableDeclaration *exp) {
     debug(exp);
@@ -940,7 +958,7 @@ bool QmlVisitor::visit(VariableDeclaration *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(VariableDeclaration *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(VariableDeclaration *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(EmptyStatement *exp) {
     debug(exp);
@@ -960,7 +978,7 @@ bool QmlVisitor::visit(EmptyStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(EmptyStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(EmptyStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ExpressionStatement *exp) {
     debug(exp);
@@ -980,7 +998,7 @@ bool QmlVisitor::visit(ExpressionStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ExpressionStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ExpressionStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(IfStatement *exp) {
     debug(exp);
@@ -1003,7 +1021,7 @@ bool QmlVisitor::visit(IfStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(IfStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(IfStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(DoWhileStatement *exp) {
     debug(exp);
@@ -1026,7 +1044,7 @@ bool QmlVisitor::visit(DoWhileStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(DoWhileStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(DoWhileStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(WhileStatement *exp) {
     debug(exp);
@@ -1048,7 +1066,7 @@ bool QmlVisitor::visit(WhileStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(WhileStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(WhileStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ForStatement *exp) {
     debug(exp);
@@ -1072,7 +1090,7 @@ bool QmlVisitor::visit(ForStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ForStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ForStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(LocalForStatement *exp) {
     debug(exp);
@@ -1096,7 +1114,7 @@ bool QmlVisitor::visit(LocalForStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(LocalForStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(LocalForStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ForEachStatement *exp) {
     debug(exp);
@@ -1119,7 +1137,7 @@ bool QmlVisitor::visit(ForEachStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ForEachStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ForEachStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(LocalForEachStatement *exp) {
     debug(exp);
@@ -1142,7 +1160,7 @@ bool QmlVisitor::visit(LocalForEachStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(LocalForEachStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(LocalForEachStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ContinueStatement *exp) {
     debug(exp);
@@ -1163,7 +1181,7 @@ bool QmlVisitor::visit(ContinueStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ContinueStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ContinueStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(BreakStatement *exp) {
     debug(exp);
@@ -1185,7 +1203,7 @@ bool QmlVisitor::visit(BreakStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(BreakStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(BreakStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ReturnStatement *exp) {
     debug(exp);
@@ -1206,7 +1224,7 @@ bool QmlVisitor::visit(ReturnStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ReturnStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ReturnStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(WithStatement *exp) {
     debug(exp);
@@ -1228,7 +1246,7 @@ bool QmlVisitor::visit(WithStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(WithStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(WithStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(SwitchStatement *exp) {
     debug(exp);
@@ -1251,7 +1269,7 @@ bool QmlVisitor::visit(SwitchStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(SwitchStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(SwitchStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(CaseBlock *exp) {
     debug(exp);
@@ -1271,7 +1289,7 @@ bool QmlVisitor::visit(CaseBlock *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(CaseBlock *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(CaseBlock *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(CaseClauses *exp) {
     debug(exp);
@@ -1289,7 +1307,7 @@ bool QmlVisitor::visit(CaseClauses *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(CaseClauses *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(CaseClauses *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(CaseClause *exp) {
     debug(exp);
@@ -1309,7 +1327,7 @@ bool QmlVisitor::visit(CaseClause *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(CaseClause *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(CaseClause *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(DefaultClause *exp) {
     debug(exp);
@@ -1330,7 +1348,7 @@ bool QmlVisitor::visit(DefaultClause *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(DefaultClause *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(DefaultClause *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(LabelledStatement *exp) {
     debug(exp);
@@ -1351,7 +1369,7 @@ bool QmlVisitor::visit(LabelledStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(LabelledStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(LabelledStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(ThrowStatement *exp) {
     debug(exp);
@@ -1371,7 +1389,7 @@ bool QmlVisitor::visit(ThrowStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ThrowStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(ThrowStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(TryStatement *exp) {
     debug(exp);
@@ -1391,7 +1409,7 @@ bool QmlVisitor::visit(TryStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(TryStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(TryStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(Catch *exp) {
     debug(exp);
@@ -1413,7 +1431,7 @@ bool QmlVisitor::visit(Catch *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(Catch *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(Catch *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(Finally *exp) {
     debug(exp);
@@ -1430,13 +1448,14 @@ bool QmlVisitor::visit(Finally *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(Finally *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(Finally *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FunctionDeclaration *exp) {
     debug(exp);
     // should be empty, removed from wrapped-AST.
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(FunctionDeclaration *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FunctionDeclaration *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FunctionExpression *exp) {
     debug(exp);
@@ -1459,7 +1478,7 @@ bool QmlVisitor::visit(FunctionExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(FunctionExpression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FunctionExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FormalParameterList *exp) {
     debug(exp);
@@ -1477,9 +1496,10 @@ bool QmlVisitor::visit(FormalParameterList *exp) {
         nodeStack.top()->addChild(n);
     }
     //pushStack(n);
+    dontPopAtEnd();
 
     return true; }
-void QmlVisitor::endVisit(FormalParameterList *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FormalParameterList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(Program *exp) {
     debug(exp);
@@ -1496,7 +1516,7 @@ bool QmlVisitor::visit(Program *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(Program *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(Program *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(SourceElements *exp) {
     debug(exp);
@@ -1513,7 +1533,7 @@ bool QmlVisitor::visit(SourceElements *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(SourceElements *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(SourceElements *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(FunctionSourceElement *exp) {
     debug(exp);
@@ -1529,7 +1549,7 @@ bool QmlVisitor::visit(FunctionSourceElement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(FunctionSourceElement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(FunctionSourceElement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(StatementSourceElement *exp) {
     debug(exp);
@@ -1558,12 +1578,13 @@ bool QmlVisitor::visit(StatementSourceElement *exp) {
     */
 
     return true; }
-void QmlVisitor::endVisit(StatementSourceElement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(StatementSourceElement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(DebuggerStatement *exp) {
     debug(exp);
+    dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(DebuggerStatement *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(DebuggerStatement *) { commonEndVisit(); }
 
 void QmlVisitor::debug(const QQmlJS::AST::Node *exp) {
     QString name = QString(typeid(*exp).name());
@@ -1593,7 +1614,7 @@ NodeWrapper* QmlVisitor::getWrappedRoot() {
     return rootNode;
 }
 
-void QmlVisitor::endVisit(Expression *) { deIndent(); popStack(); }
+void QmlVisitor::endVisit(Expression *) { commonEndVisit(); }
 
 void QmlVisitor::deIndent() {
     indent.chop(4);
@@ -1607,11 +1628,13 @@ void QmlVisitor::pushStack(NodeWrapper* n) {
     if (nodeStack.isEmpty() && rootNode == nullptr) {
         rootNode = n;
     }
+    shouldPopStack.push(true);
     nodeStack.push(n);
 }
 
-void QmlVisitor::popStack() {
-    if (!nodeStack.isEmpty()) {
+void QmlVisitor::commonEndVisit() {
+    deIndent();
+    if (!nodeStack.isEmpty() && shouldPopStack.pop()) {
         nodeStack.pop();
     }
 }
@@ -1621,4 +1644,8 @@ void QmlVisitor::addWrapper(NodeWrapper *n)
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
+}
+
+void QmlVisitor::dontPopAtEnd() {
+    shouldPopStack.push(false);
 }
