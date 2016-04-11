@@ -23,6 +23,7 @@ public:
     const quint32 getCol();
     const QList<NodeWrapper *>& getChildren();
     const QList<QStringRef>& getTokens();
+    void print();
 
 private:
     QList<NodeWrapper *> children;
@@ -33,6 +34,8 @@ private:
     const quint32 row;
     const quint32 col;
     const QStringRef source;
+
+    void innerPrint(const int);
 };
 
 #endif // NODEWRAPPER_H

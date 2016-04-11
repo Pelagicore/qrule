@@ -1,4 +1,5 @@
 #include "nodewrapper.h"
+#include <QDebug>
 
 NodeWrapper::~NodeWrapper() {
     foreach(const NodeWrapper* n, children) {
@@ -40,4 +41,18 @@ const QList<NodeWrapper *>& NodeWrapper::getChildren() {
 
 const QList<QStringRef>& NodeWrapper::getTokens() {
     return tokens;
+}
+
+void NodeWrapper::print() {
+    innerPrint(0);
+}
+
+void NodeWrapper::innerPrint(const int indent) {
+    QString indentStr("    ");
+    indentStr = indentStr.repeated(indent);
+
+    qDebug() << indentStr<< nodeType  << value;
+    foreach(NodeWrapper* n, children) {
+        n->innerPrint(indent + 1);
+    }
 }
