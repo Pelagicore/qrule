@@ -28,9 +28,10 @@ class RuleCause;
 class Explanation;
 class Tag;
 class Severity;
+class Quantifier;
 class PathQuantifier;
-class IStmnt;
-class IExpr;
+class IAtom;
+class SAtom;
 class Expr;
 class RSet;
 class RRule;
@@ -42,8 +43,11 @@ class RCPolicy;
 class Explan;
 class Noexplan;
 class TTag;
+class SevInfo;
 class SevWarning;
 class SevCritical;
+class QExpr;
+class QFor;
 class AG;
 class AF;
 class AX;
@@ -52,26 +56,33 @@ class EG;
 class EF;
 class EX;
 class EU;
-class IEInt;
-class IENrChildren;
-class IERow;
-class IECol;
-class IELtEq;
-class IEGtEq;
-class IELt;
-class IEGt;
-class IEq;
-class IEStmnt;
+class IFRow;
+class IFCol;
+class IInt;
+class INrChildren;
+class IRow;
+class ICol;
+class SString;
+class SFValue;
+class SValue;
+class SValueType;
+class SNodeType;
+class SConcat;
 class ETrue;
 class EFalse;
-class EValue;
-class EValueType;
-class ENodeType;
 class EParant;
 class ENot;
 class EImpl;
-class EIExpr;
-class EEq;
+class EBEq;
+class EPossToken;
+class EExistToken;
+class EILtEq;
+class EIGtEq;
+class EILt;
+class EIGt;
+class EIEq;
+class EMatch;
+class ESEq;
 class EAnd;
 class EOr;
 class EPQ;
@@ -91,9 +102,10 @@ public:
   virtual RetType* visitExplanation(Explanation *p) = 0;
   virtual RetType* visitTag(Tag *p) = 0;
   virtual RetType* visitSeverity(Severity *p) = 0;
+  virtual RetType* visitQuantifier(Quantifier *p) = 0;
   virtual RetType* visitPathQuantifier(PathQuantifier *p) = 0;
-  virtual RetType* visitIStmnt(IStmnt *p) = 0;
-  virtual RetType* visitIExpr(IExpr *p) = 0;
+  virtual RetType* visitIAtom(IAtom *p) = 0;
+  virtual RetType* visitSAtom(SAtom *p) = 0;
   virtual RetType* visitExpr(Expr *p) = 0;
   virtual RetType* visitRSet(RSet *p) = 0;
   virtual RetType* visitRRule(RRule *p) = 0;
@@ -105,8 +117,11 @@ public:
   virtual RetType* visitExplan(Explan *p) = 0;
   virtual RetType* visitNoexplan(Noexplan *p) = 0;
   virtual RetType* visitTTag(TTag *p) = 0;
+  virtual RetType* visitSevInfo(SevInfo *p) = 0;
   virtual RetType* visitSevWarning(SevWarning *p) = 0;
   virtual RetType* visitSevCritical(SevCritical *p) = 0;
+  virtual RetType* visitQExpr(QExpr *p) = 0;
+  virtual RetType* visitQFor(QFor *p) = 0;
   virtual RetType* visitAG(AG *p) = 0;
   virtual RetType* visitAF(AF *p) = 0;
   virtual RetType* visitAX(AX *p) = 0;
@@ -115,26 +130,33 @@ public:
   virtual RetType* visitEF(EF *p) = 0;
   virtual RetType* visitEX(EX *p) = 0;
   virtual RetType* visitEU(EU *p) = 0;
-  virtual RetType* visitIEInt(IEInt *p) = 0;
-  virtual RetType* visitIENrChildren(IENrChildren *p) = 0;
-  virtual RetType* visitIERow(IERow *p) = 0;
-  virtual RetType* visitIECol(IECol *p) = 0;
-  virtual RetType* visitIELtEq(IELtEq *p) = 0;
-  virtual RetType* visitIEGtEq(IEGtEq *p) = 0;
-  virtual RetType* visitIELt(IELt *p) = 0;
-  virtual RetType* visitIEGt(IEGt *p) = 0;
-  virtual RetType* visitIEq(IEq *p) = 0;
-  virtual RetType* visitIEStmnt(IEStmnt *p) = 0;
+  virtual RetType* visitIFRow(IFRow *p) = 0;
+  virtual RetType* visitIFCol(IFCol *p) = 0;
+  virtual RetType* visitIInt(IInt *p) = 0;
+  virtual RetType* visitINrChildren(INrChildren *p) = 0;
+  virtual RetType* visitIRow(IRow *p) = 0;
+  virtual RetType* visitICol(ICol *p) = 0;
+  virtual RetType* visitSString(SString *p) = 0;
+  virtual RetType* visitSFValue(SFValue *p) = 0;
+  virtual RetType* visitSValue(SValue *p) = 0;
+  virtual RetType* visitSValueType(SValueType *p) = 0;
+  virtual RetType* visitSNodeType(SNodeType *p) = 0;
+  virtual RetType* visitSConcat(SConcat *p) = 0;
   virtual RetType* visitETrue(ETrue *p) = 0;
   virtual RetType* visitEFalse(EFalse *p) = 0;
-  virtual RetType* visitEValue(EValue *p) = 0;
-  virtual RetType* visitEValueType(EValueType *p) = 0;
-  virtual RetType* visitENodeType(ENodeType *p) = 0;
   virtual RetType* visitEParant(EParant *p) = 0;
   virtual RetType* visitENot(ENot *p) = 0;
   virtual RetType* visitEImpl(EImpl *p) = 0;
-  virtual RetType* visitEIExpr(EIExpr *p) = 0;
-  virtual RetType* visitEEq(EEq *p) = 0;
+  virtual RetType* visitEBEq(EBEq *p) = 0;
+  virtual RetType* visitEPossToken(EPossToken *p) = 0;
+  virtual RetType* visitEExistToken(EExistToken *p) = 0;
+  virtual RetType* visitEILtEq(EILtEq *p) = 0;
+  virtual RetType* visitEIGtEq(EIGtEq *p) = 0;
+  virtual RetType* visitEILt(EILt *p) = 0;
+  virtual RetType* visitEIGt(EIGt *p) = 0;
+  virtual RetType* visitEIEq(EIEq *p) = 0;
+  virtual RetType* visitEMatch(EMatch *p) = 0;
+  virtual RetType* visitESEq(ESEq *p) = 0;
   virtual RetType* visitEAnd(EAnd *p) = 0;
   virtual RetType* visitEOr(EOr *p) = 0;
   virtual RetType* visitEPQ(EPQ *p) = 0;
@@ -143,11 +165,7 @@ public:
 
 
   virtual RetType* visitInteger(Integer x) = 0;
-  virtual RetType* visitChar(Char x) = 0;
-  virtual RetType* visitDouble(Double x) = 0;
   virtual RetType* visitString(String x) = 0;
-  virtual RetType* visitIdent(Ident x) = 0;
-
 };
 
 
@@ -210,6 +228,13 @@ public:
 
 };
 
+class Quantifier : public Visitable
+{
+public:
+  virtual Quantifier *clone() const = 0;
+
+};
+
 class PathQuantifier : public Visitable
 {
 public:
@@ -217,17 +242,17 @@ public:
 
 };
 
-class IStmnt : public Visitable
+class IAtom : public Visitable
 {
 public:
-  virtual IStmnt *clone() const = 0;
+  virtual IAtom *clone() const = 0;
 
 };
 
-class IExpr : public Visitable
+class SAtom : public Visitable
 {
 public:
-  virtual IExpr *clone() const = 0;
+  virtual SAtom *clone() const = 0;
 
 };
 
@@ -262,11 +287,11 @@ public:
   RuleCause *rulecause_;
   ASTScope *astscope_;
   Explanation *explanation_;
-  Expr *expr_;
+  Quantifier *quantifier_;
 
   RRule(const RRule &);
   RRule &operator=(const RRule &);
-  RRule(Tag *p1, Severity *p2, RuleCause *p3, ASTScope *p4, Explanation *p5, Expr *p6);
+  RRule(Tag *p1, Severity *p2, RuleCause *p3, ASTScope *p4, Explanation *p5, Quantifier *p6);
   ~RRule();
   virtual RetType* accept(Visitor *v);
   virtual RRule *clone() const;
@@ -379,6 +404,19 @@ public:
   void swap(TTag &);
 };
 
+class SevInfo : public Severity
+{
+public:
+
+  SevInfo(const SevInfo &);
+  SevInfo &operator=(const SevInfo &);
+  SevInfo();
+  ~SevInfo();
+  virtual RetType* accept(Visitor *v);
+  virtual SevInfo *clone() const;
+  void swap(SevInfo &);
+};
+
 class SevWarning : public Severity
 {
 public:
@@ -403,6 +441,35 @@ public:
   virtual RetType* accept(Visitor *v);
   virtual SevCritical *clone() const;
   void swap(SevCritical &);
+};
+
+class QExpr : public Quantifier
+{
+public:
+  Expr *expr_;
+
+  QExpr(const QExpr &);
+  QExpr &operator=(const QExpr &);
+  QExpr(Expr *p1);
+  ~QExpr();
+  virtual RetType* accept(Visitor *v);
+  virtual QExpr *clone() const;
+  void swap(QExpr &);
+};
+
+class QFor : public Quantifier
+{
+public:
+  String string_;
+  Expr *expr_;
+
+  QFor(const QFor &);
+  QFor &operator=(const QFor &);
+  QFor(String p1, Expr *p2);
+  ~QFor();
+  virtual RetType* accept(Visitor *v);
+  virtual QFor *clone() const;
+  void swap(QFor &);
 };
 
 class AG : public PathQuantifier
@@ -519,146 +586,164 @@ public:
   void swap(EU &);
 };
 
-class IEInt : public IStmnt
+class IFRow : public IAtom
+{
+public:
+
+  IFRow(const IFRow &);
+  IFRow &operator=(const IFRow &);
+  IFRow();
+  ~IFRow();
+  virtual RetType* accept(Visitor *v);
+  virtual IFRow *clone() const;
+  void swap(IFRow &);
+};
+
+class IFCol : public IAtom
+{
+public:
+
+  IFCol(const IFCol &);
+  IFCol &operator=(const IFCol &);
+  IFCol();
+  ~IFCol();
+  virtual RetType* accept(Visitor *v);
+  virtual IFCol *clone() const;
+  void swap(IFCol &);
+};
+
+class IInt : public IAtom
 {
 public:
   Integer integer_;
 
-  IEInt(const IEInt &);
-  IEInt &operator=(const IEInt &);
-  IEInt(Integer p1);
-  ~IEInt();
+  IInt(const IInt &);
+  IInt &operator=(const IInt &);
+  IInt(Integer p1);
+  ~IInt();
   virtual RetType* accept(Visitor *v);
-  virtual IEInt *clone() const;
-  void swap(IEInt &);
+  virtual IInt *clone() const;
+  void swap(IInt &);
 };
 
-class IENrChildren : public IStmnt
+class INrChildren : public IAtom
 {
 public:
 
-  IENrChildren(const IENrChildren &);
-  IENrChildren &operator=(const IENrChildren &);
-  IENrChildren();
-  ~IENrChildren();
+  INrChildren(const INrChildren &);
+  INrChildren &operator=(const INrChildren &);
+  INrChildren();
+  ~INrChildren();
   virtual RetType* accept(Visitor *v);
-  virtual IENrChildren *clone() const;
-  void swap(IENrChildren &);
+  virtual INrChildren *clone() const;
+  void swap(INrChildren &);
 };
 
-class IERow : public IStmnt
+class IRow : public IAtom
 {
 public:
 
-  IERow(const IERow &);
-  IERow &operator=(const IERow &);
-  IERow();
-  ~IERow();
+  IRow(const IRow &);
+  IRow &operator=(const IRow &);
+  IRow();
+  ~IRow();
   virtual RetType* accept(Visitor *v);
-  virtual IERow *clone() const;
-  void swap(IERow &);
+  virtual IRow *clone() const;
+  void swap(IRow &);
 };
 
-class IECol : public IStmnt
+class ICol : public IAtom
 {
 public:
 
-  IECol(const IECol &);
-  IECol &operator=(const IECol &);
-  IECol();
-  ~IECol();
+  ICol(const ICol &);
+  ICol &operator=(const ICol &);
+  ICol();
+  ~ICol();
   virtual RetType* accept(Visitor *v);
-  virtual IECol *clone() const;
-  void swap(IECol &);
+  virtual ICol *clone() const;
+  void swap(ICol &);
 };
 
-class IELtEq : public IExpr
+class SString : public SAtom
 {
 public:
-  IExpr *iexpr_;
-  IStmnt *istmnt_;
+  String string_;
 
-  IELtEq(const IELtEq &);
-  IELtEq &operator=(const IELtEq &);
-  IELtEq(IExpr *p1, IStmnt *p2);
-  ~IELtEq();
+  SString(const SString &);
+  SString &operator=(const SString &);
+  SString(String p1);
+  ~SString();
   virtual RetType* accept(Visitor *v);
-  virtual IELtEq *clone() const;
-  void swap(IELtEq &);
+  virtual SString *clone() const;
+  void swap(SString &);
 };
 
-class IEGtEq : public IExpr
+class SFValue : public SAtom
 {
 public:
-  IExpr *iexpr_;
-  IStmnt *istmnt_;
 
-  IEGtEq(const IEGtEq &);
-  IEGtEq &operator=(const IEGtEq &);
-  IEGtEq(IExpr *p1, IStmnt *p2);
-  ~IEGtEq();
+  SFValue(const SFValue &);
+  SFValue &operator=(const SFValue &);
+  SFValue();
+  ~SFValue();
   virtual RetType* accept(Visitor *v);
-  virtual IEGtEq *clone() const;
-  void swap(IEGtEq &);
+  virtual SFValue *clone() const;
+  void swap(SFValue &);
 };
 
-class IELt : public IExpr
+class SValue : public SAtom
 {
 public:
-  IExpr *iexpr_;
-  IStmnt *istmnt_;
 
-  IELt(const IELt &);
-  IELt &operator=(const IELt &);
-  IELt(IExpr *p1, IStmnt *p2);
-  ~IELt();
+  SValue(const SValue &);
+  SValue &operator=(const SValue &);
+  SValue();
+  ~SValue();
   virtual RetType* accept(Visitor *v);
-  virtual IELt *clone() const;
-  void swap(IELt &);
+  virtual SValue *clone() const;
+  void swap(SValue &);
 };
 
-class IEGt : public IExpr
+class SValueType : public SAtom
 {
 public:
-  IExpr *iexpr_;
-  IStmnt *istmnt_;
 
-  IEGt(const IEGt &);
-  IEGt &operator=(const IEGt &);
-  IEGt(IExpr *p1, IStmnt *p2);
-  ~IEGt();
+  SValueType(const SValueType &);
+  SValueType &operator=(const SValueType &);
+  SValueType();
+  ~SValueType();
   virtual RetType* accept(Visitor *v);
-  virtual IEGt *clone() const;
-  void swap(IEGt &);
+  virtual SValueType *clone() const;
+  void swap(SValueType &);
 };
 
-class IEq : public IExpr
+class SNodeType : public SAtom
 {
 public:
-  IStmnt *istmnt_1;
-  IStmnt *istmnt_2;
 
-  IEq(const IEq &);
-  IEq &operator=(const IEq &);
-  IEq(IStmnt *p1, IStmnt *p2);
-  ~IEq();
+  SNodeType(const SNodeType &);
+  SNodeType &operator=(const SNodeType &);
+  SNodeType();
+  ~SNodeType();
   virtual RetType* accept(Visitor *v);
-  virtual IEq *clone() const;
-  void swap(IEq &);
+  virtual SNodeType *clone() const;
+  void swap(SNodeType &);
 };
 
-class IEStmnt : public IExpr
+class SConcat : public SAtom
 {
 public:
-  IStmnt *istmnt_;
+  SAtom *satom_1;
+  SAtom *satom_2;
 
-  IEStmnt(const IEStmnt &);
-  IEStmnt &operator=(const IEStmnt &);
-  IEStmnt(IStmnt *p1);
-  ~IEStmnt();
+  SConcat(const SConcat &);
+  SConcat &operator=(const SConcat &);
+  SConcat(SAtom *p1, SAtom *p2);
+  ~SConcat();
   virtual RetType* accept(Visitor *v);
-  virtual IEStmnt *clone() const;
-  void swap(IEStmnt &);
+  virtual SConcat *clone() const;
+  void swap(SConcat &);
 };
 
 class ETrue : public Expr
@@ -685,48 +770,6 @@ public:
   virtual RetType* accept(Visitor *v);
   virtual EFalse *clone() const;
   void swap(EFalse &);
-};
-
-class EValue : public Expr
-{
-public:
-  String string_;
-
-  EValue(const EValue &);
-  EValue &operator=(const EValue &);
-  EValue(String p1);
-  ~EValue();
-  virtual RetType* accept(Visitor *v);
-  virtual EValue *clone() const;
-  void swap(EValue &);
-};
-
-class EValueType : public Expr
-{
-public:
-  String string_;
-
-  EValueType(const EValueType &);
-  EValueType &operator=(const EValueType &);
-  EValueType(String p1);
-  ~EValueType();
-  virtual RetType* accept(Visitor *v);
-  virtual EValueType *clone() const;
-  void swap(EValueType &);
-};
-
-class ENodeType : public Expr
-{
-public:
-  String string_;
-
-  ENodeType(const ENodeType &);
-  ENodeType &operator=(const ENodeType &);
-  ENodeType(String p1);
-  ~ENodeType();
-  virtual RetType* accept(Visitor *v);
-  virtual ENodeType *clone() const;
-  void swap(ENodeType &);
 };
 
 class EParant : public Expr
@@ -772,33 +815,152 @@ public:
   void swap(EImpl &);
 };
 
-class EIExpr : public Expr
-{
-public:
-  IExpr *iexpr_;
-
-  EIExpr(const EIExpr &);
-  EIExpr &operator=(const EIExpr &);
-  EIExpr(IExpr *p1);
-  ~EIExpr();
-  virtual RetType* accept(Visitor *v);
-  virtual EIExpr *clone() const;
-  void swap(EIExpr &);
-};
-
-class EEq : public Expr
+class EBEq : public Expr
 {
 public:
   Expr *expr_1;
   Expr *expr_2;
 
-  EEq(const EEq &);
-  EEq &operator=(const EEq &);
-  EEq(Expr *p1, Expr *p2);
-  ~EEq();
+  EBEq(const EBEq &);
+  EBEq &operator=(const EBEq &);
+  EBEq(Expr *p1, Expr *p2);
+  ~EBEq();
   virtual RetType* accept(Visitor *v);
-  virtual EEq *clone() const;
-  void swap(EEq &);
+  virtual EBEq *clone() const;
+  void swap(EBEq &);
+};
+
+class EPossToken : public Expr
+{
+public:
+  String string_;
+
+  EPossToken(const EPossToken &);
+  EPossToken &operator=(const EPossToken &);
+  EPossToken(String p1);
+  ~EPossToken();
+  virtual RetType* accept(Visitor *v);
+  virtual EPossToken *clone() const;
+  void swap(EPossToken &);
+};
+
+class EExistToken : public Expr
+{
+public:
+  String string_;
+
+  EExistToken(const EExistToken &);
+  EExistToken &operator=(const EExistToken &);
+  EExistToken(String p1);
+  ~EExistToken();
+  virtual RetType* accept(Visitor *v);
+  virtual EExistToken *clone() const;
+  void swap(EExistToken &);
+};
+
+class EILtEq : public Expr
+{
+public:
+  IAtom *iatom_1;
+  IAtom *iatom_2;
+
+  EILtEq(const EILtEq &);
+  EILtEq &operator=(const EILtEq &);
+  EILtEq(IAtom *p1, IAtom *p2);
+  ~EILtEq();
+  virtual RetType* accept(Visitor *v);
+  virtual EILtEq *clone() const;
+  void swap(EILtEq &);
+};
+
+class EIGtEq : public Expr
+{
+public:
+  IAtom *iatom_1;
+  IAtom *iatom_2;
+
+  EIGtEq(const EIGtEq &);
+  EIGtEq &operator=(const EIGtEq &);
+  EIGtEq(IAtom *p1, IAtom *p2);
+  ~EIGtEq();
+  virtual RetType* accept(Visitor *v);
+  virtual EIGtEq *clone() const;
+  void swap(EIGtEq &);
+};
+
+class EILt : public Expr
+{
+public:
+  IAtom *iatom_1;
+  IAtom *iatom_2;
+
+  EILt(const EILt &);
+  EILt &operator=(const EILt &);
+  EILt(IAtom *p1, IAtom *p2);
+  ~EILt();
+  virtual RetType* accept(Visitor *v);
+  virtual EILt *clone() const;
+  void swap(EILt &);
+};
+
+class EIGt : public Expr
+{
+public:
+  IAtom *iatom_1;
+  IAtom *iatom_2;
+
+  EIGt(const EIGt &);
+  EIGt &operator=(const EIGt &);
+  EIGt(IAtom *p1, IAtom *p2);
+  ~EIGt();
+  virtual RetType* accept(Visitor *v);
+  virtual EIGt *clone() const;
+  void swap(EIGt &);
+};
+
+class EIEq : public Expr
+{
+public:
+  IAtom *iatom_1;
+  IAtom *iatom_2;
+
+  EIEq(const EIEq &);
+  EIEq &operator=(const EIEq &);
+  EIEq(IAtom *p1, IAtom *p2);
+  ~EIEq();
+  virtual RetType* accept(Visitor *v);
+  virtual EIEq *clone() const;
+  void swap(EIEq &);
+};
+
+class EMatch : public Expr
+{
+public:
+  SAtom *satom_;
+  String string_;
+
+  EMatch(const EMatch &);
+  EMatch &operator=(const EMatch &);
+  EMatch(SAtom *p1, String p2);
+  ~EMatch();
+  virtual RetType* accept(Visitor *v);
+  virtual EMatch *clone() const;
+  void swap(EMatch &);
+};
+
+class ESEq : public Expr
+{
+public:
+  SAtom *satom_1;
+  SAtom *satom_2;
+
+  ESEq(const ESEq &);
+  ESEq &operator=(const ESEq &);
+  ESEq(SAtom *p1, SAtom *p2);
+  ~ESEq();
+  virtual RetType* accept(Visitor *v);
+  virtual ESEq *clone() const;
+  void swap(ESEq &);
 };
 
 class EAnd : public Expr

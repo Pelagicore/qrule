@@ -13,9 +13,10 @@ class Explanation;
 class ListRule;
 class Tag;
 class Severity;
+class Quantifier;
 class PathQuantifier;
-class IStmnt;
-class IExpr;
+class IAtom;
+class SAtom;
 class Expr;
 class ListExpr;
 
@@ -33,9 +34,10 @@ typedef union
   ListRule* listrule_;
   Tag* tag_;
   Severity* severity_;
+  Quantifier* quantifier_;
   PathQuantifier* pathquantifier_;
-  IStmnt* istmnt_;
-  IExpr* iexpr_;
+  IAtom* iatom_;
+  SAtom* satom_;
   Expr* expr_;
   ListExpr* listexpr_;
 } YYSTYPE;
@@ -56,12 +58,14 @@ Tag* pTag(FILE *inp);
 Tag* pTag(const char *str);
 Severity* pSeverity(FILE *inp);
 Severity* pSeverity(const char *str);
+Quantifier* pQuantifier(FILE *inp);
+Quantifier* pQuantifier(const char *str);
 PathQuantifier* pPathQuantifier(FILE *inp);
 PathQuantifier* pPathQuantifier(const char *str);
-IStmnt* pIStmnt(FILE *inp);
-IStmnt* pIStmnt(const char *str);
-IExpr* pIExpr(FILE *inp);
-IExpr* pIExpr(const char *str);
+IAtom* pIAtom(FILE *inp);
+IAtom* pIAtom(const char *str);
+SAtom* pSAtom(FILE *inp);
+SAtom* pSAtom(const char *str);
 Expr* pExpr(FILE *inp);
 Expr* pExpr(const char *str);
 ListExpr* pListExpr(FILE *inp);
@@ -109,8 +113,20 @@ ListExpr* pListExpr(const char *str);
 #define _SYMB_36 295
 #define _SYMB_37 296
 #define _SYMB_38 297
-#define _STRING_ 298
-#define _INTEGER_ 299
+#define _SYMB_39 298
+#define _SYMB_40 299
+#define _SYMB_41 300
+#define _SYMB_42 301
+#define _SYMB_43 302
+#define _SYMB_44 303
+#define _SYMB_45 304
+#define _SYMB_46 305
+#define _SYMB_47 306
+#define _SYMB_48 307
+#define _SYMB_49 308
+#define _SYMB_50 309
+#define _STRING_ 310
+#define _INTEGER_ 311
 
 extern YYSTYPE yylval;
 

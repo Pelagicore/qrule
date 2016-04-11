@@ -20,7 +20,7 @@ int yywrap(void)
 void yyerror(const char *str)
 {
   extern char *yytext;
-  fprintf(stderr,"error: line %d: %s at %s\n",
+  fprintf(stderr,"error: line %d: %s at %s\n", 
     yy_mylinenumber, str, yytext);
 }
 
@@ -290,6 +290,39 @@ Severity* pSeverity(const char *str)
   }
 }
 
+static Quantifier* YY_RESULT_Quantifier_ = 0;
+Quantifier* pQuantifier(FILE *inp)
+{
+  yy_mylinenumber = 1;
+  initialize_lexer(inp);
+  if (yyparse())
+  { /* Failure */
+    return 0;
+  }
+  else
+  { /* Success */
+    return YY_RESULT_Quantifier_;
+  }
+}
+Quantifier* pQuantifier(const char *str)
+{
+  YY_BUFFER_STATE buf;
+  int result;
+  yy_mylinenumber = 1;
+  initialize_lexer(0);
+  buf = yy_scan_string(str);
+  result = yyparse();
+  yy_delete_buffer(buf);
+  if (result)
+  { /* Failure */
+    return 0;
+  }
+  else
+  { /* Success */
+    return YY_RESULT_Quantifier_;
+  }
+}
+
 static PathQuantifier* YY_RESULT_PathQuantifier_ = 0;
 PathQuantifier* pPathQuantifier(FILE *inp)
 {
@@ -323,8 +356,8 @@ PathQuantifier* pPathQuantifier(const char *str)
   }
 }
 
-static IStmnt* YY_RESULT_IStmnt_ = 0;
-IStmnt* pIStmnt(FILE *inp)
+static IAtom* YY_RESULT_IAtom_ = 0;
+IAtom* pIAtom(FILE *inp)
 {
   yy_mylinenumber = 1;
   initialize_lexer(inp);
@@ -334,10 +367,10 @@ IStmnt* pIStmnt(FILE *inp)
   }
   else
   { /* Success */
-    return YY_RESULT_IStmnt_;
+    return YY_RESULT_IAtom_;
   }
 }
-IStmnt* pIStmnt(const char *str)
+IAtom* pIAtom(const char *str)
 {
   YY_BUFFER_STATE buf;
   int result;
@@ -352,12 +385,12 @@ IStmnt* pIStmnt(const char *str)
   }
   else
   { /* Success */
-    return YY_RESULT_IStmnt_;
+    return YY_RESULT_IAtom_;
   }
 }
 
-static IExpr* YY_RESULT_IExpr_ = 0;
-IExpr* pIExpr(FILE *inp)
+static SAtom* YY_RESULT_SAtom_ = 0;
+SAtom* pSAtom(FILE *inp)
 {
   yy_mylinenumber = 1;
   initialize_lexer(inp);
@@ -367,10 +400,10 @@ IExpr* pIExpr(FILE *inp)
   }
   else
   { /* Success */
-    return YY_RESULT_IExpr_;
+    return YY_RESULT_SAtom_;
   }
 }
-IExpr* pIExpr(const char *str)
+SAtom* pSAtom(const char *str)
 {
   YY_BUFFER_STATE buf;
   int result;
@@ -385,7 +418,7 @@ IExpr* pIExpr(const char *str)
   }
   else
   { /* Success */
-    return YY_RESULT_IExpr_;
+    return YY_RESULT_SAtom_;
   }
 }
 
@@ -473,9 +506,10 @@ ListExpr* pListExpr(const char *str)
   ListRule* listrule_;
   Tag* tag_;
   Severity* severity_;
+  Quantifier* quantifier_;
   PathQuantifier* pathquantifier_;
-  IStmnt* istmnt_;
-  IExpr* iexpr_;
+  IAtom* iatom_;
+  SAtom* satom_;
   Expr* expr_;
   ListExpr* listexpr_;
 }
@@ -483,43 +517,55 @@ ListExpr* pListExpr(const char *str)
 %token _ERROR_
 %token _SYMB_0    //   ::
 %token _SYMB_1    //   ??
-%token _SYMB_2    //
+%token _SYMB_2    //   
 %token _SYMB_3    //   ,
-%token _SYMB_4    //   <=
-%token _SYMB_5    //   >=
-%token _SYMB_6    //   <
-%token _SYMB_7    //   >
-%token _SYMB_8    //   =
-%token _SYMB_9    //   (
-%token _SYMB_10    //   )
-%token _SYMB_11    //   !
-%token _SYMB_12    //   ->
-%token _SYMB_13    //   &
-%token _SYMB_14    //   |
-%token _SYMB_15    //   A
-%token _SYMB_16    //   AF
-%token _SYMB_17    //   AG
-%token _SYMB_18    //   AX
-%token _SYMB_19    //   Critical
-%token _SYMB_20    //   E
-%token _SYMB_21    //   EF
-%token _SYMB_22    //   EG
-%token _SYMB_23    //   EX
-%token _SYMB_24    //   False
-%token _SYMB_25    //   File
-%token _SYMB_26    //   Globally
-%token _SYMB_27    //   Imported
-%token _SYMB_28    //   Language
-%token _SYMB_29    //   Policy
-%token _SYMB_30    //   True
-%token _SYMB_31    //   U
-%token _SYMB_32    //   Warning
-%token _SYMB_33    //   col
-%token _SYMB_34    //   nodeType
-%token _SYMB_35    //   nrChildren
-%token _SYMB_36    //   row
-%token _SYMB_37    //   value
-%token _SYMB_38    //   valueType
+%token _SYMB_4    //   :
+%token _SYMB_5    //   +
+%token _SYMB_6    //   (
+%token _SYMB_7    //   )
+%token _SYMB_8    //   !
+%token _SYMB_9    //   ->
+%token _SYMB_10    //   =
+%token _SYMB_11    //   <=
+%token _SYMB_12    //   >=
+%token _SYMB_13    //   <
+%token _SYMB_14    //   >
+%token _SYMB_15    //   &
+%token _SYMB_16    //   |
+%token _SYMB_17    //   A
+%token _SYMB_18    //   AF
+%token _SYMB_19    //   AG
+%token _SYMB_20    //   AX
+%token _SYMB_21    //   C
+%token _SYMB_22    //   Critical
+%token _SYMB_23    //   E
+%token _SYMB_24    //   EF
+%token _SYMB_25    //   EG
+%token _SYMB_26    //   EX
+%token _SYMB_27    //   False
+%token _SYMB_28    //   File
+%token _SYMB_29    //   Globally
+%token _SYMB_30    //   Imported
+%token _SYMB_31    //   Info
+%token _SYMB_32    //   Language
+%token _SYMB_33    //   Policy
+%token _SYMB_34    //   R
+%token _SYMB_35    //   True
+%token _SYMB_36    //   U
+%token _SYMB_37    //   V
+%token _SYMB_38    //   Warning
+%token _SYMB_39    //   col
+%token _SYMB_40    //   existing
+%token _SYMB_41    //   forAll
+%token _SYMB_42    //   is
+%token _SYMB_43    //   match
+%token _SYMB_44    //   nodeType
+%token _SYMB_45    //   nrChildren
+%token _SYMB_46    //   possible
+%token _SYMB_47    //   row
+%token _SYMB_48    //   token
+%token _SYMB_49    //   value
+%token _SYMB_50    //   valueType
 
 %type <ruleset_> RuleSet
 %type <rule_> Rule
@@ -529,11 +575,12 @@ ListExpr* pListExpr(const char *str)
 %type <listrule_> ListRule
 %type <tag_> Tag
 %type <severity_> Severity
+%type <quantifier_> Quantifier
 %type <pathquantifier_> PathQuantifier
-%type <istmnt_> IStmnt
-%type <iexpr_> IExpr2
-%type <iexpr_> IExpr1
-%type <iexpr_> IExpr
+%type <iatom_> IAtom
+%type <satom_> SAtom2
+%type <satom_> SAtom1
+%type <satom_> SAtom
 %type <expr_> Expr10
 %type <expr_> Expr9
 %type <expr_> Expr8
@@ -552,91 +599,102 @@ ListExpr* pListExpr(const char *str)
 %token<int_> _INTEGER_
 
 %%
-RuleSet : ListRule {  std::reverse($1->begin(),$1->end()) ;$$ = new RSet($1); YY_RESULT_RuleSet_= $$; }
+RuleSet : ListRule {  std::reverse($1->begin(),$1->end()) ;$$ = new RSet($1); YY_RESULT_RuleSet_= $$; } 
 ;
-Rule : Tag Severity RuleCause ASTScope Explanation _SYMB_0 Expr {  $$ = new RRule($1, $2, $3, $4, $5, $7); YY_RESULT_Rule_= $$; }
+Rule : Tag Severity RuleCause ASTScope Explanation _SYMB_0 Quantifier {  $$ = new RRule($1, $2, $3, $4, $5, $7); YY_RESULT_Rule_= $$; } 
 ;
-ASTScope : _SYMB_26 {  $$ = new ASTGlobally(); YY_RESULT_ASTScope_= $$; }
-  | _SYMB_25 {  $$ = new ASTFile(); YY_RESULT_ASTScope_= $$; }
-  | _SYMB_27 {  $$ = new ASTImported(); YY_RESULT_ASTScope_= $$; }
+ASTScope : _SYMB_29 {  $$ = new ASTGlobally(); YY_RESULT_ASTScope_= $$; } 
+  | _SYMB_28 {  $$ = new ASTFile(); YY_RESULT_ASTScope_= $$; }
+  | _SYMB_30 {  $$ = new ASTImported(); YY_RESULT_ASTScope_= $$; }
 ;
-RuleCause : _SYMB_28 {  $$ = new RCLang(); YY_RESULT_RuleCause_= $$; }
-  | _SYMB_29 {  $$ = new RCPolicy(); YY_RESULT_RuleCause_= $$; }
+RuleCause : _SYMB_32 {  $$ = new RCLang(); YY_RESULT_RuleCause_= $$; } 
+  | _SYMB_33 {  $$ = new RCPolicy(); YY_RESULT_RuleCause_= $$; }
 ;
-Explanation : _SYMB_1 _STRING_ {  $$ = new Explan($2); YY_RESULT_Explanation_= $$; }
+Explanation : _SYMB_1 _STRING_ {  $$ = new Explan($2); YY_RESULT_Explanation_= $$; } 
   | _SYMB_2 {  $$ = new Noexplan(); YY_RESULT_Explanation_= $$; }
 ;
-ListRule : /* empty */ {  $$ = new ListRule(); YY_RESULT_ListRule_= $$; }
+ListRule : /* empty */ {  $$ = new ListRule(); YY_RESULT_ListRule_= $$; } 
   | Rule {  $$ = new ListRule() ; $$->push_back($1); YY_RESULT_ListRule_= $$; }
   | Rule _SYMB_3 ListRule {  $3->push_back($1) ; $$ = $3 ; YY_RESULT_ListRule_= $$; }
 ;
-Tag : _STRING_ {  $$ = new TTag($1); YY_RESULT_Tag_= $$; }
+Tag : _STRING_ {  $$ = new TTag($1); YY_RESULT_Tag_= $$; } 
 ;
-Severity : _SYMB_32 {  $$ = new SevWarning(); YY_RESULT_Severity_= $$; }
-  | _SYMB_19 {  $$ = new SevCritical(); YY_RESULT_Severity_= $$; }
+Severity : _SYMB_31 {  $$ = new SevInfo(); YY_RESULT_Severity_= $$; } 
+  | _SYMB_38 {  $$ = new SevWarning(); YY_RESULT_Severity_= $$; }
+  | _SYMB_22 {  $$ = new SevCritical(); YY_RESULT_Severity_= $$; }
 ;
-PathQuantifier : _SYMB_17 Expr {  $$ = new AG($2); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_16 Expr {  $$ = new AF($2); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_18 Expr {  $$ = new AX($2); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_15 Expr _SYMB_31 Expr {  $$ = new AU($2, $4); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_22 Expr {  $$ = new EG($2); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_21 Expr {  $$ = new EF($2); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_23 Expr {  $$ = new EX($2); YY_RESULT_PathQuantifier_= $$; }
-  | _SYMB_20 Expr _SYMB_31 Expr {  $$ = new EU($2, $4); YY_RESULT_PathQuantifier_= $$; }
+Quantifier : Expr {  $$ = new QExpr($1); YY_RESULT_Quantifier_= $$; } 
+  | _SYMB_41 _STRING_ _SYMB_4 Expr {  $$ = new QFor($2, $4); YY_RESULT_Quantifier_= $$; }
 ;
-IStmnt : _INTEGER_ {  $$ = new IEInt($1); YY_RESULT_IStmnt_= $$; }
-  | _SYMB_35 {  $$ = new IENrChildren(); YY_RESULT_IStmnt_= $$; }
-  | _SYMB_36 {  $$ = new IERow(); YY_RESULT_IStmnt_= $$; }
-  | _SYMB_33 {  $$ = new IECol(); YY_RESULT_IStmnt_= $$; }
+PathQuantifier : _SYMB_19 Expr10 {  $$ = new AG($2); YY_RESULT_PathQuantifier_= $$; } 
+  | _SYMB_18 Expr10 {  $$ = new AF($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_20 Expr10 {  $$ = new AX($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_17 Expr10 _SYMB_36 Expr10 {  $$ = new AU($2, $4); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_25 Expr10 {  $$ = new EG($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_24 Expr10 {  $$ = new EF($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_26 Expr10 {  $$ = new EX($2); YY_RESULT_PathQuantifier_= $$; }
+  | _SYMB_23 Expr10 _SYMB_36 Expr10 {  $$ = new EU($2, $4); YY_RESULT_PathQuantifier_= $$; }
 ;
-IExpr2 : IExpr1 _SYMB_4 IStmnt {  $$ = new IELtEq($1, $3); YY_RESULT_IExpr_= $$; }
-  | IExpr1 _SYMB_5 IStmnt {  $$ = new IEGtEq($1, $3); YY_RESULT_IExpr_= $$; }
-  | IExpr1 _SYMB_6 IStmnt {  $$ = new IELt($1, $3); YY_RESULT_IExpr_= $$; }
-  | IExpr1 _SYMB_7 IStmnt {  $$ = new IEGt($1, $3); YY_RESULT_IExpr_= $$; }
-  | IStmnt _SYMB_8 IStmnt {  $$ = new IEq($1, $3); YY_RESULT_IExpr_= $$; }
-  | _SYMB_9 IExpr _SYMB_10 {  $$ = $2; YY_RESULT_IExpr_= $$; }
+IAtom : _SYMB_34 {  $$ = new IFRow(); YY_RESULT_IAtom_= $$; } 
+  | _SYMB_21 {  $$ = new IFCol(); YY_RESULT_IAtom_= $$; }
+  | _INTEGER_ {  $$ = new IInt($1); YY_RESULT_IAtom_= $$; }
+  | _SYMB_45 {  $$ = new INrChildren(); YY_RESULT_IAtom_= $$; }
+  | _SYMB_47 {  $$ = new IRow(); YY_RESULT_IAtom_= $$; }
+  | _SYMB_39 {  $$ = new ICol(); YY_RESULT_IAtom_= $$; }
 ;
-IExpr1 : IStmnt {  $$ = new IEStmnt($1); YY_RESULT_IExpr_= $$; }
-  | IExpr2 {  $$ = $1; YY_RESULT_IExpr_= $$; }
+SAtom2 : _STRING_ {  $$ = new SString($1); YY_RESULT_SAtom_= $$; } 
+  | _SYMB_37 {  $$ = new SFValue(); YY_RESULT_SAtom_= $$; }
+  | _SYMB_49 {  $$ = new SValue(); YY_RESULT_SAtom_= $$; }
+  | _SYMB_50 {  $$ = new SValueType(); YY_RESULT_SAtom_= $$; }
+  | _SYMB_44 {  $$ = new SNodeType(); YY_RESULT_SAtom_= $$; }
+  | _SYMB_6 SAtom _SYMB_7 {  $$ = $2; YY_RESULT_SAtom_= $$; }
 ;
-IExpr : IExpr1 {  $$ = $1; YY_RESULT_IExpr_= $$; }
+SAtom1 : SAtom1 _SYMB_5 SAtom2 {  $$ = new SConcat($1, $3); YY_RESULT_SAtom_= $$; } 
+  | SAtom2 {  $$ = $1; YY_RESULT_SAtom_= $$; }
 ;
-Expr10 : _SYMB_30 {  $$ = new ETrue(); YY_RESULT_Expr_= $$; }
-  | _SYMB_24 {  $$ = new EFalse(); YY_RESULT_Expr_= $$; }
-  | _SYMB_37 _STRING_ {  $$ = new EValue($2); YY_RESULT_Expr_= $$; }
-  | _SYMB_38 _STRING_ {  $$ = new EValueType($2); YY_RESULT_Expr_= $$; }
-  | _SYMB_34 _STRING_ {  $$ = new ENodeType($2); YY_RESULT_Expr_= $$; }
-  | _SYMB_9 Expr1 _SYMB_10 {  $$ = new EParant($2); YY_RESULT_Expr_= $$; }
-  | _SYMB_9 Expr _SYMB_10 {  $$ = $2; YY_RESULT_Expr_= $$; }
+SAtom : SAtom1 {  $$ = $1; YY_RESULT_SAtom_= $$; } 
 ;
-Expr9 : _SYMB_11 Expr10 {  $$ = new ENot($2); YY_RESULT_Expr_= $$; }
+Expr10 : _SYMB_35 {  $$ = new ETrue(); YY_RESULT_Expr_= $$; } 
+  | _SYMB_27 {  $$ = new EFalse(); YY_RESULT_Expr_= $$; }
+  | _SYMB_6 Expr1 _SYMB_7 {  $$ = new EParant($2); YY_RESULT_Expr_= $$; }
+  | _SYMB_6 Expr _SYMB_7 {  $$ = $2; YY_RESULT_Expr_= $$; }
+;
+Expr9 : _SYMB_8 Expr10 {  $$ = new ENot($2); YY_RESULT_Expr_= $$; } 
   | Expr10 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr8 : Expr8 _SYMB_12 Expr9 {  $$ = new EImpl($1, $3); YY_RESULT_Expr_= $$; }
+Expr8 : Expr8 _SYMB_9 Expr9 {  $$ = new EImpl($1, $3); YY_RESULT_Expr_= $$; } 
   | Expr9 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr7 : IExpr2 {  $$ = new EIExpr($1); YY_RESULT_Expr_= $$; }
+Expr7 : Expr7 _SYMB_10 Expr8 {  $$ = new EBEq($1, $3); YY_RESULT_Expr_= $$; } 
   | Expr8 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr6 : Expr6 _SYMB_8 Expr7 {  $$ = new EEq($1, $3); YY_RESULT_Expr_= $$; }
+Expr6 : _STRING_ _SYMB_42 _SYMB_46 _SYMB_48 {  $$ = new EPossToken($1); YY_RESULT_Expr_= $$; } 
+  | _STRING_ _SYMB_42 _SYMB_40 _SYMB_48 {  $$ = new EExistToken($1); YY_RESULT_Expr_= $$; }
+  | IAtom _SYMB_11 IAtom {  $$ = new EILtEq($1, $3); YY_RESULT_Expr_= $$; }
+  | IAtom _SYMB_12 IAtom {  $$ = new EIGtEq($1, $3); YY_RESULT_Expr_= $$; }
+  | IAtom _SYMB_13 IAtom {  $$ = new EILt($1, $3); YY_RESULT_Expr_= $$; }
+  | IAtom _SYMB_14 IAtom {  $$ = new EIGt($1, $3); YY_RESULT_Expr_= $$; }
+  | IAtom _SYMB_10 IAtom {  $$ = new EIEq($1, $3); YY_RESULT_Expr_= $$; }
+  | SAtom _SYMB_43 _STRING_ {  $$ = new EMatch($1, $3); YY_RESULT_Expr_= $$; }
+  | SAtom _SYMB_10 SAtom {  $$ = new ESEq($1, $3); YY_RESULT_Expr_= $$; }
   | Expr7 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr4 : Expr4 _SYMB_13 Expr5 {  $$ = new EAnd($1, $3); YY_RESULT_Expr_= $$; }
-  | Expr4 _SYMB_14 Expr5 {  $$ = new EOr($1, $3); YY_RESULT_Expr_= $$; }
+Expr4 : Expr4 _SYMB_15 Expr5 {  $$ = new EAnd($1, $3); YY_RESULT_Expr_= $$; } 
+  | Expr4 _SYMB_16 Expr5 {  $$ = new EOr($1, $3); YY_RESULT_Expr_= $$; }
   | Expr5 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr2 : PathQuantifier {  $$ = new EPQ($1); YY_RESULT_Expr_= $$; }
+Expr2 : PathQuantifier {  $$ = new EPQ($1); YY_RESULT_Expr_= $$; } 
   | Expr3 {  $$ = $1; YY_RESULT_Expr_= $$; }
 ;
-Expr : Expr1 {  $$ = $1; YY_RESULT_Expr_= $$; }
+Expr : Expr1 {  $$ = $1; YY_RESULT_Expr_= $$; } 
 ;
-Expr1 : Expr2 {  $$ = $1; YY_RESULT_Expr_= $$; }
+Expr1 : Expr2 {  $$ = $1; YY_RESULT_Expr_= $$; } 
 ;
-Expr3 : Expr4 {  $$ = $1; YY_RESULT_Expr_= $$; }
+Expr3 : Expr4 {  $$ = $1; YY_RESULT_Expr_= $$; } 
 ;
-Expr5 : Expr6 {  $$ = $1; YY_RESULT_Expr_= $$; }
+Expr5 : Expr6 {  $$ = $1; YY_RESULT_Expr_= $$; } 
 ;
-ListExpr : /* empty */ {  $$ = new ListExpr(); YY_RESULT_ListExpr_= $$; }
+ListExpr : /* empty */ {  $$ = new ListExpr(); YY_RESULT_ListExpr_= $$; } 
   | ListExpr Expr {  $1->push_back($2) ; $$ = $1 ; YY_RESULT_ListExpr_= $$; }
 ;
 

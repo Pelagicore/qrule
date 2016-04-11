@@ -47,8 +47,12 @@ void render(char* s);
   RetType* visitTag(Tag *p); /* abstract class */
   RetType* visitTTag(TTag *p);
   RetType* visitSeverity(Severity *p); /* abstract class */
+  RetType* visitSevInfo(SevInfo *p);
   RetType* visitSevWarning(SevWarning *p);
   RetType* visitSevCritical(SevCritical *p);
+  RetType* visitQuantifier(Quantifier *p); /* abstract class */
+  RetType* visitQExpr(QExpr *p);
+  RetType* visitQFor(QFor *p);
   RetType* visitPathQuantifier(PathQuantifier *p); /* abstract class */
   RetType* visitAG(AG *p);
   RetType* visitAF(AF *p);
@@ -58,29 +62,36 @@ void render(char* s);
   RetType* visitEF(EF *p);
   RetType* visitEX(EX *p);
   RetType* visitEU(EU *p);
-  RetType* visitIStmnt(IStmnt *p); /* abstract class */
-  RetType* visitIEInt(IEInt *p);
-  RetType* visitIENrChildren(IENrChildren *p);
-  RetType* visitIERow(IERow *p);
-  RetType* visitIECol(IECol *p);
-  RetType* visitIExpr(IExpr *p); /* abstract class */
-  RetType* visitIELtEq(IELtEq *p);
-  RetType* visitIEGtEq(IEGtEq *p);
-  RetType* visitIELt(IELt *p);
-  RetType* visitIEGt(IEGt *p);
-  RetType* visitIEq(IEq *p);
-  RetType* visitIEStmnt(IEStmnt *p);
+  RetType* visitIAtom(IAtom *p); /* abstract class */
+  RetType* visitIFRow(IFRow *p);
+  RetType* visitIFCol(IFCol *p);
+  RetType* visitIInt(IInt *p);
+  RetType* visitINrChildren(INrChildren *p);
+  RetType* visitIRow(IRow *p);
+  RetType* visitICol(ICol *p);
+  RetType* visitSAtom(SAtom *p); /* abstract class */
+  RetType* visitSString(SString *p);
+  RetType* visitSFValue(SFValue *p);
+  RetType* visitSValue(SValue *p);
+  RetType* visitSValueType(SValueType *p);
+  RetType* visitSNodeType(SNodeType *p);
+  RetType* visitSConcat(SConcat *p);
   RetType* visitExpr(Expr *p); /* abstract class */
   RetType* visitETrue(ETrue *p);
   RetType* visitEFalse(EFalse *p);
-  RetType* visitEValue(EValue *p);
-  RetType* visitEValueType(EValueType *p);
-  RetType* visitENodeType(ENodeType *p);
   RetType* visitEParant(EParant *p);
   RetType* visitENot(ENot *p);
   RetType* visitEImpl(EImpl *p);
-  RetType* visitEIExpr(EIExpr *p);
-  RetType* visitEEq(EEq *p);
+  RetType* visitEBEq(EBEq *p);
+  RetType* visitEPossToken(EPossToken *p);
+  RetType* visitEExistToken(EExistToken *p);
+  RetType* visitEILtEq(EILtEq *p);
+  RetType* visitEIGtEq(EIGtEq *p);
+  RetType* visitEILt(EILt *p);
+  RetType* visitEIGt(EIGt *p);
+  RetType* visitEIEq(EIEq *p);
+  RetType* visitEMatch(EMatch *p);
+  RetType* visitESEq(ESEq *p);
   RetType* visitEAnd(EAnd *p);
   RetType* visitEOr(EOr *p);
   RetType* visitEPQ(EPQ *p);
@@ -176,8 +187,12 @@ class ShowAbsyn : public Visitor
   RetType* visitTag(Tag *p); /* abstract class */
   RetType* visitTTag(TTag *p);
   RetType* visitSeverity(Severity *p); /* abstract class */
+  RetType* visitSevInfo(SevInfo *p);
   RetType* visitSevWarning(SevWarning *p);
   RetType* visitSevCritical(SevCritical *p);
+  RetType* visitQuantifier(Quantifier *p); /* abstract class */
+  RetType* visitQExpr(QExpr *p);
+  RetType* visitQFor(QFor *p);
   RetType* visitPathQuantifier(PathQuantifier *p); /* abstract class */
   RetType* visitAG(AG *p);
   RetType* visitAF(AF *p);
@@ -187,29 +202,36 @@ class ShowAbsyn : public Visitor
   RetType* visitEF(EF *p);
   RetType* visitEX(EX *p);
   RetType* visitEU(EU *p);
-  RetType* visitIStmnt(IStmnt *p); /* abstract class */
-  RetType* visitIEInt(IEInt *p);
-  RetType* visitIENrChildren(IENrChildren *p);
-  RetType* visitIERow(IERow *p);
-  RetType* visitIECol(IECol *p);
-  RetType* visitIExpr(IExpr *p); /* abstract class */
-  RetType* visitIELtEq(IELtEq *p);
-  RetType* visitIEGtEq(IEGtEq *p);
-  RetType* visitIELt(IELt *p);
-  RetType* visitIEGt(IEGt *p);
-  RetType* visitIEq(IEq *p);
-  RetType* visitIEStmnt(IEStmnt *p);
+  RetType* visitIAtom(IAtom *p); /* abstract class */
+  RetType* visitIFRow(IFRow *p);
+  RetType* visitIFCol(IFCol *p);
+  RetType* visitIInt(IInt *p);
+  RetType* visitINrChildren(INrChildren *p);
+  RetType* visitIRow(IRow *p);
+  RetType* visitICol(ICol *p);
+  RetType* visitSAtom(SAtom *p); /* abstract class */
+  RetType* visitSString(SString *p);
+  RetType* visitSFValue(SFValue *p);
+  RetType* visitSValue(SValue *p);
+  RetType* visitSValueType(SValueType *p);
+  RetType* visitSNodeType(SNodeType *p);
+  RetType* visitSConcat(SConcat *p);
   RetType* visitExpr(Expr *p); /* abstract class */
   RetType* visitETrue(ETrue *p);
   RetType* visitEFalse(EFalse *p);
-  RetType* visitEValue(EValue *p);
-  RetType* visitEValueType(EValueType *p);
-  RetType* visitENodeType(ENodeType *p);
   RetType* visitEParant(EParant *p);
   RetType* visitENot(ENot *p);
   RetType* visitEImpl(EImpl *p);
-  RetType* visitEIExpr(EIExpr *p);
-  RetType* visitEEq(EEq *p);
+  RetType* visitEBEq(EBEq *p);
+  RetType* visitEPossToken(EPossToken *p);
+  RetType* visitEExistToken(EExistToken *p);
+  RetType* visitEILtEq(EILtEq *p);
+  RetType* visitEIGtEq(EIGtEq *p);
+  RetType* visitEILt(EILt *p);
+  RetType* visitEIGt(EIGt *p);
+  RetType* visitEIEq(EIEq *p);
+  RetType* visitEMatch(EMatch *p);
+  RetType* visitESEq(ESEq *p);
   RetType* visitEAnd(EAnd *p);
   RetType* visitEOr(EOr *p);
   RetType* visitEPQ(EPQ *p);

@@ -11,10 +11,11 @@ RetType* KRuleVisitor::visitRuleCause(RuleCause *) {} //abstract class
 RetType* KRuleVisitor::visitExplanation(Explanation *) {} //abstract class
 RetType* KRuleVisitor::visitTag(Tag *) {} //abstract class
 RetType* KRuleVisitor::visitSeverity(Severity *) {} //abstract class
-RetType* KRuleVisitor::visitIStmnt(IStmnt *) {} //abstract class
-RetType* KRuleVisitor::visitIExpr(IExpr *) {} //abstract class
+RetType* KRuleVisitor::visitIAtom(IAtom *) {} //abstract class
+RetType* KRuleVisitor::visitSAtom(SAtom *) {} //abstract class
 RetType* KRuleVisitor::visitExpr(Expr *) {} //abstract class
 RetType* KRuleVisitor::visitPathQuantifier(PathQuantifier *) {}
+RetType* KRuleVisitor::visitQuantifier(Quantifier *) {}
 
 
 RetType* KRuleVisitor::visitRSet(RSet *rset) {
@@ -29,7 +30,7 @@ RetType* KRuleVisitor::visitRRule(RRule *rrule) {
         currentRuleASTScope = extractQString(rrule->astscope_->accept(this));
         currentRuleExplanation = extractQString(rrule->explanation_->accept(this));
 
-        if (!extractBool(rrule->expr_->accept(this))) {
+        if (!extractBool(rrule->quantifier_->accept(this))) {
             KRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
                 outp = failedRules[currentRuleTag];
@@ -92,12 +93,25 @@ RetType* KRuleVisitor::visitTTag(TTag *ttag) {
     return new RetTypeString(QString(ttag->string_.c_str()));
 }
 
+RetType* KRuleVisitor::visitSevInfo(SevInfo *) {
+    return new RetTypeString(QString("Info"));
+}
+
 RetType* KRuleVisitor::visitSevWarning(SevWarning *) {
     return new RetTypeString(QString("Warning"));
 }
 
 RetType* KRuleVisitor::visitSevCritical(SevCritical *) {
     return new RetTypeString(QString("Critical"));
+}
+
+RetType* KRuleVisitor::visitQExpr(QExpr *exp) {
+    return exp->expr_->accept(this);
+}
+
+RetType* KRuleVisitor::visitQFor(QFor *exp) {
+    // TODO: For stuff here
+    throw NotImplemented();
 }
 
 const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
@@ -256,54 +270,62 @@ RetType* KRuleVisitor::visitEX(EX *ex) {
     return new RetTypeBool(success);
 }
 
-RetType* KRuleVisitor::visitIEInt(IEInt *ieint) {
+RetType* KRuleVisitor::visitIInt(IInt *ieint) {
     return visitInteger(ieint->integer_);
 }
 
-RetType* KRuleVisitor::visitIENrChildren(IENrChildren *ienrchildren) {
+RetType* KRuleVisitor::visitINrChildren(INrChildren *ienrchildren) {
     throw NotImplemented();
 }
 
-RetType* KRuleVisitor::visitIERow(IERow *) {
+RetType* KRuleVisitor::visitIFRow(IFRow *) {
+    // Todo: Check if in for quantifier and return the row currently quantified over
+    // if not quantifying throw exception
+    throw NotImplemented();
+}
+
+RetType* KRuleVisitor::visitIFCol(IFCol *) {
+    // Todo: Check if in for quantifier and return the col currently quantified over
+    // if not quantifying throw exception
+    throw NotImplemented();
+}
+
+RetType* KRuleVisitor::visitIRow(IRow *) {
     return new RetTypeUInt(node->getRow());
 }
 
-RetType* KRuleVisitor::visitIECol(IECol *) {
+RetType* KRuleVisitor::visitICol(ICol *) {
     return new RetTypeUInt(node->getCol());
 }
 
-RetType* KRuleVisitor::visitIELtEq(IELtEq *ielteq) {
-    quint32 i1 = extractUInt(ielteq->iexpr_->accept(this));
-    quint32 i2 = extractUInt(ielteq->istmnt_->accept(this));
+RetType* KRuleVisitor::visitEILtEq(EILtEq *ielteq) {
+    quint32 i1 = extractUInt(ielteq->iatom_1->accept(this));
+    quint32 i2 = extractUInt(ielteq->iatom_2->accept(this));
     return new RetTypeBool(i1 <= i2);
 }
 
-RetType* KRuleVisitor::visitIEGtEq(IEGtEq *iegteq) {
-    quint32 i1 = extractUInt(iegteq->iexpr_->accept(this));
-    quint32 i2 = extractUInt(iegteq->istmnt_->accept(this));
+RetType* KRuleVisitor::visitEIGtEq(EIGtEq *iegteq) {
+    quint32 i1 = extractUInt(iegteq->iatom_1->accept(this));
+    quint32 i2 = extractUInt(iegteq->iatom_2->accept(this));
     return new RetTypeBool(i1 >= i2);
 }
 
-RetType* KRuleVisitor::visitIELt(IELt *ielt) {
-    quint32 i1 = extractUInt(ielt->iexpr_->accept(this));
-    quint32 i2 = extractUInt(ielt->istmnt_->accept(this));
+RetType* KRuleVisitor::visitEILt(EILt *ielt) {
+    quint32 i1 = extractUInt(ielt->iatom_1->accept(this));
+    quint32 i2 = extractUInt(ielt->iatom_2->accept(this));
     return new RetTypeBool(i1 < i2);
 }
 
-RetType* KRuleVisitor::visitIEGt(IEGt *iegt) {
-    quint32 i1 = extractUInt(iegt->iexpr_->accept(this));
-    quint32 i2 = extractUInt(iegt->istmnt_->accept(this));
+RetType* KRuleVisitor::visitEIGt(EIGt *iegt) {
+    quint32 i1 = extractUInt(iegt->iatom_1->accept(this));
+    quint32 i2 = extractUInt(iegt->iatom_2->accept(this));
     return new RetTypeBool(i1 > i2);
 }
 
-RetType* KRuleVisitor::visitIEq(IEq *ieq) {
-    quint32 i1 = extractUInt(ieq->istmnt_1->accept(this));
-    quint32 i2 = extractUInt(ieq->istmnt_2->accept(this));
+RetType* KRuleVisitor::visitEIEq(EIEq *ieq) {
+    quint32 i1 = extractUInt(ieq->iatom_1->accept(this));
+    quint32 i2 = extractUInt(ieq->iatom_2->accept(this));
     return new RetTypeBool(i1 == i2);
-}
-
-RetType* KRuleVisitor::visitIEStmnt(IEStmnt *iestmnt) {
-    return iestmnt->istmnt_->accept(this);
 }
 
 RetType* KRuleVisitor::visitETrue(ETrue *) {
@@ -314,24 +336,60 @@ RetType* KRuleVisitor::visitEFalse(EFalse *) {
     return new RetTypeBool(false);
 }
 
-RetType* KRuleVisitor::visitEValue(EValue *enodeval) {
+RetType* KRuleVisitor::visitSValue(SValue *) {
+    return new RetTypeString(node->getValue());
+}
+
+RetType* KRuleVisitor::visitSValueType(SValueType *) {
+    return new RetTypeString(node->getValueType());
+}
+
+RetType* KRuleVisitor::visitSNodeType(SNodeType *) {
+    return new RetTypeString(node->getNodeType());
+}
+
+RetType* KRuleVisitor::visitSString(SString *exp) {
+    return new RetTypeString(QString(exp->string_.c_str()));
+}
+
+RetType* KRuleVisitor::visitSFValue(SFValue *exp) {
+    // Todo: Check if in for quantifier and return the value currently quantified over
+    // if not quantifying throw exception
+    throw NotImplemented();
+}
+
+RetType* KRuleVisitor::visitSConcat(SConcat *exp) {
+    QString s1 = extractQString(exp->satom_1->accept(this));
+    QString s2 = extractQString(exp->satom_2->accept(this));
+    return new RetTypeString(s1 + s2);
+}
+
+RetType* KRuleVisitor::visitEPossToken(EPossToken *exp) {
+    throw NotImplemented();
+}
+
+RetType* KRuleVisitor::visitEExistToken(EExistToken *exp) {
+    throw NotImplemented();
+}
+
+RetType* KRuleVisitor::visitEMatch(EMatch *exp) {
     bool s = false;
 
-    QRegExp regexp = QRegExp(QString(enodeval->string_.c_str()));
-
-    if (regexp.exactMatch(node->getValue())) {
+    QRegExp regexp = QRegExp(QString(exp->string_.c_str()));
+    QString toMatch = extractQString(exp->satom_->accept(this));
+    if (regexp.exactMatch(toMatch)) {
         s = true;
     }
     qDebug() << regexp.pattern() << " ? " << node->getValue() << s;
     return new RetTypeBool(s);
 }
 
-RetType* KRuleVisitor::visitEValueType(EValueType *) {
-    return new RetTypeString(node->getValueType());
-}
+RetType* KRuleVisitor::visitESEq(ESEq *exp) {
 
-RetType* KRuleVisitor::visitENodeType(ENodeType *) {
-    return new RetTypeString(node->getNodeType());
+    QString s1 = extractQString(exp->satom_1->accept(this));
+    QString s2 = extractQString(exp->satom_2->accept(this));
+
+    return new RetTypeBool(s1 == s2);
 }
 
 RetType* KRuleVisitor::visitEParant(EParant *eparant) {
@@ -354,11 +412,7 @@ RetType* KRuleVisitor::visitEImpl(EImpl *eimpl) {
     return new RetTypeBool(rtBool);
 }
 
-RetType* KRuleVisitor::visitEIExpr(EIExpr *eiexpr) {
-    return eiexpr->iexpr_->accept(this);
-}
-
-RetType* KRuleVisitor::visitEEq(EEq *eeq){
+RetType* KRuleVisitor::visitEBEq(EBEq *eeq){
     const bool b1 = extractBool(eeq->expr_1->accept(this));
     const bool b2 = extractBool(eeq->expr_2->accept(this));
     return new RetTypeBool(b1 == b2);
