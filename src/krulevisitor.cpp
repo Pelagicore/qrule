@@ -2,7 +2,6 @@
 #include "krulevisitor.h"
 #include <gen/Printer.H>
 #include <QRegExp>
-#include "QMLChildren.h"
 
 RetType* KRuleVisitor::visitRuleSet(RuleSet *) {} //abstract class
 RetType* KRuleVisitor::visitRule(Rule *) {} //abstract class
@@ -53,7 +52,7 @@ RetType* KRuleVisitor::visitRRule(RRule *rrule) {
     catch(NotImplemented &) {}
 }
 
-const QStringRef KRuleVisitor::printable(const SourceLocation &start, const SourceLocation &end) {
+const QStringRef KRuleVisitor::printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end) {
     return QStringRef(&code, start.offset, end.offset + end.length - start.offset);
 }
 

@@ -12,7 +12,6 @@ set(SOURCE_FILES
         retType/RetTypeUInt.cpp
         retType/RetTypeString.cpp
         retType/RetTypeBool.cpp
-        QMLChildren.cpp
         nodewrapper.cpp
         )
 include_directories(.)
