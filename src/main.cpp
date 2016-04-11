@@ -150,6 +150,7 @@ int main(int argv, char *argc[]) {
         QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
         parser.ast()->accept(&qmlVisitor);
         // ---------------------------
+        qmlVisitor.getWrappedRoot()->print();
         KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, qmlVisitor.getWrappedRoot());
 
         kruleTree->accept(&kruleVisitor);
