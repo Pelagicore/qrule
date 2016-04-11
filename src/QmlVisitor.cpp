@@ -10,13 +10,32 @@ void QmlVisitor::endVisit(UiObjectDefinition*) { commonEndVisit(); }
 
 bool QmlVisitor::visit(IdentifierExpression *exp) {
     debug(exp);
-    dontPopAtEnd();
+    QList<QStringRef> tokens;
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("IdentifierExpression"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+
+    pushStack(n);
     return true; }
 void QmlVisitor::endVisit(IdentifierExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiScriptBinding *exp)  {
     debug(exp);
-    dontPopAtEnd();
+    QList<QStringRef> tokens;
+    tokens.append(toQStringRef(exp->colonToken));
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ScriptBinding"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokens);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+
+    pushStack(n);
     return true;
 }
 void QmlVisitor::endVisit(UiScriptBinding *) { commonEndVisit(); }
@@ -98,6 +117,7 @@ void QmlVisitor::endVisit(UiObjectInitializer *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(UiObjectMember *exp) {
     debug(exp);
+    // ABSTRACT
     dontPopAtEnd();
     return true; }
 
@@ -106,7 +126,7 @@ bool QmlVisitor::visit(UiQualifiedPragmaId *exp) {
     QList<QStringRef> tokens;
     tokens.append(toQStringRef(exp->identifierToken));
 
-    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("QualifiedId"),
+    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("QualifiedPragmaId"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokens);

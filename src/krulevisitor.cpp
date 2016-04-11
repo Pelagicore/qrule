@@ -101,13 +101,7 @@ RetType* KRuleVisitor::visitSevCritical(SevCritical *) {
 }
 
 const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
-    if (overPaths == "A") {
-        return breakCondition ? false : true;
-    } else if (overPaths == "E") {
-        return breakCondition ? true : false;
-    } else {
-        throw NotImplemented();
-    }
+    return breakCondition ? true : false;
 }
 
 RetType* KRuleVisitor::visitAF(AF *p) {
@@ -118,7 +112,7 @@ RetType* KRuleVisitor::visitAF(AF *p) {
 }
 
 RetType* KRuleVisitor::visitAG(AG *p) {
-    ENot *v = new ENot(new EPQ(new EU(new ETrue, new ENot(p->expr_->clone()))));
+    ENot *v = new ENot(new EPQ(new EF(new ENot(p->expr_->clone()))));
     RetType *r = v->accept(this);
     delete v;
     return r;
@@ -324,14 +318,11 @@ RetType* KRuleVisitor::visitEValue(EValue *enodeval) {
     bool s = false;
 
     QRegExp regexp = QRegExp(QString(enodeval->string_.c_str()));
-    QString nodeCode;
-
-    // nodeCode = getSource(node).toString();
 
     if (regexp.exactMatch(node->getValue())) {
         s = true;
     }
-    qDebug() << regexp.pattern() << " ? " << nodeCode << s;
+    qDebug() << regexp.pattern() << " ? " << node->getValue() << s;
     return new RetTypeBool(s);
 }
 
