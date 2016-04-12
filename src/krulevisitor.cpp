@@ -111,8 +111,23 @@ RetType* KRuleVisitor::visitQExpr(QExpr *exp) {
 }
 
 RetType* KRuleVisitor::visitQFor(QFor *exp) {
-    // TODO: For stuff here
-    throw NotImplemented();
+
+    const QList<NodeWrapper*> ls = node->getNodes(QString(exp->string_.c_str()));
+    NodeWrapper* startNode = node;
+    foreach(NodeWrapper* n, ls) {
+        quantifiedNode = n;
+
+        RetType* r = exp->expr_->accept(this);
+        bool b = extractBool(r);
+
+        if (!b) {
+            return new RetTypeBool(false);
+        }
+        node = startNode;
+        quantifiedNode = nullptr;
+    }
+
+    return new RetTypeBool(true);
 }
 
 const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
@@ -280,15 +295,17 @@ RetType* KRuleVisitor::visitINrChildren(INrChildren *ienrchildren) {
 }
 
 RetType* KRuleVisitor::visitIFRow(IFRow *) {
-    // Todo: Check if in for quantifier and return the row currently quantified over
-    // if not quantifying throw exception
-    throw NotImplemented();
+    if (quantifiedNode != nullptr) {
+        return new RetTypeUInt(quantifiedNode->getRow());
+    }
+    throw NoQuantification();
 }
 
 RetType* KRuleVisitor::visitIFCol(IFCol *) {
-    // Todo: Check if in for quantifier and return the col currently quantified over
-    // if not quantifying throw exception
-    throw NotImplemented();
+    if (quantifiedNode != nullptr) {
+        return new RetTypeUInt(quantifiedNode->getCol());
+    }
+    throw NoQuantification();
 }
 
 RetType* KRuleVisitor::visitIRow(IRow *) {
@@ -353,10 +370,11 @@ RetType* KRuleVisitor::visitSString(SString *exp) {
     return new RetTypeString(QString(exp->string_.c_str()));
 }
 
-RetType* KRuleVisitor::visitSFValue(SFValue *exp) {
-    // Todo: Check if in for quantifier and return the value currently quantified over
-    // if not quantifying throw exception
-    throw NotImplemented();
+RetType* KRuleVisitor::visitSFValue(SFValue *) {
+    if (quantifiedNode != nullptr) {
+        return new RetTypeString(quantifiedNode->getValue());
+    }
+    throw NoQuantification();
 }
 
 RetType* KRuleVisitor::visitSConcat(SConcat *exp) {

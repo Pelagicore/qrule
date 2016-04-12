@@ -24,6 +24,16 @@ public:
     const char* what() { return "Bad type"; }
 };
 
+class NoQuantification : public std::exception {
+public:
+    NoQuantification() {}
+    ~NoQuantification() {}
+    const char* what() {
+        return "The tokens R C and V can only be used while quantifing using forAll";
+    }
+};
+
+
 class KRuleVisitor : public Visitor {
 public:
     KRuleVisitor(QString filename, QString code, NodeWrapper *node):
@@ -117,6 +127,7 @@ private:
     QString code;
 
     NodeWrapper *node;
+    NodeWrapper *quantifiedNode;
 
     void assertType(RetType* ret, RetType::RetTypeE type);
     QString currentRuleTag = "";

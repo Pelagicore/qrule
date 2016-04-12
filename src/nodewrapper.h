@@ -25,6 +25,8 @@ public:
     const QList<QStringRef>& getTokens();
     void print();
 
+    const QList<NodeWrapper*> getNodes(const QString &nodeType);
+
 private:
     QList<NodeWrapper *> children;
     const QList<QStringRef> tokens;
@@ -36,6 +38,7 @@ private:
     const QStringRef source;
 
     void innerPrint(const int);
+    void innerGetNodes(const QString &nodeType, QList<NodeWrapper*> &nodes);
 };
 
 #endif // NODEWRAPPER_H
