@@ -38,12 +38,6 @@ RetType* KRuleVisitor::visitRRule(RRule *rrule) {
                 outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
                                        currentRuleASTScope, currentRuleCause, currentRuleExplanation);
             }
-            /*
-             * NEEDS MOAR WORK
-             * kolla upp hur node sätts på tillbaka vägen
-             * borde kanske inte använda oldNode för att skriva tillbaka
-             * för att kunna komma åt var det bråkar
-             */
             outp->addCodeOccurrance(CodeOccurrance(node->getSource().toString(), filename,
                                                    node->getRow(),
                                                    node->getCol()));
@@ -173,35 +167,6 @@ RetType* KRuleVisitor::visitEF(EF *p) {
     delete v;
     return r;
 }
-
-/*
-RetType* KRuleVisitor::visitEF(EF *ef) {
-    bool success = false;
-
-    if (extractBool(ef->expr_->accept(this))) {
-        success = true;
-    } else {
-        QList<QQmlJS::AST::Node*> childrn = children(node);
-        if (!childrn.isEmpty()){
-            bool breakCondition = false;
-            foreach(QQmlJS::AST::Node *child, childrn) {
-                node = child;
-
-                bool res = extractBool(visitEF(ef));
-                if (res) {
-                    breakCondition = true;
-                    break;
-                }
-            }
-            success = handleBreakCondition(breakCondition);
-        } else {
-            success = false;
-        }
-    }
-
-    return new RetTypeBool(success);
-}
-*/
 
 RetType* KRuleVisitor::visitEG(EG *eg) {
     bool success = false;

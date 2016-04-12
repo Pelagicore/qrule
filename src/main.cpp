@@ -102,11 +102,9 @@ int main(int argv, char *argc[]) {
     QCoreApplication::setApplicationName("qmllint");
     QCoreApplication::setApplicationVersion("1.0");
     QCommandLineParser parser;
-    parser.setApplicationDescription(QLatin1String("QML syntax verifier"));
+    parser.setApplicationDescription(QLatin1String("QML Linter"));
     parser.addHelpOption();
     parser.addVersionOption();
-    QCommandLineOption silentOption(QStringList() << "s" << "silent", QLatin1String("Don't output syntax errors"));
-    parser.addOption(silentOption);
 
     parser.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
     parser.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
@@ -117,8 +115,6 @@ int main(int argv, char *argc[]) {
     if (parser.positionalArguments().length() < 2) {
         parser.showHelp(-1);
     }
-
-    const bool silent = parser.isSet(silentOption);
 
     // Parse KRule
     QStringList parsedArguments = parser.positionalArguments();
@@ -145,11 +141,11 @@ int main(int argv, char *argc[]) {
             }
         }
 
-
         // Debugging stuff -----------
         QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
         parser.ast()->accept(&qmlVisitor);
         // ---------------------------
+
         qmlVisitor.getWrappedRoot()->print();
         KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, qmlVisitor.getWrappedRoot());
 
