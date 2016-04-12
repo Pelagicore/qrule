@@ -29,6 +29,7 @@ RetType* KRuleVisitor::visitRRule(RRule *rrule) {
         currentRuleASTScope = extractQString(rrule->astscope_->accept(this));
         currentRuleExplanation = extractQString(rrule->explanation_->accept(this));
 
+        NodeWrapper* rootNode = node;
         if (!extractBool(rrule->quantifier_->accept(this))) {
             KRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
@@ -48,6 +49,7 @@ RetType* KRuleVisitor::visitRRule(RRule *rrule) {
                                                    node->getCol()));
             failedRules.insert(currentRuleTag, outp);
         }
+        node = rootNode;
     }
     catch(NotImplemented &) {}
 }
