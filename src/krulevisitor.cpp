@@ -465,7 +465,6 @@ RetType* KRuleVisitor::visitListRule(ListRule* listrule) {
     return nullptr;
 }
 
-// Not sure if this is actually needed ... maybe delete this?
 RetType* KRuleVisitor::visitListExpr(ListExpr* listexpr) {
     for (ListExpr::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i) {
       (*i)->accept(this);
