@@ -290,8 +290,8 @@ RetType* KRuleVisitor::visitIInt(IInt *ieint) {
     return visitInteger(ieint->integer_);
 }
 
-RetType* KRuleVisitor::visitINrChildren(INrChildren *ienrchildren) {
-    throw NotImplemented();
+RetType* KRuleVisitor::visitINrChildren(INrChildren *) {
+    return new RetTypeUInt((quint32)node->getChildren().length());
 }
 
 RetType* KRuleVisitor::visitIFRow(IFRow *) {
