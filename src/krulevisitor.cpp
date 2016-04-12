@@ -384,11 +384,13 @@ RetType* KRuleVisitor::visitSConcat(SConcat *exp) {
 }
 
 RetType* KRuleVisitor::visitEPossToken(EPossToken *exp) {
-    throw NotImplemented();
+    bool b = node->getTokenMap().contains(QString(exp->string_.c_str()));
+    return new RetTypeBool(b);
 }
 
 RetType* KRuleVisitor::visitEExistToken(EExistToken *exp) {
-    throw NotImplemented();
+    bool b = node->getTokenMap().value(QString(exp->string_.c_str()));
+    return new RetTypeBool(b);
 }
 
 RetType* KRuleVisitor::visitEMatch(EMatch *exp) {

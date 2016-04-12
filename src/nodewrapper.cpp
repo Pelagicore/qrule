@@ -39,8 +39,8 @@ const QList<NodeWrapper *>& NodeWrapper::getChildren() {
     return children;
 }
 
-const QList<QStringRef>& NodeWrapper::getTokens() {
-    return tokens;
+const QMap<QString, bool>& NodeWrapper::getTokenMap() {
+    return tokenMap;
 }
 
 void NodeWrapper::print() {

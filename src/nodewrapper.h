@@ -2,15 +2,16 @@
 #define NODEWRAPPER_H
 
 #include <QList>
+#include <QMap>
 
 
 
 class NodeWrapper {
 public:
     NodeWrapper(const QString value, const QString valueType, const QString nodeType,
-                quint32 row, quint32 col, const QStringRef source, const QList<QStringRef> tokens):
+                quint32 row, quint32 col, const QStringRef source, const QMap<QString, bool> tokenMap):
         value(value), valueType(valueType), nodeType(nodeType), row(row), col(col),
-        source(source), tokens(tokens) {}
+        source(source), tokenMap(tokenMap) {}
 
     ~NodeWrapper();
 
@@ -22,14 +23,14 @@ public:
     const quint32 getRow();
     const quint32 getCol();
     const QList<NodeWrapper *>& getChildren();
-    const QList<QStringRef>& getTokens();
+    const QMap<QString, bool>& getTokenMap();
     void print();
 
     const QList<NodeWrapper*> getNodes(const QString &nodeType);
 
 private:
     QList<NodeWrapper *> children;
-    const QList<QStringRef> tokens;
+    const QMap<QString, bool> tokenMap;
     const QString value;
     const QString valueType;
     const QString nodeType;
