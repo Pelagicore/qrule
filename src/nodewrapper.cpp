@@ -57,17 +57,22 @@ void NodeWrapper::innerPrint(const int indent) {
     }
 }
 
-const QList<NodeWrapper*> NodeWrapper::getNodes(const QString &comparisonNodeType) {
+const QList<NodeWrapper*> NodeWrapper::getNodes(QString comparisonNodeType) {
+    QStringList list = comparisonNodeType.split('.');
     QList<NodeWrapper*> nodes = QList<NodeWrapper*>();
-    innerGetNodes(comparisonNodeType, nodes);
+    innerGetNodes(list, list, nodes);
     return nodes;
 }
 
-void NodeWrapper::innerGetNodes(const QString &comparisonNodeType, QList<NodeWrapper*> &nodes) {
-    foreach(NodeWrapper* child, children) {
-        child->innerGetNodes(comparisonNodeType, nodes);
-    }
-    if (nodeType == comparisonNodeType) {
+void NodeWrapper::innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes) {
+    QString str = searchList.takeFirst();
+    if (nodeType == str) {
         nodes.append(this);
+    }
+    if (searchList.isEmpty()) {
+        searchList = originalList;
+    }
+    foreach(NodeWrapper* child, children) {
+        child->innerGetNodes(searchList, originalList, nodes);
     }
 }

@@ -115,6 +115,7 @@ RetType* KRuleVisitor::visitQFor(QFor *exp) {
         bool b = extractBool(r);
 
         if (!b) {
+            node = n;
             return new RetTypeBool(false);
         }
         node = startNode;
@@ -151,12 +152,11 @@ RetType* KRuleVisitor::visitAX(AX *p) {
 
 RetType* KRuleVisitor::visitAU(AU *p) {
     Expr *e1 = p->expr_1->clone();
-    Expr *e2 = p->expr_2->clone();
-    ENot *v = new ENot(new EPQ(new EU(new ENot(e2), new ENot(new EOr(e1, e2)))));
+    Expr *e21 = p->expr_2->clone();
+    Expr *e22 = p->expr_2->clone();
+    ENot *v = new ENot(new EPQ(new EU(new ENot(e21), new ENot(new EOr(e1, e22)))));
     RetType *r = v->accept(this);
     delete v;
-    delete e1;
-    delete e2;
     return r;
 }
 

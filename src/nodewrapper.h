@@ -26,7 +26,7 @@ public:
     const QMap<QString, bool>& getTokenMap();
     void print();
 
-    const QList<NodeWrapper*> getNodes(const QString &nodeType);
+    const QList<NodeWrapper*> getNodes(QString nodeType);
 
 private:
     QList<NodeWrapper *> children;
@@ -39,7 +39,7 @@ private:
     const QStringRef source;
 
     void innerPrint(const int);
-    void innerGetNodes(const QString &nodeType, QList<NodeWrapper*> &nodes);
+    void innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes);
 };
 
 #endif // NODEWRAPPER_H

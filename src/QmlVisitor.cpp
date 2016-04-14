@@ -64,6 +64,7 @@ bool QmlVisitor::visit(UiImport *exp) {
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
     tokenMap.insert("versionToken", isTokenPresent(exp->versionToken));
     tokenMap.insert("fileNameToken", isTokenPresent(exp->fileNameToken));
+
     NodeWrapper *n = new NodeWrapper(exp->importId.toString(), QString("String"), QString("Import"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -82,7 +83,14 @@ bool QmlVisitor::visit(UiQualifiedId *exp) {
     QMap<QString, bool> tokenMap;
     tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
 
-    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("QualifiedId"),
+    UiQualifiedId* next = exp->next;
+    QString name = exp->name.toString();
+    while (next != nullptr) {
+        name = name.append(".").append(next->name);
+        next = next->next;
+    }
+
+    NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("QualifiedId"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
@@ -118,17 +126,7 @@ bool QmlVisitor::visit(UiObjectMember *exp) {
 
 bool QmlVisitor::visit(UiQualifiedPragmaId *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-
-    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("QualifiedPragmaId"),
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if (!nodeStack.isEmpty()) {
-        nodeStack.top()->addChild(n);
-    }
-    pushStack(n);
+    dontPopAtEnd();
     return true; }
 void QmlVisitor::endVisit(UiQualifiedPragmaId *) { commonEndVisit(); }
 
@@ -198,7 +196,14 @@ bool QmlVisitor::visit(UiPragma *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("Pragma"),
+
+    UiQualifiedPragmaId* next = exp->pragmaType->next;
+    QString name = exp->pragmaType->name.toString();
+    while (next != nullptr) {
+        name.append(".").append(next->name);
+    }
+
+    NodeWrapper *n = new NodeWrapper(name, QString(), QString("Pragma"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
@@ -235,6 +240,7 @@ bool QmlVisitor::visit(UiObjectBinding *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
+
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectBinding"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
