@@ -13,6 +13,7 @@ set(SOURCE_FILES
         retType/RetTypeString.cpp
         retType/RetTypeBool.cpp
         nodewrapper.cpp
+        kruleengine.cpp
         )
 include_directories(.)
 

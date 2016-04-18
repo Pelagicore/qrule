@@ -1,160 +1,13 @@
-/****************************************************************************
-**
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com, author Sergio Martins <sergio.martins@kdab.com>
-** Contact: http://www.qt.io/licensing/
-**
-** This file is part of the plugins of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL21$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+#include "kruleengine.h"
 
 #include <stdio.h>
-#include "gen/Parser.H"
-#include "gen/Printer.H"
-#include "gen/Absyn.H"
-#include "krulevisitor.h"
 
 #include <QDebug>
-#include <QFile>
-#include <QFileInfo>
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <output/xmloutputformatter.h>
 
-#include "ParseException.h"
-
-#include "QmlVisitor.h"
-#include "private/qqmljslexer_p.h"
-#include "private/qqmljsparser_p.h"
-#include "private/qqmljsengine_p.h"
-
-static QString readCode(QString qmlFilename) {
-    QFile file(qmlFilename);
-    if (!file.open(QFile::ReadOnly)) {
-        qWarning() << "Failed to open file" << qmlFilename << file.error();
-        throw ParseException(qmlFilename.prepend("Could not open file "));
-    }
-
-    QString code = QString::fromUtf8(file.readAll());
-    file.close();
-    return code;
-}
-
-static RuleSet* parseKRuleFile(QString kruleFilename) {
-    FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
-    if (!kruleFile) {
-      qWarning() << "Error opening krule file: " << kruleFilename;
-      throw ParseException(kruleFilename.prepend("Could not open KRule file "));
-    }
-    RuleSet *kruleTree = pRuleSet(kruleFile);
-
-    if (kruleTree) {
-        ShowAbsyn s = ShowAbsyn();
-    //    qDebug() << s.show(kruleTree);
-    //    qDebug() << "[Linearized Tree]\n";
-        PrintAbsyn p = PrintAbsyn();
-    //    qDebug() << p.print(kruleTree);
-        return kruleTree;
-    } else {
-        throw ParseException("Could not parse KRulefile");
-    }
-}
-
-QMap<QString, KRuleOutput*> mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, QMap<QString, KRuleOutput*> m2) {
-    foreach(QString key, m2.keys()) {
-        if (m1.contains(key)) {
-            KRuleOutput* ko = m1[key];
-            ko->addCodeOccurrances(m2[key]);
-            m1.insert(key, ko);
-        } else {
-            m1.insert(key, m2[key]);
-        }
-    }
-    return m1;
-}
-
-int main(int argv, char *argc[]) {
-    // Setup commandline parser
-    QCoreApplication app(argv, argc);
-    QCoreApplication::setApplicationName("qmllint");
-    QCoreApplication::setApplicationVersion("1.0");
-    QCommandLineParser parser;
-    parser.setApplicationDescription(QLatin1String("QML Linter"));
-    parser.addHelpOption();
-    parser.addVersionOption();
-
-    parser.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
-    parser.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
-
-    parser.process(app);
-
-    // Verify parsed arguments
-    if (parser.positionalArguments().length() < 2) {
-        parser.showHelp(-1);
-    }
-
-    // Parse KRule
-    QStringList parsedArguments = parser.positionalArguments();
-    const QString &kruleFilename = parsedArguments.takeFirst();
-    RuleSet *kruleTree = parseKRuleFile(kruleFilename);
-
-    // Run verification
-    QMap<QString, KRuleOutput*> ruleViolationsMap;
-    foreach (const QString &qmlFilename, parsedArguments) {
-        QString code = readCode(qmlFilename);
-
-        QQmlJS::Engine engine;
-        QQmlJS::Lexer lexer = QQmlJS::Lexer(&engine);
-
-        QFileInfo info(qmlFilename);
-        bool isJavaScript = info.suffix().toLower() == QLatin1String("js");
-        lexer.setCode(code, /*line = */ 1, /*qmlMode=*/ !isJavaScript);
-        QQmlJS::Parser parser = QQmlJS::Parser(&engine);
-        bool success = isJavaScript ? parser.parseProgram() : parser.parse();
-
-        if (!success) {
-            foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
-                qWarning("%s:%d : %s", qPrintable(qmlFilename), m.loc.startLine, qPrintable(m.message));
-            }
-        }
-
-        // Debugging stuff -----------
-        QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
-        parser.ast()->accept(&qmlVisitor);
-        // ---------------------------
-
-        qmlVisitor.getWrappedRoot()->print();
-        KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, qmlVisitor.getWrappedRoot());
-
-        kruleTree->accept(&kruleVisitor);
-        ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, kruleVisitor.getFailures());
-    }
-
-    // Output
-    QList<KRuleOutput*> ruleViolations = ruleViolationsMap.values();
+void printOutput(const QList<KRuleOutput*> &ruleViolations) {
     OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);
     qDebug() << xof->format().toStdString().c_str();
 
@@ -162,15 +15,36 @@ int main(int argv, char *argc[]) {
     fl.open(QIODevice::WriteOnly);
     fl.write(xof->format().toStdString().c_str());
     fl.close();
-
-    bool success = ruleViolations.isEmpty();
-
-    // Cleanup
     delete xof;
+}
 
-    foreach (KRuleOutput* ko, ruleViolations) {
-        delete ko;
+int main(int argv, char *argc[]) {
+    // Setup commandline parser
+    QCoreApplication app(argv, argc);
+    QCoreApplication::setApplicationName("KRuleEngine");
+    QCoreApplication::setApplicationVersion("1.0");
+    QCommandLineParser commandLine;
+    commandLine.setApplicationDescription(QLatin1String("Semantic rule engine for verifying QML code."));
+    commandLine.addHelpOption();
+    commandLine.addVersionOption();
+
+    commandLine.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
+    commandLine.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
+
+    commandLine.process(app);
+
+    // Display help instead of running the KRule Engine if too few arguments were given
+    if (commandLine.positionalArguments().length() < 2) {
+        commandLine.showHelp(-1);
     }
 
-    return success ? 0 : 1;
+    QStringList arguments = commandLine.positionalArguments();
+    QString kruleFilename = arguments.takeFirst();
+    KRuleEngine kruleEngine = KRuleEngine(kruleFilename);
+
+    QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments);
+
+    printOutput(violations);
+
+    return violations.isEmpty() ? 0 : 1;
 }
