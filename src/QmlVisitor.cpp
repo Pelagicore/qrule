@@ -1,14 +1,14 @@
 #include "QmlVisitor.h"
 
 
-bool QmlVisitor::visit(UiObjectDefinition *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiObjectDefinition *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
 
-void QmlVisitor::endVisit(UiObjectDefinition*) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiObjectDefinition*) { commonEndVisit(); }
 
-bool QmlVisitor::visit(IdentifierExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::IdentifierExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("IdentifierExpression"),
@@ -21,9 +21,9 @@ bool QmlVisitor::visit(IdentifierExpression *exp) {
 
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(IdentifierExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::IdentifierExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiScriptBinding *exp)  {
+bool QmlVisitor::visit(QQmlJS::AST::UiScriptBinding *exp)  {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
@@ -38,9 +38,9 @@ bool QmlVisitor::visit(UiScriptBinding *exp)  {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(UiScriptBinding *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiScriptBinding *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FunctionBody *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FunctionBody *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionBody"),
@@ -54,9 +54,9 @@ bool QmlVisitor::visit(FunctionBody *exp) {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(FunctionBody *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FunctionBody *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiImport *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiImport *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("asToken", isTokenPresent(exp->asToken));
@@ -76,14 +76,14 @@ bool QmlVisitor::visit(UiImport *exp) {
 
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiImport *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiImport *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiQualifiedId *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiQualifiedId *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
 
-    UiQualifiedId* next = exp->next;
+    QQmlJS::AST::UiQualifiedId* next = exp->next;
     QString name = exp->name.toString();
     while (next != nullptr) {
         name = name.append(".").append(next->name);
@@ -99,9 +99,9 @@ bool QmlVisitor::visit(UiQualifiedId *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiQualifiedId *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiQualifiedId *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiObjectInitializer *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiObjectInitializer *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
@@ -116,27 +116,27 @@ bool QmlVisitor::visit(UiObjectInitializer *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiObjectInitializer *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiObjectInitializer *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiObjectMember *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiObjectMember *exp) {
     debug(exp);
     // ABSTRACT
     dontPopAtEnd();
     return true; }
 
-bool QmlVisitor::visit(UiQualifiedPragmaId *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiQualifiedPragmaId *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(UiQualifiedPragmaId *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiQualifiedPragmaId *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiSourceElement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiSourceElement *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(UiSourceElement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiSourceElement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiArrayBinding *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiArrayBinding *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
@@ -152,9 +152,9 @@ bool QmlVisitor::visit(UiArrayBinding *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiArrayBinding *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiArrayBinding *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiProgram *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiProgram *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
 
@@ -167,9 +167,9 @@ bool QmlVisitor::visit(UiProgram *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiProgram *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiProgram *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiHeaderItemList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiHeaderItemList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     const QString nodeType = QString("HeaderItemList");
@@ -190,14 +190,14 @@ bool QmlVisitor::visit(UiHeaderItemList *exp) {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(UiHeaderItemList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiHeaderItemList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiPragma *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiPragma *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
 
-    UiQualifiedPragmaId* next = exp->pragmaType->next;
+    QQmlJS::AST::UiQualifiedPragmaId* next = exp->pragmaType->next;
     QString name = exp->pragmaType->name.toString();
     while (next != nullptr) {
         name.append(".").append(next->name);
@@ -212,9 +212,9 @@ bool QmlVisitor::visit(UiPragma *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiPragma *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiPragma *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiPublicMember *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
@@ -234,9 +234,9 @@ bool QmlVisitor::visit(UiPublicMember *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiPublicMember *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiPublicMember *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiObjectBinding *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiObjectBinding *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
@@ -250,9 +250,9 @@ bool QmlVisitor::visit(UiObjectBinding *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UiObjectBinding *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiObjectBinding *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiParameterList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiParameterList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
@@ -277,9 +277,9 @@ bool QmlVisitor::visit(UiParameterList *exp) {
     }
     pushStack(p);
     return true; }
-void QmlVisitor::endVisit(UiParameterList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiParameterList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiObjectMemberList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiObjectMemberList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     const QString nodeType = QString("ObjectMemberList");
@@ -300,9 +300,9 @@ bool QmlVisitor::visit(UiObjectMemberList *exp) {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(UiObjectMemberList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiObjectMemberList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UiArrayMemberList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UiArrayMemberList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     const QString nodeType = QString("ArrayMemberList");
@@ -323,9 +323,9 @@ bool QmlVisitor::visit(UiArrayMemberList *exp) {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(UiArrayMemberList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UiArrayMemberList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(VariableStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::VariableStatement *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("declarationKindToken", isTokenPresent(exp->declarationKindToken));
@@ -339,9 +339,9 @@ bool QmlVisitor::visit(VariableStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(VariableStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::VariableStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ThisExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ThisExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("thisToken", isTokenPresent(exp->thisToken));
@@ -355,9 +355,9 @@ bool QmlVisitor::visit(ThisExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ThisExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ThisExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NullExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NullExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("nullToken", isTokenPresent(exp->nullToken));
@@ -371,9 +371,9 @@ bool QmlVisitor::visit(NullExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(NullExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NullExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(TrueLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::TrueLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("trueToken", isTokenPresent(exp->trueToken));
@@ -387,9 +387,9 @@ bool QmlVisitor::visit(TrueLiteral *exp) {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(TrueLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::TrueLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FalseLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FalseLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("falseToken", isTokenPresent(exp->falseToken));
@@ -403,9 +403,9 @@ bool QmlVisitor::visit(FalseLiteral *exp) {
     pushStack(n);
     return true;
 }
-void QmlVisitor::endVisit(FalseLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FalseLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(StringLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::StringLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("literalToken", isTokenPresent(exp->literalToken));
@@ -418,9 +418,9 @@ bool QmlVisitor::visit(StringLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(StringLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::StringLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NumericLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NumericLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("literalToken", isTokenPresent(exp->literalToken));
@@ -433,9 +433,9 @@ bool QmlVisitor::visit(NumericLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NumericLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NumericLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(RegExpLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::RegExpLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("literalToken", isTokenPresent(exp->literalToken));
@@ -448,9 +448,9 @@ bool QmlVisitor::visit(RegExpLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(RegExpLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::RegExpLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ArrayLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ArrayLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
@@ -465,9 +465,9 @@ bool QmlVisitor::visit(ArrayLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(ArrayLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ArrayLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ObjectLiteral *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ObjectLiteral *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
@@ -481,21 +481,21 @@ bool QmlVisitor::visit(ObjectLiteral *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(ObjectLiteral *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ObjectLiteral *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ElementList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ElementList *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(ElementList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ElementList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(Elision *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::Elision *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(Elision *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::Elision *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(PropertyAssignmentList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::PropertyAssignmentList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     const QString nodeType = QString("PropertyAssignmentList");
@@ -516,9 +516,9 @@ bool QmlVisitor::visit(PropertyAssignmentList *exp) {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(PropertyAssignmentList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PropertyAssignmentList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(PropertyGetterSetter *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::PropertyGetterSetter *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
@@ -535,10 +535,10 @@ bool QmlVisitor::visit(PropertyGetterSetter *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PropertyGetterSetter *) { commonEndVisit(); }
-void QmlVisitor::endVisit(PropertyNameAndValue *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PropertyGetterSetter *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PropertyNameAndValue *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NestedExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NestedExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
@@ -552,9 +552,9 @@ bool QmlVisitor::visit(NestedExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NestedExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NestedExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(IdentifierPropertyName *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::IdentifierPropertyName *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("porpertyNameToken", isTokenPresent(exp->propertyNameToken));
@@ -567,9 +567,9 @@ bool QmlVisitor::visit(IdentifierPropertyName *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(IdentifierPropertyName *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::IdentifierPropertyName *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(StringLiteralPropertyName *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::StringLiteralPropertyName *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("propertyNameToken", isTokenPresent(exp->propertyNameToken));
@@ -582,9 +582,9 @@ bool QmlVisitor::visit(StringLiteralPropertyName *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(StringLiteralPropertyName *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::StringLiteralPropertyName *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NumericLiteralPropertyName *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NumericLiteralPropertyName *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("propertyNameToken", isTokenPresent(exp->propertyNameToken));
@@ -597,9 +597,9 @@ bool QmlVisitor::visit(NumericLiteralPropertyName *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NumericLiteralPropertyName *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NumericLiteralPropertyName *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ArrayMemberExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ArrayMemberExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lbracketToken", isTokenPresent(exp->lbracketToken));
@@ -613,9 +613,9 @@ bool QmlVisitor::visit(ArrayMemberExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(ArrayMemberExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ArrayMemberExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FieldMemberExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FieldMemberExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("dotToken", isTokenPresent(exp->dotToken));
@@ -629,9 +629,9 @@ bool QmlVisitor::visit(FieldMemberExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(FieldMemberExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FieldMemberExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NewMemberExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NewMemberExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("newToken", isTokenPresent(exp->newToken));
@@ -646,9 +646,9 @@ bool QmlVisitor::visit(NewMemberExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NewMemberExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NewMemberExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NewExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NewExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("newToken", isTokenPresent(exp->newToken));
@@ -661,9 +661,9 @@ bool QmlVisitor::visit(NewExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(NewExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NewExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(CallExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::CallExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
@@ -677,9 +677,9 @@ bool QmlVisitor::visit(CallExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(CallExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::CallExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ArgumentList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ArgumentList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     const QString nodeType = QString("ArgumentList");
@@ -700,9 +700,9 @@ bool QmlVisitor::visit(ArgumentList *exp) {
         pushStack(n);
     }
     return true; }
-void QmlVisitor::endVisit(ArgumentList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ArgumentList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(PostIncrementExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::PostIncrementExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("incrementToken", isTokenPresent(exp->incrementToken));
@@ -715,9 +715,9 @@ bool QmlVisitor::visit(PostIncrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PostIncrementExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PostIncrementExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(PostDecrementExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::PostDecrementExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("decrementToken", isTokenPresent(exp->decrementToken));
@@ -730,9 +730,9 @@ bool QmlVisitor::visit(PostDecrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PostDecrementExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PostDecrementExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(DeleteExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::DeleteExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("deleteToken", isTokenPresent(exp->deleteToken));
@@ -745,9 +745,9 @@ bool QmlVisitor::visit(DeleteExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(DeleteExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::DeleteExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(VoidExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::VoidExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("voidToken", isTokenPresent(exp->voidToken));
@@ -760,9 +760,9 @@ bool QmlVisitor::visit(VoidExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(VoidExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::VoidExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(TypeOfExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::TypeOfExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("typeofToken", isTokenPresent(exp->typeofToken));
@@ -775,9 +775,9 @@ bool QmlVisitor::visit(TypeOfExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(TypeOfExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::TypeOfExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(PreIncrementExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::PreIncrementExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("incrementToken", isTokenPresent(exp->incrementToken));
@@ -790,9 +790,9 @@ bool QmlVisitor::visit(PreIncrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PreIncrementExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PreIncrementExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(PreDecrementExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::PreDecrementExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("decrementToken", isTokenPresent(exp->decrementToken));
@@ -805,9 +805,9 @@ bool QmlVisitor::visit(PreDecrementExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(PreDecrementExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::PreDecrementExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UnaryPlusExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UnaryPlusExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("plusToken", isTokenPresent(exp->plusToken));
@@ -820,9 +820,9 @@ bool QmlVisitor::visit(UnaryPlusExpression *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(UnaryPlusExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UnaryPlusExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(UnaryMinusExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::UnaryMinusExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("minusToken", isTokenPresent(exp->minusToken));
@@ -833,9 +833,9 @@ bool QmlVisitor::visit(UnaryMinusExpression *exp) {
     addWrapper(n);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(UnaryMinusExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::UnaryMinusExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(TildeExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::TildeExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
 
@@ -852,9 +852,9 @@ bool QmlVisitor::visit(TildeExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(TildeExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::TildeExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(NotExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::NotExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
 
@@ -871,9 +871,9 @@ bool QmlVisitor::visit(NotExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(NotExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::NotExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(BinaryExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::BinaryExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("operatorToken", isTokenPresent(exp->operatorToken));
@@ -889,9 +889,9 @@ bool QmlVisitor::visit(BinaryExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(BinaryExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::BinaryExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ConditionalExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ConditionalExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("questionToken", isTokenPresent(exp->questionToken));
@@ -908,9 +908,9 @@ bool QmlVisitor::visit(ConditionalExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ConditionalExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ConditionalExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(Block *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::Block *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -930,15 +930,15 @@ bool QmlVisitor::visit(Block *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(Block *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::Block *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(StatementList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::StatementList *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(StatementList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::StatementList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(VariableDeclarationList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::VariableDeclarationList *exp) {
     debug(exp);
     // not done crap
     QMap<QString, bool> tokenMap;
@@ -958,9 +958,9 @@ bool QmlVisitor::visit(VariableDeclarationList *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(VariableDeclarationList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::VariableDeclarationList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(VariableDeclaration *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::VariableDeclaration *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -978,9 +978,9 @@ bool QmlVisitor::visit(VariableDeclaration *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(VariableDeclaration *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::VariableDeclaration *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(EmptyStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::EmptyStatement *exp) {
     debug(exp);
     //ok
     QMap<QString, bool> tokenMap;
@@ -998,9 +998,9 @@ bool QmlVisitor::visit(EmptyStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(EmptyStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::EmptyStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ExpressionStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ExpressionStatement *exp) {
     debug(exp);
     //ok
     QMap<QString, bool> tokenMap;
@@ -1018,9 +1018,9 @@ bool QmlVisitor::visit(ExpressionStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ExpressionStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ExpressionStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(IfStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::IfStatement *exp) {
     debug(exp);
     //ok
     QMap<QString, bool> tokenMap;
@@ -1041,9 +1041,9 @@ bool QmlVisitor::visit(IfStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(IfStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::IfStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(DoWhileStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::DoWhileStatement *exp) {
     debug(exp);
     //ok
     QMap<QString, bool> tokenMap;
@@ -1064,9 +1064,9 @@ bool QmlVisitor::visit(DoWhileStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(DoWhileStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::DoWhileStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(WhileStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::WhileStatement *exp) {
     debug(exp);
     //ok
     QMap<QString, bool> tokenMap;
@@ -1086,9 +1086,9 @@ bool QmlVisitor::visit(WhileStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(WhileStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::WhileStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ForStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ForStatement *exp) {
     debug(exp);
     //ok
     QMap<QString, bool> tokenMap;
@@ -1110,9 +1110,9 @@ bool QmlVisitor::visit(ForStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ForStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ForStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(LocalForStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::LocalForStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1134,9 +1134,9 @@ bool QmlVisitor::visit(LocalForStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(LocalForStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::LocalForStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ForEachStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ForEachStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1157,9 +1157,9 @@ bool QmlVisitor::visit(ForEachStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ForEachStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ForEachStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(LocalForEachStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::LocalForEachStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1180,9 +1180,9 @@ bool QmlVisitor::visit(LocalForEachStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(LocalForEachStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::LocalForEachStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ContinueStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ContinueStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1201,9 +1201,9 @@ bool QmlVisitor::visit(ContinueStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ContinueStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ContinueStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(BreakStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::BreakStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1223,9 +1223,9 @@ bool QmlVisitor::visit(BreakStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(BreakStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::BreakStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ReturnStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ReturnStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1244,9 +1244,9 @@ bool QmlVisitor::visit(ReturnStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(ReturnStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ReturnStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(WithStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::WithStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1266,9 +1266,9 @@ bool QmlVisitor::visit(WithStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(WithStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::WithStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(SwitchStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::SwitchStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1289,9 +1289,9 @@ bool QmlVisitor::visit(SwitchStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(SwitchStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::SwitchStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(CaseBlock *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::CaseBlock *exp) {
     debug(exp);
     //maybe remove and add all children to SwitchStatement instead
     QMap<QString, bool> tokenMap;
@@ -1309,9 +1309,9 @@ bool QmlVisitor::visit(CaseBlock *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(CaseBlock *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::CaseBlock *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(CaseClauses *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::CaseClauses *exp) {
     debug(exp);
     //Holder for lists of CaseClause
     QMap<QString, bool> tokenMap;
@@ -1327,9 +1327,9 @@ bool QmlVisitor::visit(CaseClauses *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(CaseClauses *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::CaseClauses *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(CaseClause *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::CaseClause *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1347,9 +1347,9 @@ bool QmlVisitor::visit(CaseClause *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(CaseClause *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::CaseClause *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(DefaultClause *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::DefaultClause *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1368,9 +1368,9 @@ bool QmlVisitor::visit(DefaultClause *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(DefaultClause *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::DefaultClause *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(LabelledStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::LabelledStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1389,9 +1389,9 @@ bool QmlVisitor::visit(LabelledStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(LabelledStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::LabelledStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(ThrowStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::ThrowStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1409,9 +1409,9 @@ bool QmlVisitor::visit(ThrowStatement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(ThrowStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::ThrowStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(TryStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::TryStatement *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1429,9 +1429,9 @@ bool QmlVisitor::visit(TryStatement *exp) {
 
 
     return true; }
-void QmlVisitor::endVisit(TryStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::TryStatement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(Catch *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::Catch *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1451,9 +1451,9 @@ bool QmlVisitor::visit(Catch *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(Catch *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::Catch *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(Finally *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::Finally *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1468,16 +1468,16 @@ bool QmlVisitor::visit(Finally *exp) {
     }
     pushStack(n);
     return true; }
-void QmlVisitor::endVisit(Finally *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::Finally *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FunctionDeclaration *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FunctionDeclaration *exp) {
     debug(exp);
     // should be empty, removed from wrapped-AST.
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(FunctionDeclaration *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FunctionDeclaration *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FunctionExpression *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FunctionExpression *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("functionToken", isTokenPresent(exp->functionToken));
@@ -1498,9 +1498,9 @@ bool QmlVisitor::visit(FunctionExpression *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(FunctionExpression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FunctionExpression *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FormalParameterList *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FormalParameterList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
@@ -1517,9 +1517,9 @@ bool QmlVisitor::visit(FormalParameterList *exp) {
     dontPopAtEnd();
 
     return true; }
-void QmlVisitor::endVisit(FormalParameterList *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FormalParameterList *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(Program *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::Program *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1534,9 +1534,9 @@ bool QmlVisitor::visit(Program *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(Program *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::Program *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(SourceElements *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::SourceElements *exp) {
     debug(exp);
 
     QMap<QString, bool> tokenMap;
@@ -1551,9 +1551,9 @@ bool QmlVisitor::visit(SourceElements *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(SourceElements *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::SourceElements *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(FunctionSourceElement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::FunctionSourceElement *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionSourceElement"),
@@ -1567,9 +1567,9 @@ bool QmlVisitor::visit(FunctionSourceElement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(FunctionSourceElement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::FunctionSourceElement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(StatementSourceElement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::StatementSourceElement *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("StatementSourceElement"),
@@ -1583,13 +1583,13 @@ bool QmlVisitor::visit(StatementSourceElement *exp) {
     pushStack(n);
 
     return true; }
-void QmlVisitor::endVisit(StatementSourceElement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::StatementSourceElement *) { commonEndVisit(); }
 
-bool QmlVisitor::visit(DebuggerStatement *exp) {
+bool QmlVisitor::visit(QQmlJS::AST::DebuggerStatement *exp) {
     debug(exp);
     dontPopAtEnd();
     return true; }
-void QmlVisitor::endVisit(DebuggerStatement *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::DebuggerStatement *) { commonEndVisit(); }
 
 void QmlVisitor::debug(const QQmlJS::AST::Node *exp) {
     QString name = QString(typeid(*exp).name());
@@ -1607,7 +1607,7 @@ void QmlVisitor::debug(const QQmlJS::AST::Node *exp) {
     expandIndent();
 }
 
-const QStringRef QmlVisitor::printable(const SourceLocation &start, const SourceLocation &end) {
+const QStringRef QmlVisitor::printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end) {
     return QStringRef(&_code, start.offset, end.offset + end.length - start.offset);
 }
 
@@ -1619,7 +1619,7 @@ NodeWrapper* QmlVisitor::getWrappedRoot() {
     return rootNode;
 }
 
-void QmlVisitor::endVisit(Expression *) { commonEndVisit(); }
+void QmlVisitor::endVisit(QQmlJS::AST::Expression *) { commonEndVisit(); }
 
 void QmlVisitor::deIndent() {
     indent.chop(4);
@@ -1655,6 +1655,6 @@ void QmlVisitor::dontPopAtEnd() {
     shouldPopStack.push(false);
 }
 
-const bool QmlVisitor::isTokenPresent(const SourceLocation &sl) {
+const bool QmlVisitor::isTokenPresent(const QQmlJS::AST::SourceLocation &sl) {
     return QStringRef(&_code, sl.offset, sl.length).length() > 0;
 }
