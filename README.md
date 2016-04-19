@@ -8,6 +8,36 @@ The idea is to use KRuleEngine as a linter for QML where the rules
 are defined by the users. This allows for features such as project
 or customer specific rules.
 
+Build
+-----
+Make a directory to build KRuleEngine in.
+Then, execute `cmake` towards the directory containing the `src` folder.
+CMake needs to know were to look for Qt5 Qt5Core and Qt5Quick.
+If those are not installed on the system but locally compiled you need
+to point them out. Example of `CMAKE_PREFIX_PATH: ~/Qt/5.6/gcc_64/lib/cmake`
+
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_PREFIX_PATH=<path to Qt5 Qt5Core and Qt5Quick cmake> ..
+make
+```
+
+Usage
+-----
+The program takes two parameters:
+1. The file defining the rules
+2. A non-empty list of QML and JavaScript files to verify
+
+```bash
+./KRuleEngine <path to KRule file> [non-empty list of files to verify]
+```
+
+Example:
+```bash
+./KRuleEngine rules.kr qmlFile1.qml qmlFile2.qml qmlFile3.qml
+```
+
 KRule language
 --------------
 The KRule language is built around computational tree logic (CTL)
@@ -51,36 +81,6 @@ in order to allow better filtering of the output XML.
 
 ### Expression
 Computational Tree Logical expression used while verifying the rule.
-
-Build
------
-Make a directory to build KRuleEngine in.
-Then, execute `cmake` towards the directory containing the `src` folder.
-CMake needs to know were to look for Qt5 Qt5Core and Qt5Quick.
-If those are not installed on the system but locally compiled you need
-to point them out. Example of `CMAKE_PREFIX_PATH: ~/Qt/5.6/gcc_64/lib/cmake`
-
-```bash
-mkdir build
-cd build
-cmake -DCMAKE_PREFIX_PATH=<path to Qt5 Qt5Core and Qt5Quick cmake> ..
-make
-```
-
-Usage
------
-The program takes two parameters:
-1. The file defining the rules
-2. A non-empty list of QML and JavaScript files to verify
-
-```bash
-./KRuleEngine <path to KRule file> [non-empty list of files to verify]
-```
-
-Example:
-```bash
-./KRuleEngine rules.kr qmlFile1.qml qmlFile2.qml qmlFile3.qml
-```
 
 Output
 ------
