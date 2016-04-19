@@ -1,6 +1,7 @@
 #ifndef ABSYN_HEADER
 #define ABSYN_HEADER
 
+#include <QPointer>
 #include<string>
 #include<vector>
 
@@ -95,77 +96,77 @@ class Visitor
 {
 public:
   virtual ~Visitor() {}
-  virtual RetType* visitRuleSet(RuleSet *p) = 0;
-  virtual RetType* visitRule(Rule *p) = 0;
-  virtual RetType* visitASTScope(ASTScope *p) = 0;
-  virtual RetType* visitRuleCause(RuleCause *p) = 0;
-  virtual RetType* visitExplanation(Explanation *p) = 0;
-  virtual RetType* visitTag(Tag *p) = 0;
-  virtual RetType* visitSeverity(Severity *p) = 0;
-  virtual RetType* visitQuantifier(Quantifier *p) = 0;
-  virtual RetType* visitPathQuantifier(PathQuantifier *p) = 0;
-  virtual RetType* visitIAtom(IAtom *p) = 0;
-  virtual RetType* visitSAtom(SAtom *p) = 0;
-  virtual RetType* visitExpr(Expr *p) = 0;
-  virtual RetType* visitRSet(RSet *p) = 0;
-  virtual RetType* visitRRule(RRule *p) = 0;
-  virtual RetType* visitASTGlobally(ASTGlobally *p) = 0;
-  virtual RetType* visitASTFile(ASTFile *p) = 0;
-  virtual RetType* visitASTImported(ASTImported *p) = 0;
-  virtual RetType* visitRCLang(RCLang *p) = 0;
-  virtual RetType* visitRCPolicy(RCPolicy *p) = 0;
-  virtual RetType* visitExplan(Explan *p) = 0;
-  virtual RetType* visitNoexplan(Noexplan *p) = 0;
-  virtual RetType* visitTTag(TTag *p) = 0;
-  virtual RetType* visitSevInfo(SevInfo *p) = 0;
-  virtual RetType* visitSevWarning(SevWarning *p) = 0;
-  virtual RetType* visitSevCritical(SevCritical *p) = 0;
-  virtual RetType* visitQExpr(QExpr *p) = 0;
-  virtual RetType* visitQFor(QFor *p) = 0;
-  virtual RetType* visitAG(AG *p) = 0;
-  virtual RetType* visitAF(AF *p) = 0;
-  virtual RetType* visitAX(AX *p) = 0;
-  virtual RetType* visitAU(AU *p) = 0;
-  virtual RetType* visitEG(EG *p) = 0;
-  virtual RetType* visitEF(EF *p) = 0;
-  virtual RetType* visitEX(EX *p) = 0;
-  virtual RetType* visitEU(EU *p) = 0;
-  virtual RetType* visitIFRow(IFRow *p) = 0;
-  virtual RetType* visitIFCol(IFCol *p) = 0;
-  virtual RetType* visitIInt(IInt *p) = 0;
-  virtual RetType* visitINrChildren(INrChildren *p) = 0;
-  virtual RetType* visitIRow(IRow *p) = 0;
-  virtual RetType* visitICol(ICol *p) = 0;
-  virtual RetType* visitSString(SString *p) = 0;
-  virtual RetType* visitSFValue(SFValue *p) = 0;
-  virtual RetType* visitSValue(SValue *p) = 0;
-  virtual RetType* visitSValueType(SValueType *p) = 0;
-  virtual RetType* visitSNodeType(SNodeType *p) = 0;
-  virtual RetType* visitSConcat(SConcat *p) = 0;
-  virtual RetType* visitETrue(ETrue *p) = 0;
-  virtual RetType* visitEFalse(EFalse *p) = 0;
-  virtual RetType* visitEParant(EParant *p) = 0;
-  virtual RetType* visitENot(ENot *p) = 0;
-  virtual RetType* visitEImpl(EImpl *p) = 0;
-  virtual RetType* visitEBEq(EBEq *p) = 0;
-  virtual RetType* visitEPossToken(EPossToken *p) = 0;
-  virtual RetType* visitEExistToken(EExistToken *p) = 0;
-  virtual RetType* visitEILtEq(EILtEq *p) = 0;
-  virtual RetType* visitEIGtEq(EIGtEq *p) = 0;
-  virtual RetType* visitEILt(EILt *p) = 0;
-  virtual RetType* visitEIGt(EIGt *p) = 0;
-  virtual RetType* visitEIEq(EIEq *p) = 0;
-  virtual RetType* visitEMatch(EMatch *p) = 0;
-  virtual RetType* visitESEq(ESEq *p) = 0;
-  virtual RetType* visitEAnd(EAnd *p) = 0;
-  virtual RetType* visitEOr(EOr *p) = 0;
-  virtual RetType* visitEPQ(EPQ *p) = 0;
-  virtual RetType* visitListRule(ListRule *p) = 0;
-  virtual RetType* visitListExpr(ListExpr *p) = 0;
+  virtual QPointer<RetType> visitRuleSet(RuleSet *p) = 0;
+  virtual QPointer<RetType> visitRule(Rule *p) = 0;
+  virtual QPointer<RetType> visitASTScope(ASTScope *p) = 0;
+  virtual QPointer<RetType> visitRuleCause(RuleCause *p) = 0;
+  virtual QPointer<RetType> visitExplanation(Explanation *p) = 0;
+  virtual QPointer<RetType> visitTag(Tag *p) = 0;
+  virtual QPointer<RetType> visitSeverity(Severity *p) = 0;
+  virtual QPointer<RetType> visitQuantifier(Quantifier *p) = 0;
+  virtual QPointer<RetType> visitPathQuantifier(PathQuantifier *p) = 0;
+  virtual QPointer<RetType> visitIAtom(IAtom *p) = 0;
+  virtual QPointer<RetType> visitSAtom(SAtom *p) = 0;
+  virtual QPointer<RetType> visitExpr(Expr *p) = 0;
+  virtual QPointer<RetType> visitRSet(RSet *p) = 0;
+  virtual QPointer<RetType> visitRRule(RRule *p) = 0;
+  virtual QPointer<RetType> visitASTGlobally(ASTGlobally *p) = 0;
+  virtual QPointer<RetType> visitASTFile(ASTFile *p) = 0;
+  virtual QPointer<RetType> visitASTImported(ASTImported *p) = 0;
+  virtual QPointer<RetType> visitRCLang(RCLang *p) = 0;
+  virtual QPointer<RetType> visitRCPolicy(RCPolicy *p) = 0;
+  virtual QPointer<RetType> visitExplan(Explan *p) = 0;
+  virtual QPointer<RetType> visitNoexplan(Noexplan *p) = 0;
+  virtual QPointer<RetType> visitTTag(TTag *p) = 0;
+  virtual QPointer<RetType> visitSevInfo(SevInfo *p) = 0;
+  virtual QPointer<RetType> visitSevWarning(SevWarning *p) = 0;
+  virtual QPointer<RetType> visitSevCritical(SevCritical *p) = 0;
+  virtual QPointer<RetType> visitQExpr(QExpr *p) = 0;
+  virtual QPointer<RetType> visitQFor(QFor *p) = 0;
+  virtual QPointer<RetType> visitAG(AG *p) = 0;
+  virtual QPointer<RetType> visitAF(AF *p) = 0;
+  virtual QPointer<RetType> visitAX(AX *p) = 0;
+  virtual QPointer<RetType> visitAU(AU *p) = 0;
+  virtual QPointer<RetType> visitEG(EG *p) = 0;
+  virtual QPointer<RetType> visitEF(EF *p) = 0;
+  virtual QPointer<RetType> visitEX(EX *p) = 0;
+  virtual QPointer<RetType> visitEU(EU *p) = 0;
+  virtual QPointer<RetType> visitIFRow(IFRow *p) = 0;
+  virtual QPointer<RetType> visitIFCol(IFCol *p) = 0;
+  virtual QPointer<RetType> visitIInt(IInt *p) = 0;
+  virtual QPointer<RetType> visitINrChildren(INrChildren *p) = 0;
+  virtual QPointer<RetType> visitIRow(IRow *p) = 0;
+  virtual QPointer<RetType> visitICol(ICol *p) = 0;
+  virtual QPointer<RetType> visitSString(SString *p) = 0;
+  virtual QPointer<RetType> visitSFValue(SFValue *p) = 0;
+  virtual QPointer<RetType> visitSValue(SValue *p) = 0;
+  virtual QPointer<RetType> visitSValueType(SValueType *p) = 0;
+  virtual QPointer<RetType> visitSNodeType(SNodeType *p) = 0;
+  virtual QPointer<RetType> visitSConcat(SConcat *p) = 0;
+  virtual QPointer<RetType> visitETrue(ETrue *p) = 0;
+  virtual QPointer<RetType> visitEFalse(EFalse *p) = 0;
+  virtual QPointer<RetType> visitEParant(EParant *p) = 0;
+  virtual QPointer<RetType> visitENot(ENot *p) = 0;
+  virtual QPointer<RetType> visitEImpl(EImpl *p) = 0;
+  virtual QPointer<RetType> visitEBEq(EBEq *p) = 0;
+  virtual QPointer<RetType> visitEPossToken(EPossToken *p) = 0;
+  virtual QPointer<RetType> visitEExistToken(EExistToken *p) = 0;
+  virtual QPointer<RetType> visitEILtEq(EILtEq *p) = 0;
+  virtual QPointer<RetType> visitEIGtEq(EIGtEq *p) = 0;
+  virtual QPointer<RetType> visitEILt(EILt *p) = 0;
+  virtual QPointer<RetType> visitEIGt(EIGt *p) = 0;
+  virtual QPointer<RetType> visitEIEq(EIEq *p) = 0;
+  virtual QPointer<RetType> visitEMatch(EMatch *p) = 0;
+  virtual QPointer<RetType> visitESEq(ESEq *p) = 0;
+  virtual QPointer<RetType> visitEAnd(EAnd *p) = 0;
+  virtual QPointer<RetType> visitEOr(EOr *p) = 0;
+  virtual QPointer<RetType> visitEPQ(EPQ *p) = 0;
+  virtual QPointer<RetType> visitListRule(ListRule *p) = 0;
+  virtual QPointer<RetType> visitListExpr(ListExpr *p) = 0;
 
 
-  virtual RetType* visitInteger(Integer x) = 0;
-  virtual RetType* visitString(String x) = 0;
+  virtual QPointer<RetType> visitInteger(Integer x) = 0;
+  virtual QPointer<RetType> visitString(String x) = 0;
 };
 
 
@@ -173,7 +174,7 @@ class Visitable
 {
  public:
   virtual ~Visitable() {}
-  virtual RetType* accept(Visitor *v) = 0;
+  virtual QPointer<RetType> accept(Visitor *v) = 0;
 };
 
 
@@ -274,7 +275,7 @@ public:
   RSet &operator=(const RSet &);
   RSet(ListRule *p1);
   ~RSet();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual RSet *clone() const;
   void swap(RSet &);
 };
@@ -293,7 +294,7 @@ public:
   RRule &operator=(const RRule &);
   RRule(Tag *p1, Severity *p2, RuleCause *p3, ASTScope *p4, Explanation *p5, Quantifier *p6);
   ~RRule();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual RRule *clone() const;
   void swap(RRule &);
 };
@@ -306,7 +307,7 @@ public:
   ASTGlobally &operator=(const ASTGlobally &);
   ASTGlobally();
   ~ASTGlobally();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ASTGlobally *clone() const;
   void swap(ASTGlobally &);
 };
@@ -319,7 +320,7 @@ public:
   ASTFile &operator=(const ASTFile &);
   ASTFile();
   ~ASTFile();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ASTFile *clone() const;
   void swap(ASTFile &);
 };
@@ -332,7 +333,7 @@ public:
   ASTImported &operator=(const ASTImported &);
   ASTImported();
   ~ASTImported();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ASTImported *clone() const;
   void swap(ASTImported &);
 };
@@ -345,7 +346,7 @@ public:
   RCLang &operator=(const RCLang &);
   RCLang();
   ~RCLang();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual RCLang *clone() const;
   void swap(RCLang &);
 };
@@ -358,7 +359,7 @@ public:
   RCPolicy &operator=(const RCPolicy &);
   RCPolicy();
   ~RCPolicy();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual RCPolicy *clone() const;
   void swap(RCPolicy &);
 };
@@ -372,7 +373,7 @@ public:
   Explan &operator=(const Explan &);
   Explan(String p1);
   ~Explan();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual Explan *clone() const;
   void swap(Explan &);
 };
@@ -385,7 +386,7 @@ public:
   Noexplan &operator=(const Noexplan &);
   Noexplan();
   ~Noexplan();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual Noexplan *clone() const;
   void swap(Noexplan &);
 };
@@ -399,7 +400,7 @@ public:
   TTag &operator=(const TTag &);
   TTag(String p1);
   ~TTag();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual TTag *clone() const;
   void swap(TTag &);
 };
@@ -412,7 +413,7 @@ public:
   SevInfo &operator=(const SevInfo &);
   SevInfo();
   ~SevInfo();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SevInfo *clone() const;
   void swap(SevInfo &);
 };
@@ -425,7 +426,7 @@ public:
   SevWarning &operator=(const SevWarning &);
   SevWarning();
   ~SevWarning();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SevWarning *clone() const;
   void swap(SevWarning &);
 };
@@ -438,7 +439,7 @@ public:
   SevCritical &operator=(const SevCritical &);
   SevCritical();
   ~SevCritical();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SevCritical *clone() const;
   void swap(SevCritical &);
 };
@@ -452,7 +453,7 @@ public:
   QExpr &operator=(const QExpr &);
   QExpr(Expr *p1);
   ~QExpr();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual QExpr *clone() const;
   void swap(QExpr &);
 };
@@ -467,7 +468,7 @@ public:
   QFor &operator=(const QFor &);
   QFor(String p1, Expr *p2);
   ~QFor();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual QFor *clone() const;
   void swap(QFor &);
 };
@@ -481,7 +482,7 @@ public:
   AG &operator=(const AG &);
   AG(Expr *p1);
   ~AG();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual AG *clone() const;
   void swap(AG &);
 };
@@ -495,7 +496,7 @@ public:
   AF &operator=(const AF &);
   AF(Expr *p1);
   ~AF();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual AF *clone() const;
   void swap(AF &);
 };
@@ -509,7 +510,7 @@ public:
   AX &operator=(const AX &);
   AX(Expr *p1);
   ~AX();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual AX *clone() const;
   void swap(AX &);
 };
@@ -524,7 +525,7 @@ public:
   AU &operator=(const AU &);
   AU(Expr *p1, Expr *p2);
   ~AU();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual AU *clone() const;
   void swap(AU &);
 };
@@ -538,7 +539,7 @@ public:
   EG &operator=(const EG &);
   EG(Expr *p1);
   ~EG();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EG *clone() const;
   void swap(EG &);
 };
@@ -552,7 +553,7 @@ public:
   EF &operator=(const EF &);
   EF(Expr *p1);
   ~EF();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EF *clone() const;
   void swap(EF &);
 };
@@ -566,7 +567,7 @@ public:
   EX &operator=(const EX &);
   EX(Expr *p1);
   ~EX();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EX *clone() const;
   void swap(EX &);
 };
@@ -581,7 +582,7 @@ public:
   EU &operator=(const EU &);
   EU(Expr *p1, Expr *p2);
   ~EU();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EU *clone() const;
   void swap(EU &);
 };
@@ -594,7 +595,7 @@ public:
   IFRow &operator=(const IFRow &);
   IFRow();
   ~IFRow();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual IFRow *clone() const;
   void swap(IFRow &);
 };
@@ -607,7 +608,7 @@ public:
   IFCol &operator=(const IFCol &);
   IFCol();
   ~IFCol();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual IFCol *clone() const;
   void swap(IFCol &);
 };
@@ -621,7 +622,7 @@ public:
   IInt &operator=(const IInt &);
   IInt(Integer p1);
   ~IInt();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual IInt *clone() const;
   void swap(IInt &);
 };
@@ -634,7 +635,7 @@ public:
   INrChildren &operator=(const INrChildren &);
   INrChildren();
   ~INrChildren();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual INrChildren *clone() const;
   void swap(INrChildren &);
 };
@@ -647,7 +648,7 @@ public:
   IRow &operator=(const IRow &);
   IRow();
   ~IRow();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual IRow *clone() const;
   void swap(IRow &);
 };
@@ -660,7 +661,7 @@ public:
   ICol &operator=(const ICol &);
   ICol();
   ~ICol();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ICol *clone() const;
   void swap(ICol &);
 };
@@ -674,7 +675,7 @@ public:
   SString &operator=(const SString &);
   SString(String p1);
   ~SString();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SString *clone() const;
   void swap(SString &);
 };
@@ -687,7 +688,7 @@ public:
   SFValue &operator=(const SFValue &);
   SFValue();
   ~SFValue();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SFValue *clone() const;
   void swap(SFValue &);
 };
@@ -700,7 +701,7 @@ public:
   SValue &operator=(const SValue &);
   SValue();
   ~SValue();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SValue *clone() const;
   void swap(SValue &);
 };
@@ -713,7 +714,7 @@ public:
   SValueType &operator=(const SValueType &);
   SValueType();
   ~SValueType();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SValueType *clone() const;
   void swap(SValueType &);
 };
@@ -726,7 +727,7 @@ public:
   SNodeType &operator=(const SNodeType &);
   SNodeType();
   ~SNodeType();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SNodeType *clone() const;
   void swap(SNodeType &);
 };
@@ -741,7 +742,7 @@ public:
   SConcat &operator=(const SConcat &);
   SConcat(SAtom *p1, SAtom *p2);
   ~SConcat();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual SConcat *clone() const;
   void swap(SConcat &);
 };
@@ -754,7 +755,7 @@ public:
   ETrue &operator=(const ETrue &);
   ETrue();
   ~ETrue();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ETrue *clone() const;
   void swap(ETrue &);
 };
@@ -767,7 +768,7 @@ public:
   EFalse &operator=(const EFalse &);
   EFalse();
   ~EFalse();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EFalse *clone() const;
   void swap(EFalse &);
 };
@@ -781,7 +782,7 @@ public:
   EParant &operator=(const EParant &);
   EParant(Expr *p1);
   ~EParant();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EParant *clone() const;
   void swap(EParant &);
 };
@@ -795,7 +796,7 @@ public:
   ENot &operator=(const ENot &);
   ENot(Expr *p1);
   ~ENot();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ENot *clone() const;
   void swap(ENot &);
 };
@@ -810,7 +811,7 @@ public:
   EImpl &operator=(const EImpl &);
   EImpl(Expr *p1, Expr *p2);
   ~EImpl();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EImpl *clone() const;
   void swap(EImpl &);
 };
@@ -825,7 +826,7 @@ public:
   EBEq &operator=(const EBEq &);
   EBEq(Expr *p1, Expr *p2);
   ~EBEq();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EBEq *clone() const;
   void swap(EBEq &);
 };
@@ -839,7 +840,7 @@ public:
   EPossToken &operator=(const EPossToken &);
   EPossToken(String p1);
   ~EPossToken();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EPossToken *clone() const;
   void swap(EPossToken &);
 };
@@ -853,7 +854,7 @@ public:
   EExistToken &operator=(const EExistToken &);
   EExistToken(String p1);
   ~EExistToken();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EExistToken *clone() const;
   void swap(EExistToken &);
 };
@@ -868,7 +869,7 @@ public:
   EILtEq &operator=(const EILtEq &);
   EILtEq(IAtom *p1, IAtom *p2);
   ~EILtEq();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EILtEq *clone() const;
   void swap(EILtEq &);
 };
@@ -883,7 +884,7 @@ public:
   EIGtEq &operator=(const EIGtEq &);
   EIGtEq(IAtom *p1, IAtom *p2);
   ~EIGtEq();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EIGtEq *clone() const;
   void swap(EIGtEq &);
 };
@@ -898,7 +899,7 @@ public:
   EILt &operator=(const EILt &);
   EILt(IAtom *p1, IAtom *p2);
   ~EILt();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EILt *clone() const;
   void swap(EILt &);
 };
@@ -913,7 +914,7 @@ public:
   EIGt &operator=(const EIGt &);
   EIGt(IAtom *p1, IAtom *p2);
   ~EIGt();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EIGt *clone() const;
   void swap(EIGt &);
 };
@@ -928,7 +929,7 @@ public:
   EIEq &operator=(const EIEq &);
   EIEq(IAtom *p1, IAtom *p2);
   ~EIEq();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EIEq *clone() const;
   void swap(EIEq &);
 };
@@ -943,7 +944,7 @@ public:
   EMatch &operator=(const EMatch &);
   EMatch(SAtom *p1, String p2);
   ~EMatch();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EMatch *clone() const;
   void swap(EMatch &);
 };
@@ -958,7 +959,7 @@ public:
   ESEq &operator=(const ESEq &);
   ESEq(SAtom *p1, SAtom *p2);
   ~ESEq();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ESEq *clone() const;
   void swap(ESEq &);
 };
@@ -973,7 +974,7 @@ public:
   EAnd &operator=(const EAnd &);
   EAnd(Expr *p1, Expr *p2);
   ~EAnd();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EAnd *clone() const;
   void swap(EAnd &);
 };
@@ -988,7 +989,7 @@ public:
   EOr &operator=(const EOr &);
   EOr(Expr *p1, Expr *p2);
   ~EOr();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EOr *clone() const;
   void swap(EOr &);
 };
@@ -1002,7 +1003,7 @@ public:
   EPQ &operator=(const EPQ &);
   EPQ(PathQuantifier *p1);
   ~EPQ();
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual EPQ *clone() const;
   void swap(EPQ &);
 };
@@ -1012,14 +1013,14 @@ public:
 class ListRule : public Visitable, public std::vector<Rule*>
 {
 public:
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ListRule *clone() const;
 };
 
 class ListExpr : public Visitable, public std::vector<Expr*>
 {
 public:
-  virtual RetType* accept(Visitor *v);
+  virtual QPointer<RetType> accept(Visitor *v);
   virtual ListExpr *clone() const;
 };
 

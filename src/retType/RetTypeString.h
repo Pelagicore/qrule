@@ -7,6 +7,7 @@
 class RetTypeString: public RetType {
 public:
     RetTypeString(QString data): data(data) {}
+    ~RetTypeString() {}
 
     RetTypeE getType();
     QString getData();

@@ -1,7 +1,10 @@
 #ifndef KRULEENGINE_RETTYPE_H
 #define KRULEENGINE_RETTYPE_H
 
-class RetType {
+#include <QObject>
+
+
+class RetType: public QObject {
 public:
     enum RetTypeE {RInt, RString, RBool};
     virtual RetTypeE getType() = 0;

@@ -108,9 +108,9 @@ char* PrintAbsyn::print(Visitable *v)
   v->accept(this);
   return buf_;
 }
-RetType* PrintAbsyn::visitRuleSet(RuleSet*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitRuleSet(RuleSet*p) {} //abstract class
 
-RetType* PrintAbsyn::visitRSet(RSet* p)
+QPointer<RetType> PrintAbsyn::visitRSet(RSet* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -121,9 +121,9 @@ RetType* PrintAbsyn::visitRSet(RSet* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitRule(Rule*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitRule(Rule*p) {} //abstract class
 
-RetType* PrintAbsyn::visitRRule(RRule* p)
+QPointer<RetType> PrintAbsyn::visitRRule(RRule* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -141,9 +141,9 @@ RetType* PrintAbsyn::visitRRule(RRule* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitASTScope(ASTScope*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitASTScope(ASTScope*p) {} //abstract class
 
-RetType* PrintAbsyn::visitASTGlobally(ASTGlobally* p)
+QPointer<RetType> PrintAbsyn::visitASTGlobally(ASTGlobally* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -155,7 +155,7 @@ RetType* PrintAbsyn::visitASTGlobally(ASTGlobally* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitASTFile(ASTFile* p)
+QPointer<RetType> PrintAbsyn::visitASTFile(ASTFile* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -167,7 +167,7 @@ RetType* PrintAbsyn::visitASTFile(ASTFile* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitASTImported(ASTImported* p)
+QPointer<RetType> PrintAbsyn::visitASTImported(ASTImported* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -179,9 +179,9 @@ RetType* PrintAbsyn::visitASTImported(ASTImported* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitRuleCause(RuleCause*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitRuleCause(RuleCause*p) {} //abstract class
 
-RetType* PrintAbsyn::visitRCLang(RCLang* p)
+QPointer<RetType> PrintAbsyn::visitRCLang(RCLang* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -193,7 +193,7 @@ RetType* PrintAbsyn::visitRCLang(RCLang* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitRCPolicy(RCPolicy* p)
+QPointer<RetType> PrintAbsyn::visitRCPolicy(RCPolicy* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -205,9 +205,9 @@ RetType* PrintAbsyn::visitRCPolicy(RCPolicy* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitExplanation(Explanation*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitExplanation(Explanation*p) {} //abstract class
 
-RetType* PrintAbsyn::visitExplan(Explan* p)
+QPointer<RetType> PrintAbsyn::visitExplan(Explan* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -220,7 +220,7 @@ RetType* PrintAbsyn::visitExplan(Explan* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitNoexplan(Noexplan* p)
+QPointer<RetType> PrintAbsyn::visitNoexplan(Noexplan* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -232,16 +232,16 @@ RetType* PrintAbsyn::visitNoexplan(Noexplan* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitListRule(ListRule *listrule)
+QPointer<RetType> PrintAbsyn::visitListRule(ListRule *listrule)
 {
   for (ListRule::const_iterator i = listrule->begin() ; i != listrule->end() ; ++i)
   {
     (*i)->accept(this);
     if (i != listrule->end() - 1) render(',');
   }
-}RetType* PrintAbsyn::visitTag(Tag*p) {} //abstract class
+}QPointer<RetType> PrintAbsyn::visitTag(Tag*p) {} //abstract class
 
-RetType* PrintAbsyn::visitTTag(TTag* p)
+QPointer<RetType> PrintAbsyn::visitTTag(TTag* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -253,9 +253,9 @@ RetType* PrintAbsyn::visitTTag(TTag* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSeverity(Severity*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitSeverity(Severity*p) {} //abstract class
 
-RetType* PrintAbsyn::visitSevInfo(SevInfo* p)
+QPointer<RetType> PrintAbsyn::visitSevInfo(SevInfo* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -267,7 +267,7 @@ RetType* PrintAbsyn::visitSevInfo(SevInfo* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSevWarning(SevWarning* p)
+QPointer<RetType> PrintAbsyn::visitSevWarning(SevWarning* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -279,7 +279,7 @@ RetType* PrintAbsyn::visitSevWarning(SevWarning* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSevCritical(SevCritical* p)
+QPointer<RetType> PrintAbsyn::visitSevCritical(SevCritical* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -291,9 +291,9 @@ RetType* PrintAbsyn::visitSevCritical(SevCritical* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitQuantifier(Quantifier*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitQuantifier(Quantifier*p) {} //abstract class
 
-RetType* PrintAbsyn::visitQExpr(QExpr* p)
+QPointer<RetType> PrintAbsyn::visitQExpr(QExpr* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -305,7 +305,7 @@ RetType* PrintAbsyn::visitQExpr(QExpr* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitQFor(QFor* p)
+QPointer<RetType> PrintAbsyn::visitQFor(QFor* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -320,9 +320,9 @@ RetType* PrintAbsyn::visitQFor(QFor* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitPathQuantifier(PathQuantifier*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitPathQuantifier(PathQuantifier*p) {} //abstract class
 
-RetType* PrintAbsyn::visitAG(AG* p)
+QPointer<RetType> PrintAbsyn::visitAG(AG* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -335,7 +335,7 @@ RetType* PrintAbsyn::visitAG(AG* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitAF(AF* p)
+QPointer<RetType> PrintAbsyn::visitAF(AF* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -348,7 +348,7 @@ RetType* PrintAbsyn::visitAF(AF* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitAX(AX* p)
+QPointer<RetType> PrintAbsyn::visitAX(AX* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -361,7 +361,7 @@ RetType* PrintAbsyn::visitAX(AX* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitAU(AU* p)
+QPointer<RetType> PrintAbsyn::visitAU(AU* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -376,7 +376,7 @@ RetType* PrintAbsyn::visitAU(AU* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEG(EG* p)
+QPointer<RetType> PrintAbsyn::visitEG(EG* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -389,7 +389,7 @@ RetType* PrintAbsyn::visitEG(EG* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEF(EF* p)
+QPointer<RetType> PrintAbsyn::visitEF(EF* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -402,7 +402,7 @@ RetType* PrintAbsyn::visitEF(EF* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEX(EX* p)
+QPointer<RetType> PrintAbsyn::visitEX(EX* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -415,7 +415,7 @@ RetType* PrintAbsyn::visitEX(EX* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEU(EU* p)
+QPointer<RetType> PrintAbsyn::visitEU(EU* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -430,9 +430,9 @@ RetType* PrintAbsyn::visitEU(EU* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitIAtom(IAtom*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitIAtom(IAtom*p) {} //abstract class
 
-RetType* PrintAbsyn::visitIFRow(IFRow* p)
+QPointer<RetType> PrintAbsyn::visitIFRow(IFRow* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -444,7 +444,7 @@ RetType* PrintAbsyn::visitIFRow(IFRow* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitIFCol(IFCol* p)
+QPointer<RetType> PrintAbsyn::visitIFCol(IFCol* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -456,7 +456,7 @@ RetType* PrintAbsyn::visitIFCol(IFCol* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitIInt(IInt* p)
+QPointer<RetType> PrintAbsyn::visitIInt(IInt* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -468,7 +468,7 @@ RetType* PrintAbsyn::visitIInt(IInt* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitINrChildren(INrChildren* p)
+QPointer<RetType> PrintAbsyn::visitINrChildren(INrChildren* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -480,7 +480,7 @@ RetType* PrintAbsyn::visitINrChildren(INrChildren* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitIRow(IRow* p)
+QPointer<RetType> PrintAbsyn::visitIRow(IRow* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -492,7 +492,7 @@ RetType* PrintAbsyn::visitIRow(IRow* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitICol(ICol* p)
+QPointer<RetType> PrintAbsyn::visitICol(ICol* p)
 {
   int oldi = _i_;
   if (oldi > 0) render(_L_PAREN);
@@ -504,9 +504,9 @@ RetType* PrintAbsyn::visitICol(ICol* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSAtom(SAtom*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitSAtom(SAtom*p) {} //abstract class
 
-RetType* PrintAbsyn::visitSString(SString* p)
+QPointer<RetType> PrintAbsyn::visitSString(SString* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
@@ -518,7 +518,7 @@ RetType* PrintAbsyn::visitSString(SString* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSFValue(SFValue* p)
+QPointer<RetType> PrintAbsyn::visitSFValue(SFValue* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
@@ -530,7 +530,7 @@ RetType* PrintAbsyn::visitSFValue(SFValue* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSValue(SValue* p)
+QPointer<RetType> PrintAbsyn::visitSValue(SValue* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
@@ -542,7 +542,7 @@ RetType* PrintAbsyn::visitSValue(SValue* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSValueType(SValueType* p)
+QPointer<RetType> PrintAbsyn::visitSValueType(SValueType* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
@@ -554,7 +554,7 @@ RetType* PrintAbsyn::visitSValueType(SValueType* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSNodeType(SNodeType* p)
+QPointer<RetType> PrintAbsyn::visitSNodeType(SNodeType* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
@@ -566,7 +566,7 @@ RetType* PrintAbsyn::visitSNodeType(SNodeType* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitSConcat(SConcat* p)
+QPointer<RetType> PrintAbsyn::visitSConcat(SConcat* p)
 {
   int oldi = _i_;
   if (oldi > 1) render(_L_PAREN);
@@ -580,9 +580,9 @@ RetType* PrintAbsyn::visitSConcat(SConcat* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitExpr(Expr*p) {} //abstract class
+QPointer<RetType> PrintAbsyn::visitExpr(Expr*p) {} //abstract class
 
-RetType* PrintAbsyn::visitETrue(ETrue* p)
+QPointer<RetType> PrintAbsyn::visitETrue(ETrue* p)
 {
   int oldi = _i_;
   if (oldi > 10) render(_L_PAREN);
@@ -594,7 +594,7 @@ RetType* PrintAbsyn::visitETrue(ETrue* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEFalse(EFalse* p)
+QPointer<RetType> PrintAbsyn::visitEFalse(EFalse* p)
 {
   int oldi = _i_;
   if (oldi > 10) render(_L_PAREN);
@@ -606,7 +606,7 @@ RetType* PrintAbsyn::visitEFalse(EFalse* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEParant(EParant* p)
+QPointer<RetType> PrintAbsyn::visitEParant(EParant* p)
 {
   int oldi = _i_;
   if (oldi > 10) render(_L_PAREN);
@@ -620,7 +620,7 @@ RetType* PrintAbsyn::visitEParant(EParant* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitENot(ENot* p)
+QPointer<RetType> PrintAbsyn::visitENot(ENot* p)
 {
   int oldi = _i_;
   if (oldi > 9) render(_L_PAREN);
@@ -633,7 +633,7 @@ RetType* PrintAbsyn::visitENot(ENot* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEImpl(EImpl* p)
+QPointer<RetType> PrintAbsyn::visitEImpl(EImpl* p)
 {
   int oldi = _i_;
   if (oldi > 8) render(_L_PAREN);
@@ -647,7 +647,7 @@ RetType* PrintAbsyn::visitEImpl(EImpl* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEBEq(EBEq* p)
+QPointer<RetType> PrintAbsyn::visitEBEq(EBEq* p)
 {
   int oldi = _i_;
   if (oldi > 7) render(_L_PAREN);
@@ -661,7 +661,7 @@ RetType* PrintAbsyn::visitEBEq(EBEq* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEPossToken(EPossToken* p)
+QPointer<RetType> PrintAbsyn::visitEPossToken(EPossToken* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -676,7 +676,7 @@ RetType* PrintAbsyn::visitEPossToken(EPossToken* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEExistToken(EExistToken* p)
+QPointer<RetType> PrintAbsyn::visitEExistToken(EExistToken* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -691,7 +691,7 @@ RetType* PrintAbsyn::visitEExistToken(EExistToken* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEILtEq(EILtEq* p)
+QPointer<RetType> PrintAbsyn::visitEILtEq(EILtEq* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -705,7 +705,7 @@ RetType* PrintAbsyn::visitEILtEq(EILtEq* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEIGtEq(EIGtEq* p)
+QPointer<RetType> PrintAbsyn::visitEIGtEq(EIGtEq* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -719,7 +719,7 @@ RetType* PrintAbsyn::visitEIGtEq(EIGtEq* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEILt(EILt* p)
+QPointer<RetType> PrintAbsyn::visitEILt(EILt* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -733,7 +733,7 @@ RetType* PrintAbsyn::visitEILt(EILt* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEIGt(EIGt* p)
+QPointer<RetType> PrintAbsyn::visitEIGt(EIGt* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -747,7 +747,7 @@ RetType* PrintAbsyn::visitEIGt(EIGt* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEIEq(EIEq* p)
+QPointer<RetType> PrintAbsyn::visitEIEq(EIEq* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -761,7 +761,7 @@ RetType* PrintAbsyn::visitEIEq(EIEq* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEMatch(EMatch* p)
+QPointer<RetType> PrintAbsyn::visitEMatch(EMatch* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -775,7 +775,7 @@ RetType* PrintAbsyn::visitEMatch(EMatch* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitESEq(ESEq* p)
+QPointer<RetType> PrintAbsyn::visitESEq(ESEq* p)
 {
   int oldi = _i_;
   if (oldi > 6) render(_L_PAREN);
@@ -789,7 +789,7 @@ RetType* PrintAbsyn::visitESEq(ESEq* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEAnd(EAnd* p)
+QPointer<RetType> PrintAbsyn::visitEAnd(EAnd* p)
 {
   int oldi = _i_;
   if (oldi > 4) render(_L_PAREN);
@@ -803,7 +803,7 @@ RetType* PrintAbsyn::visitEAnd(EAnd* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEOr(EOr* p)
+QPointer<RetType> PrintAbsyn::visitEOr(EOr* p)
 {
   int oldi = _i_;
   if (oldi > 4) render(_L_PAREN);
@@ -817,7 +817,7 @@ RetType* PrintAbsyn::visitEOr(EOr* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitEPQ(EPQ* p)
+QPointer<RetType> PrintAbsyn::visitEPQ(EPQ* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
@@ -829,38 +829,38 @@ RetType* PrintAbsyn::visitEPQ(EPQ* p)
   _i_ = oldi;
 }
 
-RetType* PrintAbsyn::visitListExpr(ListExpr *listexpr)
+QPointer<RetType> PrintAbsyn::visitListExpr(ListExpr *listexpr)
 {
   for (ListExpr::const_iterator i = listexpr->begin() ; i != listexpr->end() ; ++i)
   {
     (*i)->accept(this);
     render("");
   }
-}RetType* PrintAbsyn::visitInteger(Integer i)
+}QPointer<RetType> PrintAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
   sprintf(tmp, "%d", i);
   bufAppend(tmp);
 }
-RetType* PrintAbsyn::visitDouble(Double d)
+QPointer<RetType> PrintAbsyn::visitDouble(Double d)
 {
   char tmp[16];
   sprintf(tmp, "%g", d);
   bufAppend(tmp);
 }
-RetType* PrintAbsyn::visitChar(Char c)
+QPointer<RetType> PrintAbsyn::visitChar(Char c)
 {
   bufAppend('\'');
   bufAppend(c);
   bufAppend('\'');
 }
-RetType* PrintAbsyn::visitString(String s)
+QPointer<RetType> PrintAbsyn::visitString(String s)
 {
   bufAppend('\"');
   bufAppend(s);
   bufAppend('\"');
 }
-RetType* PrintAbsyn::visitIdent(String s)
+QPointer<RetType> PrintAbsyn::visitIdent(String s)
 {
   render(s);
 }
@@ -881,9 +881,9 @@ char* ShowAbsyn::show(Visitable *v)
   v->accept(this);
   return buf_;
 }
-RetType* ShowAbsyn::visitRuleSet(RuleSet* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitRuleSet(RuleSet* p) {} //abstract class
 
-RetType* ShowAbsyn::visitRSet(RSet* p)
+QPointer<RetType> ShowAbsyn::visitRSet(RSet* p)
 {
   bufAppend('(');
   bufAppend("RSet");
@@ -893,9 +893,9 @@ RetType* ShowAbsyn::visitRSet(RSet* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitRule(Rule* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitRule(Rule* p) {} //abstract class
 
-RetType* ShowAbsyn::visitRRule(RRule* p)
+QPointer<RetType> ShowAbsyn::visitRRule(RRule* p)
 {
   bufAppend('(');
   bufAppend("RRule");
@@ -925,33 +925,33 @@ RetType* ShowAbsyn::visitRRule(RRule* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitASTScope(ASTScope* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitASTScope(ASTScope* p) {} //abstract class
 
-RetType* ShowAbsyn::visitASTGlobally(ASTGlobally* p)
+QPointer<RetType> ShowAbsyn::visitASTGlobally(ASTGlobally* p)
 {
   bufAppend("ASTGlobally");
 }
-RetType* ShowAbsyn::visitASTFile(ASTFile* p)
+QPointer<RetType> ShowAbsyn::visitASTFile(ASTFile* p)
 {
   bufAppend("ASTFile");
 }
-RetType* ShowAbsyn::visitASTImported(ASTImported* p)
+QPointer<RetType> ShowAbsyn::visitASTImported(ASTImported* p)
 {
   bufAppend("ASTImported");
 }
-RetType* ShowAbsyn::visitRuleCause(RuleCause* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitRuleCause(RuleCause* p) {} //abstract class
 
-RetType* ShowAbsyn::visitRCLang(RCLang* p)
+QPointer<RetType> ShowAbsyn::visitRCLang(RCLang* p)
 {
   bufAppend("RCLang");
 }
-RetType* ShowAbsyn::visitRCPolicy(RCPolicy* p)
+QPointer<RetType> ShowAbsyn::visitRCPolicy(RCPolicy* p)
 {
   bufAppend("RCPolicy");
 }
-RetType* ShowAbsyn::visitExplanation(Explanation* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitExplanation(Explanation* p) {} //abstract class
 
-RetType* ShowAbsyn::visitExplan(Explan* p)
+QPointer<RetType> ShowAbsyn::visitExplan(Explan* p)
 {
   bufAppend('(');
   bufAppend("Explan");
@@ -959,11 +959,11 @@ RetType* ShowAbsyn::visitExplan(Explan* p)
   visitString(p->string_);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitNoexplan(Noexplan* p)
+QPointer<RetType> ShowAbsyn::visitNoexplan(Noexplan* p)
 {
   bufAppend("Noexplan");
 }
-RetType* ShowAbsyn::visitListRule(ListRule *listrule)
+QPointer<RetType> ShowAbsyn::visitListRule(ListRule *listrule)
 {
   for (ListRule::const_iterator i = listrule->begin() ; i != listrule->end() ; ++i)
   {
@@ -972,9 +972,9 @@ RetType* ShowAbsyn::visitListRule(ListRule *listrule)
   }
 }
 
-RetType* ShowAbsyn::visitTag(Tag* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitTag(Tag* p) {} //abstract class
 
-RetType* ShowAbsyn::visitTTag(TTag* p)
+QPointer<RetType> ShowAbsyn::visitTTag(TTag* p)
 {
   bufAppend('(');
   bufAppend("TTag");
@@ -982,23 +982,23 @@ RetType* ShowAbsyn::visitTTag(TTag* p)
   visitString(p->string_);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitSeverity(Severity* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitSeverity(Severity* p) {} //abstract class
 
-RetType* ShowAbsyn::visitSevInfo(SevInfo* p)
+QPointer<RetType> ShowAbsyn::visitSevInfo(SevInfo* p)
 {
   bufAppend("SevInfo");
 }
-RetType* ShowAbsyn::visitSevWarning(SevWarning* p)
+QPointer<RetType> ShowAbsyn::visitSevWarning(SevWarning* p)
 {
   bufAppend("SevWarning");
 }
-RetType* ShowAbsyn::visitSevCritical(SevCritical* p)
+QPointer<RetType> ShowAbsyn::visitSevCritical(SevCritical* p)
 {
   bufAppend("SevCritical");
 }
-RetType* ShowAbsyn::visitQuantifier(Quantifier* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitQuantifier(Quantifier* p) {} //abstract class
 
-RetType* ShowAbsyn::visitQExpr(QExpr* p)
+QPointer<RetType> ShowAbsyn::visitQExpr(QExpr* p)
 {
   bufAppend('(');
   bufAppend("QExpr");
@@ -1008,7 +1008,7 @@ RetType* ShowAbsyn::visitQExpr(QExpr* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitQFor(QFor* p)
+QPointer<RetType> ShowAbsyn::visitQFor(QFor* p)
 {
   bufAppend('(');
   bufAppend("QFor");
@@ -1020,9 +1020,9 @@ RetType* ShowAbsyn::visitQFor(QFor* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitPathQuantifier(PathQuantifier* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitPathQuantifier(PathQuantifier* p) {} //abstract class
 
-RetType* ShowAbsyn::visitAG(AG* p)
+QPointer<RetType> ShowAbsyn::visitAG(AG* p)
 {
   bufAppend('(');
   bufAppend("AG");
@@ -1032,7 +1032,7 @@ RetType* ShowAbsyn::visitAG(AG* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitAF(AF* p)
+QPointer<RetType> ShowAbsyn::visitAF(AF* p)
 {
   bufAppend('(');
   bufAppend("AF");
@@ -1042,7 +1042,7 @@ RetType* ShowAbsyn::visitAF(AF* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitAX(AX* p)
+QPointer<RetType> ShowAbsyn::visitAX(AX* p)
 {
   bufAppend('(');
   bufAppend("AX");
@@ -1052,7 +1052,7 @@ RetType* ShowAbsyn::visitAX(AX* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitAU(AU* p)
+QPointer<RetType> ShowAbsyn::visitAU(AU* p)
 {
   bufAppend('(');
   bufAppend("AU");
@@ -1062,7 +1062,7 @@ RetType* ShowAbsyn::visitAU(AU* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEG(EG* p)
+QPointer<RetType> ShowAbsyn::visitEG(EG* p)
 {
   bufAppend('(');
   bufAppend("EG");
@@ -1072,7 +1072,7 @@ RetType* ShowAbsyn::visitEG(EG* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEF(EF* p)
+QPointer<RetType> ShowAbsyn::visitEF(EF* p)
 {
   bufAppend('(');
   bufAppend("EF");
@@ -1082,7 +1082,7 @@ RetType* ShowAbsyn::visitEF(EF* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEX(EX* p)
+QPointer<RetType> ShowAbsyn::visitEX(EX* p)
 {
   bufAppend('(');
   bufAppend("EX");
@@ -1092,7 +1092,7 @@ RetType* ShowAbsyn::visitEX(EX* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEU(EU* p)
+QPointer<RetType> ShowAbsyn::visitEU(EU* p)
 {
   bufAppend('(');
   bufAppend("EU");
@@ -1102,17 +1102,17 @@ RetType* ShowAbsyn::visitEU(EU* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitIAtom(IAtom* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitIAtom(IAtom* p) {} //abstract class
 
-RetType* ShowAbsyn::visitIFRow(IFRow* p)
+QPointer<RetType> ShowAbsyn::visitIFRow(IFRow* p)
 {
   bufAppend("IFRow");
 }
-RetType* ShowAbsyn::visitIFCol(IFCol* p)
+QPointer<RetType> ShowAbsyn::visitIFCol(IFCol* p)
 {
   bufAppend("IFCol");
 }
-RetType* ShowAbsyn::visitIInt(IInt* p)
+QPointer<RetType> ShowAbsyn::visitIInt(IInt* p)
 {
   bufAppend('(');
   bufAppend("IInt");
@@ -1120,21 +1120,21 @@ RetType* ShowAbsyn::visitIInt(IInt* p)
   visitInteger(p->integer_);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitINrChildren(INrChildren* p)
+QPointer<RetType> ShowAbsyn::visitINrChildren(INrChildren* p)
 {
   bufAppend("INrChildren");
 }
-RetType* ShowAbsyn::visitIRow(IRow* p)
+QPointer<RetType> ShowAbsyn::visitIRow(IRow* p)
 {
   bufAppend("IRow");
 }
-RetType* ShowAbsyn::visitICol(ICol* p)
+QPointer<RetType> ShowAbsyn::visitICol(ICol* p)
 {
   bufAppend("ICol");
 }
-RetType* ShowAbsyn::visitSAtom(SAtom* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitSAtom(SAtom* p) {} //abstract class
 
-RetType* ShowAbsyn::visitSString(SString* p)
+QPointer<RetType> ShowAbsyn::visitSString(SString* p)
 {
   bufAppend('(');
   bufAppend("SString");
@@ -1142,32 +1142,32 @@ RetType* ShowAbsyn::visitSString(SString* p)
   visitString(p->string_);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitSFValue(SFValue* p)
+QPointer<RetType> ShowAbsyn::visitSFValue(SFValue* p)
 {
   bufAppend("SFValue");
 }
-RetType* ShowAbsyn::visitSValue(SValue* p)
+QPointer<RetType> ShowAbsyn::visitSValue(SValue* p)
 {
   bufAppend('(');
   bufAppend("SValue");
   bufAppend(' ');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitSValueType(SValueType* p)
+QPointer<RetType> ShowAbsyn::visitSValueType(SValueType* p)
 {
   bufAppend('(');
   bufAppend("SValueType");
   bufAppend(' ');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitSNodeType(SNodeType* p)
+QPointer<RetType> ShowAbsyn::visitSNodeType(SNodeType* p)
 {
   bufAppend('(');
   bufAppend("SNodeType");
   bufAppend(' ');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitSConcat(SConcat* p)
+QPointer<RetType> ShowAbsyn::visitSConcat(SConcat* p)
 {
   bufAppend('(');
   bufAppend("SConcat");
@@ -1177,17 +1177,17 @@ RetType* ShowAbsyn::visitSConcat(SConcat* p)
   p->satom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitExpr(Expr* p) {} //abstract class
+QPointer<RetType> ShowAbsyn::visitExpr(Expr* p) {} //abstract class
 
-RetType* ShowAbsyn::visitETrue(ETrue* p)
+QPointer<RetType> ShowAbsyn::visitETrue(ETrue* p)
 {
   bufAppend("ETrue");
 }
-RetType* ShowAbsyn::visitEFalse(EFalse* p)
+QPointer<RetType> ShowAbsyn::visitEFalse(EFalse* p)
 {
   bufAppend("EFalse");
 }
-RetType* ShowAbsyn::visitEParant(EParant* p)
+QPointer<RetType> ShowAbsyn::visitEParant(EParant* p)
 {
   bufAppend('(');
   bufAppend("EParant");
@@ -1198,7 +1198,7 @@ RetType* ShowAbsyn::visitEParant(EParant* p)
   bufAppend(' ');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitENot(ENot* p)
+QPointer<RetType> ShowAbsyn::visitENot(ENot* p)
 {
   bufAppend('(');
   bufAppend("ENot");
@@ -1208,7 +1208,7 @@ RetType* ShowAbsyn::visitENot(ENot* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEImpl(EImpl* p)
+QPointer<RetType> ShowAbsyn::visitEImpl(EImpl* p)
 {
   bufAppend('(');
   bufAppend("EImpl");
@@ -1218,7 +1218,7 @@ RetType* ShowAbsyn::visitEImpl(EImpl* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEBEq(EBEq* p)
+QPointer<RetType> ShowAbsyn::visitEBEq(EBEq* p)
 {
   bufAppend('(');
   bufAppend("EBEq");
@@ -1228,7 +1228,7 @@ RetType* ShowAbsyn::visitEBEq(EBEq* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEPossToken(EPossToken* p)
+QPointer<RetType> ShowAbsyn::visitEPossToken(EPossToken* p)
 {
   bufAppend('(');
   bufAppend("EPossToken");
@@ -1237,7 +1237,7 @@ RetType* ShowAbsyn::visitEPossToken(EPossToken* p)
   bufAppend(' ');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEExistToken(EExistToken* p)
+QPointer<RetType> ShowAbsyn::visitEExistToken(EExistToken* p)
 {
   bufAppend('(');
   bufAppend("EExistToken");
@@ -1246,7 +1246,7 @@ RetType* ShowAbsyn::visitEExistToken(EExistToken* p)
   bufAppend(' ');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEILtEq(EILtEq* p)
+QPointer<RetType> ShowAbsyn::visitEILtEq(EILtEq* p)
 {
   bufAppend('(');
   bufAppend("EILtEq");
@@ -1256,7 +1256,7 @@ RetType* ShowAbsyn::visitEILtEq(EILtEq* p)
   p->iatom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEIGtEq(EIGtEq* p)
+QPointer<RetType> ShowAbsyn::visitEIGtEq(EIGtEq* p)
 {
   bufAppend('(');
   bufAppend("EIGtEq");
@@ -1266,7 +1266,7 @@ RetType* ShowAbsyn::visitEIGtEq(EIGtEq* p)
   p->iatom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEILt(EILt* p)
+QPointer<RetType> ShowAbsyn::visitEILt(EILt* p)
 {
   bufAppend('(');
   bufAppend("EILt");
@@ -1276,7 +1276,7 @@ RetType* ShowAbsyn::visitEILt(EILt* p)
   p->iatom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEIGt(EIGt* p)
+QPointer<RetType> ShowAbsyn::visitEIGt(EIGt* p)
 {
   bufAppend('(');
   bufAppend("EIGt");
@@ -1286,7 +1286,7 @@ RetType* ShowAbsyn::visitEIGt(EIGt* p)
   p->iatom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEIEq(EIEq* p)
+QPointer<RetType> ShowAbsyn::visitEIEq(EIEq* p)
 {
   bufAppend('(');
   bufAppend("EIEq");
@@ -1296,7 +1296,7 @@ RetType* ShowAbsyn::visitEIEq(EIEq* p)
   p->iatom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEMatch(EMatch* p)
+QPointer<RetType> ShowAbsyn::visitEMatch(EMatch* p)
 {
   bufAppend('(');
   bufAppend("EMatch");
@@ -1308,7 +1308,7 @@ RetType* ShowAbsyn::visitEMatch(EMatch* p)
   visitString(p->string_);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitESEq(ESEq* p)
+QPointer<RetType> ShowAbsyn::visitESEq(ESEq* p)
 {
   bufAppend('(');
   bufAppend("ESEq");
@@ -1318,7 +1318,7 @@ RetType* ShowAbsyn::visitESEq(ESEq* p)
   p->satom_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEAnd(EAnd* p)
+QPointer<RetType> ShowAbsyn::visitEAnd(EAnd* p)
 {
   bufAppend('(');
   bufAppend("EAnd");
@@ -1328,7 +1328,7 @@ RetType* ShowAbsyn::visitEAnd(EAnd* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEOr(EOr* p)
+QPointer<RetType> ShowAbsyn::visitEOr(EOr* p)
 {
   bufAppend('(');
   bufAppend("EOr");
@@ -1338,7 +1338,7 @@ RetType* ShowAbsyn::visitEOr(EOr* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitEPQ(EPQ* p)
+QPointer<RetType> ShowAbsyn::visitEPQ(EPQ* p)
 {
   bufAppend('(');
   bufAppend("EPQ");
@@ -1348,7 +1348,7 @@ RetType* ShowAbsyn::visitEPQ(EPQ* p)
   bufAppend(']');
   bufAppend(')');
 }
-RetType* ShowAbsyn::visitListExpr(ListExpr *listexpr)
+QPointer<RetType> ShowAbsyn::visitListExpr(ListExpr *listexpr)
 {
   for (ListExpr::const_iterator i = listexpr->begin() ; i != listexpr->end() ; ++i)
   {
@@ -1357,31 +1357,31 @@ RetType* ShowAbsyn::visitListExpr(ListExpr *listexpr)
   }
 }
 
-RetType* ShowAbsyn::visitInteger(Integer i)
+QPointer<RetType> ShowAbsyn::visitInteger(Integer i)
 {
   char tmp[16];
   sprintf(tmp, "%d", i);
   bufAppend(tmp);
 }
-RetType* ShowAbsyn::visitDouble(Double d)
+QPointer<RetType> ShowAbsyn::visitDouble(Double d)
 {
   char tmp[16];
   sprintf(tmp, "%g", d);
   bufAppend(tmp);
 }
-RetType* ShowAbsyn::visitChar(Char c)
+QPointer<RetType> ShowAbsyn::visitChar(Char c)
 {
   bufAppend('\'');
   bufAppend(c);
   bufAppend('\'');
 }
-RetType* ShowAbsyn::visitString(String s)
+QPointer<RetType> ShowAbsyn::visitString(String s)
 {
   bufAppend('\"');
   bufAppend(s);
   bufAppend('\"');
 }
-RetType* ShowAbsyn::visitIdent(String s)
+QPointer<RetType> ShowAbsyn::visitIdent(String s)
 {
   bufAppend('\"');
   bufAppend(s);

@@ -37,7 +37,7 @@ RSet::~RSet()
 
 }
 
-RetType* RSet::accept(Visitor *v)
+QPointer<RetType> RSet::accept(Visitor *v)
 {
   return v->visitRSet(this);
 }
@@ -101,7 +101,7 @@ RRule::~RRule()
 
 }
 
-RetType* RRule::accept(Visitor *v)
+QPointer<RetType> RRule::accept(Visitor *v)
 {
   return v->visitRRule(this);
 }
@@ -141,7 +141,7 @@ ASTGlobally::~ASTGlobally()
 
 }
 
-RetType* ASTGlobally::accept(Visitor *v)
+QPointer<RetType> ASTGlobally::accept(Visitor *v)
 {
   return v->visitASTGlobally(this);
 }
@@ -181,7 +181,7 @@ ASTFile::~ASTFile()
 
 }
 
-RetType* ASTFile::accept(Visitor *v)
+QPointer<RetType> ASTFile::accept(Visitor *v)
 {
   return v->visitASTFile(this);
 }
@@ -221,7 +221,7 @@ ASTImported::~ASTImported()
 
 }
 
-RetType* ASTImported::accept(Visitor *v)
+QPointer<RetType> ASTImported::accept(Visitor *v)
 {
   return v->visitASTImported(this);
 }
@@ -261,7 +261,7 @@ RCLang::~RCLang()
 
 }
 
-RetType* RCLang::accept(Visitor *v)
+QPointer<RetType> RCLang::accept(Visitor *v)
 {
   return v->visitRCLang(this);
 }
@@ -301,7 +301,7 @@ RCPolicy::~RCPolicy()
 
 }
 
-RetType* RCPolicy::accept(Visitor *v)
+QPointer<RetType> RCPolicy::accept(Visitor *v)
 {
   return v->visitRCPolicy(this);
 }
@@ -344,7 +344,7 @@ Explan::~Explan()
 
 }
 
-RetType* Explan::accept(Visitor *v)
+QPointer<RetType> Explan::accept(Visitor *v)
 {
   return v->visitExplan(this);
 }
@@ -384,7 +384,7 @@ Noexplan::~Noexplan()
 
 }
 
-RetType* Noexplan::accept(Visitor *v)
+QPointer<RetType> Noexplan::accept(Visitor *v)
 {
   return v->visitNoexplan(this);
 }
@@ -427,7 +427,7 @@ TTag::~TTag()
 
 }
 
-RetType* TTag::accept(Visitor *v)
+QPointer<RetType> TTag::accept(Visitor *v)
 {
   return v->visitTTag(this);
 }
@@ -467,7 +467,7 @@ SevInfo::~SevInfo()
 
 }
 
-RetType* SevInfo::accept(Visitor *v)
+QPointer<RetType> SevInfo::accept(Visitor *v)
 {
   return v->visitSevInfo(this);
 }
@@ -507,7 +507,7 @@ SevWarning::~SevWarning()
 
 }
 
-RetType* SevWarning::accept(Visitor *v)
+QPointer<RetType> SevWarning::accept(Visitor *v)
 {
   return v->visitSevWarning(this);
 }
@@ -547,7 +547,7 @@ SevCritical::~SevCritical()
 
 }
 
-RetType* SevCritical::accept(Visitor *v)
+QPointer<RetType> SevCritical::accept(Visitor *v)
 {
   return v->visitSevCritical(this);
 }
@@ -591,7 +591,7 @@ QExpr::~QExpr()
 
 }
 
-RetType* QExpr::accept(Visitor *v)
+QPointer<RetType> QExpr::accept(Visitor *v)
 {
   return v->visitQExpr(this);
 }
@@ -638,7 +638,7 @@ QFor::~QFor()
 
 }
 
-RetType* QFor::accept(Visitor *v)
+QPointer<RetType> QFor::accept(Visitor *v)
 {
   return v->visitQFor(this);
 }
@@ -682,7 +682,7 @@ AG::~AG()
 
 }
 
-RetType* AG::accept(Visitor *v)
+QPointer<RetType> AG::accept(Visitor *v)
 {
   return v->visitAG(this);
 }
@@ -726,7 +726,7 @@ AF::~AF()
 
 }
 
-RetType* AF::accept(Visitor *v)
+QPointer<RetType> AF::accept(Visitor *v)
 {
   return v->visitAF(this);
 }
@@ -770,7 +770,7 @@ AX::~AX()
 
 }
 
-RetType* AX::accept(Visitor *v)
+QPointer<RetType> AX::accept(Visitor *v)
 {
   return v->visitAX(this);
 }
@@ -818,7 +818,7 @@ AU::~AU()
 
 }
 
-RetType* AU::accept(Visitor *v)
+QPointer<RetType> AU::accept(Visitor *v)
 {
   return v->visitAU(this);
 }
@@ -862,7 +862,7 @@ EG::~EG()
 
 }
 
-RetType* EG::accept(Visitor *v)
+QPointer<RetType> EG::accept(Visitor *v)
 {
   return v->visitEG(this);
 }
@@ -906,7 +906,7 @@ EF::~EF()
 
 }
 
-RetType* EF::accept(Visitor *v)
+QPointer<RetType> EF::accept(Visitor *v)
 {
   return v->visitEF(this);
 }
@@ -950,7 +950,7 @@ EX::~EX()
 
 }
 
-RetType* EX::accept(Visitor *v)
+QPointer<RetType> EX::accept(Visitor *v)
 {
   return v->visitEX(this);
 }
@@ -998,7 +998,7 @@ EU::~EU()
 
 }
 
-RetType* EU::accept(Visitor *v)
+QPointer<RetType> EU::accept(Visitor *v)
 {
   return v->visitEU(this);
 }
@@ -1038,7 +1038,7 @@ IFRow::~IFRow()
 
 }
 
-RetType* IFRow::accept(Visitor *v)
+QPointer<RetType> IFRow::accept(Visitor *v)
 {
   return v->visitIFRow(this);
 }
@@ -1078,7 +1078,7 @@ IFCol::~IFCol()
 
 }
 
-RetType* IFCol::accept(Visitor *v)
+QPointer<RetType> IFCol::accept(Visitor *v)
 {
   return v->visitIFCol(this);
 }
@@ -1121,7 +1121,7 @@ IInt::~IInt()
 
 }
 
-RetType* IInt::accept(Visitor *v)
+QPointer<RetType> IInt::accept(Visitor *v)
 {
   return v->visitIInt(this);
 }
@@ -1161,7 +1161,7 @@ INrChildren::~INrChildren()
 
 }
 
-RetType* INrChildren::accept(Visitor *v)
+QPointer<RetType> INrChildren::accept(Visitor *v)
 {
   return v->visitINrChildren(this);
 }
@@ -1201,7 +1201,7 @@ IRow::~IRow()
 
 }
 
-RetType* IRow::accept(Visitor *v)
+QPointer<RetType> IRow::accept(Visitor *v)
 {
   return v->visitIRow(this);
 }
@@ -1241,7 +1241,7 @@ ICol::~ICol()
 
 }
 
-RetType* ICol::accept(Visitor *v)
+QPointer<RetType> ICol::accept(Visitor *v)
 {
   return v->visitICol(this);
 }
@@ -1284,7 +1284,7 @@ SString::~SString()
 
 }
 
-RetType* SString::accept(Visitor *v)
+QPointer<RetType> SString::accept(Visitor *v)
 {
   return v->visitSString(this);
 }
@@ -1324,7 +1324,7 @@ SFValue::~SFValue()
 
 }
 
-RetType* SFValue::accept(Visitor *v)
+QPointer<RetType> SFValue::accept(Visitor *v)
 {
   return v->visitSFValue(this);
 }
@@ -1364,7 +1364,7 @@ SValue::~SValue()
 
 }
 
-RetType* SValue::accept(Visitor *v)
+QPointer<RetType> SValue::accept(Visitor *v)
 {
   return v->visitSValue(this);
 }
@@ -1404,7 +1404,7 @@ SValueType::~SValueType()
 
 }
 
-RetType* SValueType::accept(Visitor *v)
+QPointer<RetType> SValueType::accept(Visitor *v)
 {
   return v->visitSValueType(this);
 }
@@ -1444,7 +1444,7 @@ SNodeType::~SNodeType()
 
 }
 
-RetType* SNodeType::accept(Visitor *v)
+QPointer<RetType> SNodeType::accept(Visitor *v)
 {
   return v->visitSNodeType(this);
 }
@@ -1492,7 +1492,7 @@ SConcat::~SConcat()
 
 }
 
-RetType* SConcat::accept(Visitor *v)
+QPointer<RetType> SConcat::accept(Visitor *v)
 {
   return v->visitSConcat(this);
 }
@@ -1532,7 +1532,7 @@ ETrue::~ETrue()
 
 }
 
-RetType* ETrue::accept(Visitor *v)
+QPointer<RetType> ETrue::accept(Visitor *v)
 {
   return v->visitETrue(this);
 }
@@ -1572,7 +1572,7 @@ EFalse::~EFalse()
 
 }
 
-RetType* EFalse::accept(Visitor *v)
+QPointer<RetType> EFalse::accept(Visitor *v)
 {
   return v->visitEFalse(this);
 }
@@ -1616,7 +1616,7 @@ EParant::~EParant()
 
 }
 
-RetType* EParant::accept(Visitor *v)
+QPointer<RetType> EParant::accept(Visitor *v)
 {
   return v->visitEParant(this);
 }
@@ -1660,7 +1660,7 @@ ENot::~ENot()
 
 }
 
-RetType* ENot::accept(Visitor *v)
+QPointer<RetType> ENot::accept(Visitor *v)
 {
   return v->visitENot(this);
 }
@@ -1708,7 +1708,7 @@ EImpl::~EImpl()
 
 }
 
-RetType* EImpl::accept(Visitor *v)
+QPointer<RetType> EImpl::accept(Visitor *v)
 {
   return v->visitEImpl(this);
 }
@@ -1756,7 +1756,7 @@ EBEq::~EBEq()
 
 }
 
-RetType* EBEq::accept(Visitor *v)
+QPointer<RetType> EBEq::accept(Visitor *v)
 {
   return v->visitEBEq(this);
 }
@@ -1799,7 +1799,7 @@ EPossToken::~EPossToken()
 
 }
 
-RetType* EPossToken::accept(Visitor *v)
+QPointer<RetType> EPossToken::accept(Visitor *v)
 {
   return v->visitEPossToken(this);
 }
@@ -1842,7 +1842,7 @@ EExistToken::~EExistToken()
 
 }
 
-RetType* EExistToken::accept(Visitor *v)
+QPointer<RetType> EExistToken::accept(Visitor *v)
 {
   return v->visitEExistToken(this);
 }
@@ -1890,7 +1890,7 @@ EILtEq::~EILtEq()
 
 }
 
-RetType* EILtEq::accept(Visitor *v)
+QPointer<RetType> EILtEq::accept(Visitor *v)
 {
   return v->visitEILtEq(this);
 }
@@ -1938,7 +1938,7 @@ EIGtEq::~EIGtEq()
 
 }
 
-RetType* EIGtEq::accept(Visitor *v)
+QPointer<RetType> EIGtEq::accept(Visitor *v)
 {
   return v->visitEIGtEq(this);
 }
@@ -1986,7 +1986,7 @@ EILt::~EILt()
 
 }
 
-RetType* EILt::accept(Visitor *v)
+QPointer<RetType> EILt::accept(Visitor *v)
 {
   return v->visitEILt(this);
 }
@@ -2034,7 +2034,7 @@ EIGt::~EIGt()
 
 }
 
-RetType* EIGt::accept(Visitor *v)
+QPointer<RetType> EIGt::accept(Visitor *v)
 {
   return v->visitEIGt(this);
 }
@@ -2082,7 +2082,7 @@ EIEq::~EIEq()
 
 }
 
-RetType* EIEq::accept(Visitor *v)
+QPointer<RetType> EIEq::accept(Visitor *v)
 {
   return v->visitEIEq(this);
 }
@@ -2129,7 +2129,7 @@ EMatch::~EMatch()
 
 }
 
-RetType* EMatch::accept(Visitor *v)
+QPointer<RetType> EMatch::accept(Visitor *v)
 {
   return v->visitEMatch(this);
 }
@@ -2177,7 +2177,7 @@ ESEq::~ESEq()
 
 }
 
-RetType* ESEq::accept(Visitor *v)
+QPointer<RetType> ESEq::accept(Visitor *v)
 {
   return v->visitESEq(this);
 }
@@ -2225,7 +2225,7 @@ EAnd::~EAnd()
 
 }
 
-RetType* EAnd::accept(Visitor *v)
+QPointer<RetType> EAnd::accept(Visitor *v)
 {
   return v->visitEAnd(this);
 }
@@ -2273,7 +2273,7 @@ EOr::~EOr()
 
 }
 
-RetType* EOr::accept(Visitor *v)
+QPointer<RetType> EOr::accept(Visitor *v)
 {
   return v->visitEOr(this);
 }
@@ -2317,7 +2317,7 @@ EPQ::~EPQ()
 
 }
 
-RetType* EPQ::accept(Visitor *v)
+QPointer<RetType> EPQ::accept(Visitor *v)
 {
   return v->visitEPQ(this);
 }
@@ -2332,7 +2332,7 @@ EPQ *EPQ::clone() const
 
 /********************   ListRule    ********************/
 
-RetType* ListRule::accept(Visitor *v)
+QPointer<RetType> ListRule::accept(Visitor *v)
 {
   return v->visitListRule(this);
 }
@@ -2346,7 +2346,7 @@ ListRule *ListRule::clone() const
 
 /********************   ListExpr    ********************/
 
-RetType* ListExpr::accept(Visitor *v)
+QPointer<RetType> ListExpr::accept(Visitor *v)
 {
   return v->visitListExpr(this);
 }

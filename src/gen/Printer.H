@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <QPointer>
 
 
 /* Certain applications may improve performance by changing the buffer size */
@@ -29,79 +30,79 @@ void render(char* s);
   ~PrintAbsyn(void);
   char* print(Visitable* v);
 
-  RetType* visitRuleSet(RuleSet *p); /* abstract class */
-  RetType* visitRSet(RSet *p);
-  RetType* visitRule(Rule *p); /* abstract class */
-  RetType* visitRRule(RRule *p);
-  RetType* visitASTScope(ASTScope *p); /* abstract class */
-  RetType* visitASTGlobally(ASTGlobally *p);
-  RetType* visitASTFile(ASTFile *p);
-  RetType* visitASTImported(ASTImported *p);
-  RetType* visitRuleCause(RuleCause *p); /* abstract class */
-  RetType* visitRCLang(RCLang *p);
-  RetType* visitRCPolicy(RCPolicy *p);
-  RetType* visitExplanation(Explanation *p); /* abstract class */
-  RetType* visitExplan(Explan *p);
-  RetType* visitNoexplan(Noexplan *p);
-  RetType* visitListRule(ListRule* p);
-  RetType* visitTag(Tag *p); /* abstract class */
-  RetType* visitTTag(TTag *p);
-  RetType* visitSeverity(Severity *p); /* abstract class */
-  RetType* visitSevInfo(SevInfo *p);
-  RetType* visitSevWarning(SevWarning *p);
-  RetType* visitSevCritical(SevCritical *p);
-  RetType* visitQuantifier(Quantifier *p); /* abstract class */
-  RetType* visitQExpr(QExpr *p);
-  RetType* visitQFor(QFor *p);
-  RetType* visitPathQuantifier(PathQuantifier *p); /* abstract class */
-  RetType* visitAG(AG *p);
-  RetType* visitAF(AF *p);
-  RetType* visitAX(AX *p);
-  RetType* visitAU(AU *p);
-  RetType* visitEG(EG *p);
-  RetType* visitEF(EF *p);
-  RetType* visitEX(EX *p);
-  RetType* visitEU(EU *p);
-  RetType* visitIAtom(IAtom *p); /* abstract class */
-  RetType* visitIFRow(IFRow *p);
-  RetType* visitIFCol(IFCol *p);
-  RetType* visitIInt(IInt *p);
-  RetType* visitINrChildren(INrChildren *p);
-  RetType* visitIRow(IRow *p);
-  RetType* visitICol(ICol *p);
-  RetType* visitSAtom(SAtom *p); /* abstract class */
-  RetType* visitSString(SString *p);
-  RetType* visitSFValue(SFValue *p);
-  RetType* visitSValue(SValue *p);
-  RetType* visitSValueType(SValueType *p);
-  RetType* visitSNodeType(SNodeType *p);
-  RetType* visitSConcat(SConcat *p);
-  RetType* visitExpr(Expr *p); /* abstract class */
-  RetType* visitETrue(ETrue *p);
-  RetType* visitEFalse(EFalse *p);
-  RetType* visitEParant(EParant *p);
-  RetType* visitENot(ENot *p);
-  RetType* visitEImpl(EImpl *p);
-  RetType* visitEBEq(EBEq *p);
-  RetType* visitEPossToken(EPossToken *p);
-  RetType* visitEExistToken(EExistToken *p);
-  RetType* visitEILtEq(EILtEq *p);
-  RetType* visitEIGtEq(EIGtEq *p);
-  RetType* visitEILt(EILt *p);
-  RetType* visitEIGt(EIGt *p);
-  RetType* visitEIEq(EIEq *p);
-  RetType* visitEMatch(EMatch *p);
-  RetType* visitESEq(ESEq *p);
-  RetType* visitEAnd(EAnd *p);
-  RetType* visitEOr(EOr *p);
-  RetType* visitEPQ(EPQ *p);
-  RetType* visitListExpr(ListExpr* p);
+  QPointer<RetType> visitRuleSet(RuleSet *p); /* abstract class */
+  QPointer<RetType> visitRSet(RSet *p);
+  QPointer<RetType> visitRule(Rule *p); /* abstract class */
+  QPointer<RetType> visitRRule(RRule *p);
+  QPointer<RetType> visitASTScope(ASTScope *p); /* abstract class */
+  QPointer<RetType> visitASTGlobally(ASTGlobally *p);
+  QPointer<RetType> visitASTFile(ASTFile *p);
+  QPointer<RetType> visitASTImported(ASTImported *p);
+  QPointer<RetType> visitRuleCause(RuleCause *p); /* abstract class */
+  QPointer<RetType> visitRCLang(RCLang *p);
+  QPointer<RetType> visitRCPolicy(RCPolicy *p);
+  QPointer<RetType> visitExplanation(Explanation *p); /* abstract class */
+  QPointer<RetType> visitExplan(Explan *p);
+  QPointer<RetType> visitNoexplan(Noexplan *p);
+  QPointer<RetType> visitListRule(ListRule* p);
+  QPointer<RetType> visitTag(Tag *p); /* abstract class */
+  QPointer<RetType> visitTTag(TTag *p);
+  QPointer<RetType> visitSeverity(Severity *p); /* abstract class */
+  QPointer<RetType> visitSevInfo(SevInfo *p);
+  QPointer<RetType> visitSevWarning(SevWarning *p);
+  QPointer<RetType> visitSevCritical(SevCritical *p);
+  QPointer<RetType> visitQuantifier(Quantifier *p); /* abstract class */
+  QPointer<RetType> visitQExpr(QExpr *p);
+  QPointer<RetType> visitQFor(QFor *p);
+  QPointer<RetType> visitPathQuantifier(PathQuantifier *p); /* abstract class */
+  QPointer<RetType> visitAG(AG *p);
+  QPointer<RetType> visitAF(AF *p);
+  QPointer<RetType> visitAX(AX *p);
+  QPointer<RetType> visitAU(AU *p);
+  QPointer<RetType> visitEG(EG *p);
+  QPointer<RetType> visitEF(EF *p);
+  QPointer<RetType> visitEX(EX *p);
+  QPointer<RetType> visitEU(EU *p);
+  QPointer<RetType> visitIAtom(IAtom *p); /* abstract class */
+  QPointer<RetType> visitIFRow(IFRow *p);
+  QPointer<RetType> visitIFCol(IFCol *p);
+  QPointer<RetType> visitIInt(IInt *p);
+  QPointer<RetType> visitINrChildren(INrChildren *p);
+  QPointer<RetType> visitIRow(IRow *p);
+  QPointer<RetType> visitICol(ICol *p);
+  QPointer<RetType> visitSAtom(SAtom *p); /* abstract class */
+  QPointer<RetType> visitSString(SString *p);
+  QPointer<RetType> visitSFValue(SFValue *p);
+  QPointer<RetType> visitSValue(SValue *p);
+  QPointer<RetType> visitSValueType(SValueType *p);
+  QPointer<RetType> visitSNodeType(SNodeType *p);
+  QPointer<RetType> visitSConcat(SConcat *p);
+  QPointer<RetType> visitExpr(Expr *p); /* abstract class */
+  QPointer<RetType> visitETrue(ETrue *p);
+  QPointer<RetType> visitEFalse(EFalse *p);
+  QPointer<RetType> visitEParant(EParant *p);
+  QPointer<RetType> visitENot(ENot *p);
+  QPointer<RetType> visitEImpl(EImpl *p);
+  QPointer<RetType> visitEBEq(EBEq *p);
+  QPointer<RetType> visitEPossToken(EPossToken *p);
+  QPointer<RetType> visitEExistToken(EExistToken *p);
+  QPointer<RetType> visitEILtEq(EILtEq *p);
+  QPointer<RetType> visitEIGtEq(EIGtEq *p);
+  QPointer<RetType> visitEILt(EILt *p);
+  QPointer<RetType> visitEIGt(EIGt *p);
+  QPointer<RetType> visitEIEq(EIEq *p);
+  QPointer<RetType> visitEMatch(EMatch *p);
+  QPointer<RetType> visitESEq(ESEq *p);
+  QPointer<RetType> visitEAnd(EAnd *p);
+  QPointer<RetType> visitEOr(EOr *p);
+  QPointer<RetType> visitEPQ(EPQ *p);
+  QPointer<RetType> visitListExpr(ListExpr* p);
 
-  RetType* visitInteger(Integer i);
-  RetType* visitDouble(Double d);
-  RetType* visitChar(Char c);
-  RetType* visitString(String s);
-  RetType* visitIdent(String s);
+  QPointer<RetType> visitInteger(Integer i);
+  QPointer<RetType> visitDouble(Double d);
+  QPointer<RetType> visitChar(Char c);
+  QPointer<RetType> visitString(String s);
+  QPointer<RetType> visitIdent(String s);
  protected:
   void inline bufAppend(const char* s)
   {
@@ -169,79 +170,79 @@ class ShowAbsyn : public Visitor
   ~ShowAbsyn(void);
   char* show(Visitable* v);
 
-  RetType* visitRuleSet(RuleSet *p); /* abstract class */
-  RetType* visitRSet(RSet *p);
-  RetType* visitRule(Rule *p); /* abstract class */
-  RetType* visitRRule(RRule *p);
-  RetType* visitASTScope(ASTScope *p); /* abstract class */
-  RetType* visitASTGlobally(ASTGlobally *p);
-  RetType* visitASTFile(ASTFile *p);
-  RetType* visitASTImported(ASTImported *p);
-  RetType* visitRuleCause(RuleCause *p); /* abstract class */
-  RetType* visitRCLang(RCLang *p);
-  RetType* visitRCPolicy(RCPolicy *p);
-  RetType* visitExplanation(Explanation *p); /* abstract class */
-  RetType* visitExplan(Explan *p);
-  RetType* visitNoexplan(Noexplan *p);
-  RetType* visitListRule(ListRule* p);
-  RetType* visitTag(Tag *p); /* abstract class */
-  RetType* visitTTag(TTag *p);
-  RetType* visitSeverity(Severity *p); /* abstract class */
-  RetType* visitSevInfo(SevInfo *p);
-  RetType* visitSevWarning(SevWarning *p);
-  RetType* visitSevCritical(SevCritical *p);
-  RetType* visitQuantifier(Quantifier *p); /* abstract class */
-  RetType* visitQExpr(QExpr *p);
-  RetType* visitQFor(QFor *p);
-  RetType* visitPathQuantifier(PathQuantifier *p); /* abstract class */
-  RetType* visitAG(AG *p);
-  RetType* visitAF(AF *p);
-  RetType* visitAX(AX *p);
-  RetType* visitAU(AU *p);
-  RetType* visitEG(EG *p);
-  RetType* visitEF(EF *p);
-  RetType* visitEX(EX *p);
-  RetType* visitEU(EU *p);
-  RetType* visitIAtom(IAtom *p); /* abstract class */
-  RetType* visitIFRow(IFRow *p);
-  RetType* visitIFCol(IFCol *p);
-  RetType* visitIInt(IInt *p);
-  RetType* visitINrChildren(INrChildren *p);
-  RetType* visitIRow(IRow *p);
-  RetType* visitICol(ICol *p);
-  RetType* visitSAtom(SAtom *p); /* abstract class */
-  RetType* visitSString(SString *p);
-  RetType* visitSFValue(SFValue *p);
-  RetType* visitSValue(SValue *p);
-  RetType* visitSValueType(SValueType *p);
-  RetType* visitSNodeType(SNodeType *p);
-  RetType* visitSConcat(SConcat *p);
-  RetType* visitExpr(Expr *p); /* abstract class */
-  RetType* visitETrue(ETrue *p);
-  RetType* visitEFalse(EFalse *p);
-  RetType* visitEParant(EParant *p);
-  RetType* visitENot(ENot *p);
-  RetType* visitEImpl(EImpl *p);
-  RetType* visitEBEq(EBEq *p);
-  RetType* visitEPossToken(EPossToken *p);
-  RetType* visitEExistToken(EExistToken *p);
-  RetType* visitEILtEq(EILtEq *p);
-  RetType* visitEIGtEq(EIGtEq *p);
-  RetType* visitEILt(EILt *p);
-  RetType* visitEIGt(EIGt *p);
-  RetType* visitEIEq(EIEq *p);
-  RetType* visitEMatch(EMatch *p);
-  RetType* visitESEq(ESEq *p);
-  RetType* visitEAnd(EAnd *p);
-  RetType* visitEOr(EOr *p);
-  RetType* visitEPQ(EPQ *p);
-  RetType* visitListExpr(ListExpr* p);
+  QPointer<RetType> visitRuleSet(RuleSet *p); /* abstract class */
+  QPointer<RetType> visitRSet(RSet *p);
+  QPointer<RetType> visitRule(Rule *p); /* abstract class */
+  QPointer<RetType> visitRRule(RRule *p);
+  QPointer<RetType> visitASTScope(ASTScope *p); /* abstract class */
+  QPointer<RetType> visitASTGlobally(ASTGlobally *p);
+  QPointer<RetType> visitASTFile(ASTFile *p);
+  QPointer<RetType> visitASTImported(ASTImported *p);
+  QPointer<RetType> visitRuleCause(RuleCause *p); /* abstract class */
+  QPointer<RetType> visitRCLang(RCLang *p);
+  QPointer<RetType> visitRCPolicy(RCPolicy *p);
+  QPointer<RetType> visitExplanation(Explanation *p); /* abstract class */
+  QPointer<RetType> visitExplan(Explan *p);
+  QPointer<RetType> visitNoexplan(Noexplan *p);
+  QPointer<RetType> visitListRule(ListRule* p);
+  QPointer<RetType> visitTag(Tag *p); /* abstract class */
+  QPointer<RetType> visitTTag(TTag *p);
+  QPointer<RetType> visitSeverity(Severity *p); /* abstract class */
+  QPointer<RetType> visitSevInfo(SevInfo *p);
+  QPointer<RetType> visitSevWarning(SevWarning *p);
+  QPointer<RetType> visitSevCritical(SevCritical *p);
+  QPointer<RetType> visitQuantifier(Quantifier *p); /* abstract class */
+  QPointer<RetType> visitQExpr(QExpr *p);
+  QPointer<RetType> visitQFor(QFor *p);
+  QPointer<RetType> visitPathQuantifier(PathQuantifier *p); /* abstract class */
+  QPointer<RetType> visitAG(AG *p);
+  QPointer<RetType> visitAF(AF *p);
+  QPointer<RetType> visitAX(AX *p);
+  QPointer<RetType> visitAU(AU *p);
+  QPointer<RetType> visitEG(EG *p);
+  QPointer<RetType> visitEF(EF *p);
+  QPointer<RetType> visitEX(EX *p);
+  QPointer<RetType> visitEU(EU *p);
+  QPointer<RetType> visitIAtom(IAtom *p); /* abstract class */
+  QPointer<RetType> visitIFRow(IFRow *p);
+  QPointer<RetType> visitIFCol(IFCol *p);
+  QPointer<RetType> visitIInt(IInt *p);
+  QPointer<RetType> visitINrChildren(INrChildren *p);
+  QPointer<RetType> visitIRow(IRow *p);
+  QPointer<RetType> visitICol(ICol *p);
+  QPointer<RetType> visitSAtom(SAtom *p); /* abstract class */
+  QPointer<RetType> visitSString(SString *p);
+  QPointer<RetType> visitSFValue(SFValue *p);
+  QPointer<RetType> visitSValue(SValue *p);
+  QPointer<RetType> visitSValueType(SValueType *p);
+  QPointer<RetType> visitSNodeType(SNodeType *p);
+  QPointer<RetType> visitSConcat(SConcat *p);
+  QPointer<RetType> visitExpr(Expr *p); /* abstract class */
+  QPointer<RetType> visitETrue(ETrue *p);
+  QPointer<RetType> visitEFalse(EFalse *p);
+  QPointer<RetType> visitEParant(EParant *p);
+  QPointer<RetType> visitENot(ENot *p);
+  QPointer<RetType> visitEImpl(EImpl *p);
+  QPointer<RetType> visitEBEq(EBEq *p);
+  QPointer<RetType> visitEPossToken(EPossToken *p);
+  QPointer<RetType> visitEExistToken(EExistToken *p);
+  QPointer<RetType> visitEILtEq(EILtEq *p);
+  QPointer<RetType> visitEIGtEq(EIGtEq *p);
+  QPointer<RetType> visitEILt(EILt *p);
+  QPointer<RetType> visitEIGt(EIGt *p);
+  QPointer<RetType> visitEIEq(EIEq *p);
+  QPointer<RetType> visitEMatch(EMatch *p);
+  QPointer<RetType> visitESEq(ESEq *p);
+  QPointer<RetType> visitEAnd(EAnd *p);
+  QPointer<RetType> visitEOr(EOr *p);
+  QPointer<RetType> visitEPQ(EPQ *p);
+  QPointer<RetType> visitListExpr(ListExpr* p);
 
-  RetType* visitInteger(Integer i);
-  RetType* visitDouble(Double d);
-  RetType* visitChar(Char c);
-  RetType* visitString(String s);
-  RetType* visitIdent(String s);
+  QPointer<RetType> visitInteger(Integer i);
+  QPointer<RetType> visitDouble(Double d);
+  QPointer<RetType> visitChar(Char c);
+  QPointer<RetType> visitString(String s);
+  QPointer<RetType> visitIdent(String s);
  protected:
   void inline bufAppend(const char* s)
   {

@@ -7,6 +7,7 @@
 class RetTypeUInt: public RetType {
 public:
     RetTypeUInt(quint32 data): data(data) {}
+    ~RetTypeUInt() {}
 
     RetTypeE getType();
     quint32 getData();

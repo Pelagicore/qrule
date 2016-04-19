@@ -6,6 +6,7 @@
 class RetTypeBool: public RetType {
 public:
     RetTypeBool(bool data): data(data) {}
+    ~RetTypeBool() {}
 
     RetTypeE getType();
     bool getData();
