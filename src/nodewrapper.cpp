@@ -66,10 +66,10 @@ const QList<NodeWrapper*> NodeWrapper::getNodes(QString comparisonNodeType) {
 
 void NodeWrapper::innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes) {
     QString str = searchList.takeFirst();
-    if (nodeType == str) {
+    if (nodeType != str) {
+        searchList = originalList;
+    } else if (searchList.isEmpty()) {
         nodes.append(this);
-    }
-    if (searchList.isEmpty()) {
         searchList = originalList;
     }
     foreach(NodeWrapper* child, children) {
