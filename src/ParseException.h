@@ -1,9 +1,10 @@
-# Copyright (C) 2016 Pelagicore
+/*# Copyright (C) 2016 Pelagicore
 #
 # You may use this file under the terms of the GPLv3 license.
 # See the file LICENSE from this package for details.
 #
 # SPDX-License-Identifier: GPL-3.0
+*/
 
 #ifndef PARSEEXCEPTION_H
 #define PARSEEXCEPTION_H
