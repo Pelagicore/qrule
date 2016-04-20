@@ -1,7 +1,8 @@
 #include "kruleengine.h"
 
-KRuleEngine::KRuleEngine(const QString &kruleFilename) {
+KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot) {
     FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
+    createDot = s_setDot;
     if (!kruleFile) {
       qWarning() << "Error opening krule file: " << kruleFilename;
       throw ParseException(QString(kruleFilename).prepend("Could not open KRule file "));
@@ -57,17 +58,19 @@ QMap<QString, KRuleOutput*> KRuleEngine::verifyQMLFile(const QString &qmlFilenam
     KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, wrappedRoot);
     kruleTree->accept(&kruleVisitor);
     
-    QString dotFile = qmlFilename;
-    dotFile.chop(3);
-    dotFile.append("dot");
-    QFile fl2(dotFile);
-    //QFile fl2("graph.dot");
-    if(fl2.open(QFile::WriteOnly | QFile::Truncate)){
-        QTextStream out(&fl2);
-        out << "digraph {" << qmlVisitor.getWrappedRoot()->getOutput() << " }";
+    // create dot files of the wrapped AST
+    if(createDot)
+    {
+        QString dotFile = qmlFilename;
+        dotFile.chop(3);
+        dotFile.append("dot");
+        QFile fl2(dotFile);
+        if(fl2.open(QFile::WriteOnly | QFile::Truncate)){
+            QTextStream out(&fl2);
+            out << "digraph {" << qmlVisitor.getWrappedRoot()->getOutput() << " }";
 
+        }
     }
-
     return kruleVisitor.getFailures();
 
 }

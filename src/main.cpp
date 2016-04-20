@@ -33,19 +33,29 @@ int main(int argv, char *argc[]) {
     commandLine.addHelpOption();
     commandLine.addVersionOption();
 
+    QCommandLineOption setDot(QStringList() << "d" << "dotty", QLatin1String("Create dot file for each QML file"));
+    commandLine.addOption(setDot);
+
+    QCommandLineOption setOutput(QStringList() << "o" << outPutFile, QLatin1String("Change name of the output file"));
+    commandLine.addOption(setOutput);
+
+
     commandLine.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
     commandLine.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
 
     commandLine.process(app);
+
 
     // Display help instead of running the KRule Engine if too few arguments were given
     if (commandLine.positionalArguments().length() < 2) {
         commandLine.showHelp(-1);
     }
 
+    bool s_setDot = commandLine.isSet(setDot);
+
     QStringList arguments = commandLine.positionalArguments();
     QString kruleFilename = arguments.takeFirst();
-    KRuleEngine kruleEngine = KRuleEngine(kruleFilename);
+    KRuleEngine kruleEngine = KRuleEngine(kruleFilename, s_setDot);
 
     QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments);
 
