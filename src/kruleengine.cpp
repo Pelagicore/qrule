@@ -62,7 +62,11 @@ QMap<QString, KRuleOutput*> KRuleEngine::verifyQMLFile(const QString &qmlFilenam
     if(createDot)
     {
         QString dotFile = qmlFilename;
-        dotFile.chop(3);
+        if(isJavaScript){
+            dotFile.chop(2);
+        }else{
+            dotFile.chop(3);
+        }
         dotFile.append("dot");
         QFile fl2(dotFile);
         if(fl2.open(QFile::WriteOnly | QFile::Truncate)){
