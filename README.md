@@ -151,4 +151,6 @@ All defined ids should be used at some point.
 ```
 
 # License and Copyright
-Copyright (C) 2015 Pelagicore AB
+Copyright (C) 2016 Pelagicore AB
+
+Please see LICENSE file for license. 
