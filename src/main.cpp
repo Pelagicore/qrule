@@ -1,11 +1,16 @@
 #include "kruleengine.h"
 
 #include <stdio.h>
+#include "gen/Parser.H"
+#include "gen/Printer.H"
+#include "gen/Absyn.H"
+#include "krulevisitor.h"
 
 #include <QDebug>
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <output/xmloutputformatter.h>
+#include <QTextStream>
 
 void printOutput(const QList<KRuleOutput*> &ruleViolations) {
     OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);

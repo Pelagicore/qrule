@@ -56,7 +56,20 @@ QMap<QString, KRuleOutput*> KRuleEngine::verifyQMLFile(const QString &qmlFilenam
 
     KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, wrappedRoot);
     kruleTree->accept(&kruleVisitor);
+    
+    QString dotFile = qmlFilename;
+    dotFile.chop(3);
+    dotFile.append("dot");
+    QFile fl2(dotFile);
+    //QFile fl2("graph.dot");
+    if(fl2.open(QFile::WriteOnly | QFile::Truncate)){
+        QTextStream out(&fl2);
+        out << "digraph {" << qmlVisitor.getWrappedRoot()->getOutput() << " }";
+
+    }
+
     return kruleVisitor.getFailures();
+
 }
 
 QString KRuleEngine::readCode(QString qmlFilename) {

@@ -28,6 +28,8 @@ public:
 
     const QList<NodeWrapper*> getNodes(QString nodeType);
 
+    QString getOutput();
+
 private:
     QList<NodeWrapper *> children;
     const QMap<QString, bool> tokenMap;
@@ -37,6 +39,9 @@ private:
     const quint32 row;
     const quint32 col;
     const QStringRef source;
+
+
+
 
     void innerPrint(const int);
     void innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes);

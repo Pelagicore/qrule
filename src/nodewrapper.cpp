@@ -52,9 +52,30 @@ void NodeWrapper::innerPrint(const int indent) {
     indentStr = indentStr.repeated(indent);
 
     qDebug() << indentStr<< nodeType  << value;
-    foreach(NodeWrapper* n, children) {
+    foreach(NodeWrapper* n, children) {    QString outPut = "";
         n->innerPrint(indent + 1);
     }
+}
+
+QString NodeWrapper::getOutput(){
+
+        QString name = QString().append(nodeType).append("_v").append(QString(value).replace(".", "").replace(" ", ""))
+                .append("_r").append(QString::number(row)).append("_c").append(QString::number(col));
+        QString output;
+
+        if (!children.isEmpty()) {
+        QString bind = QString(name).append(" -> {");
+        foreach(NodeWrapper* child, children) {
+            QString childName = QString().append(child->getNodeType()).append("_v").append(QString(child->getValue()).replace(".", "").replace(" ", ""))
+                    .append("_r").append(QString::number(child->getRow())).append("_c").append(QString::number(child->getCol()));
+            bind = bind.append(childName).append(" ");
+            output = output.append(child->getOutput());
+        }
+        bind.chop(1);
+        bind = bind.append("};\n");
+        output = output.append(bind);
+        }
+        return output;
 }
 
 const QList<NodeWrapper*> NodeWrapper::getNodes(QString comparisonNodeType) {
@@ -74,5 +95,9 @@ void NodeWrapper::innerGetNodes(QStringList searchList, const QStringList& origi
     }
     foreach(NodeWrapper* child, children) {
         child->innerGetNodes(searchList, originalList, nodes);
+
     }
 }
+
+
+
