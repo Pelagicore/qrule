@@ -77,7 +77,9 @@ Valid values: {File, Imported}.
 Text explanation of why this rule is relevant.
 This is used only to be included as a verbose comment in the output
 to describe why developers should care about this rule. Exists purely
-in order to allow better filtering of the output XML.
+in order to allow better fil# License and Copyright
+
+Copyright (C) 2015 Pelagicore ABtering of the output XML.
 
 ### Expression
 Computational Tree Logical expression used while verifying the rule.
@@ -147,3 +149,6 @@ All defined ids should be used at some point.
 </explanation>
 </krule>
 ```
+
+# License and Copyright
+Copyright (C) 2015 Pelagicore AB
