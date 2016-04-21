@@ -58,6 +58,7 @@ public:
     bool visit(QQmlJS::AST::Elision *);
     bool visit(QQmlJS::AST::PropertyAssignmentList *);
     bool visit(QQmlJS::AST::PropertyGetterSetter *);
+    bool visit(QQmlJS::AST::PropertyNameAndValue *);
     bool visit(QQmlJS::AST::NestedExpression *);
     bool visit(QQmlJS::AST::IdentifierPropertyName *);
     bool visit(QQmlJS::AST::StringLiteralPropertyName *);

@@ -3,7 +3,23 @@
 
 bool QmlVisitor::visit(QQmlJS::AST::UiObjectDefinition *exp) {
     debug(exp);
-    dontPopAtEnd();
+    QMap<QString, bool> tokenMap;
+
+    QQmlJS::AST::UiQualifiedId* next = exp->qualifiedTypeNameId->next;
+    QString name = exp->qualifiedTypeNameId->name.toString();
+    while (next != nullptr) {
+        name.append(".").append(next->name);
+        next = next->next;
+    }
+    NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("ObjectDefinition"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokenMap);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+
+    pushStack(n);
     return true; }
 
 void QmlVisitor::endVisit(QQmlJS::AST::UiObjectDefinition*) { commonEndVisit(); }
@@ -27,7 +43,13 @@ bool QmlVisitor::visit(QQmlJS::AST::UiScriptBinding *exp)  {
     debug(exp);
     QMap<QString, bool> tokenMap;
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ScriptBinding"),
+    QQmlJS::AST::UiQualifiedId* next = exp->qualifiedId->next;
+    QString name = exp->qualifiedId->name.toString();
+    while (next != nullptr) {
+        name.append(".").append(next->name);
+        next = next->next;
+    }
+    NodeWrapper *n = new NodeWrapper(name, QString(), QString("ScriptBinding"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
@@ -65,7 +87,23 @@ bool QmlVisitor::visit(QQmlJS::AST::UiImport *exp) {
     tokenMap.insert("versionToken", isTokenPresent(exp->versionToken));
     tokenMap.insert("fileNameToken", isTokenPresent(exp->fileNameToken));
 
-    NodeWrapper *n = new NodeWrapper(exp->importId.toString(), QString("String"), QString("Import"),
+    QString name;
+    if (exp->importUri != nullptr) {
+        QQmlJS::AST::UiQualifiedId* next = exp->importUri->next;
+        name = exp->importUri->name.toString();
+        while (next != nullptr) {
+            name.append(".").append(next->name);
+            next = next->next;
+        }
+    } else if (!exp->importId.isNull()) {
+        name = exp->importId.toString();
+    } else if (!exp->fileName.isNull()) {
+        name = exp->fileName.toString();
+    } else {
+        name = "CASE NOT COVERED";
+    }
+
+    NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("Import"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
@@ -80,47 +118,18 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiImport *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiQualifiedId *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-
-    QQmlJS::AST::UiQualifiedId* next = exp->next;
-    QString name = exp->name.toString();
-    while (next != nullptr) {
-        name = name.append(".").append(next->name);
-        next = next->next;
-    }
-
-    NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("QualifiedId"),
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if (!nodeStack.isEmpty()) {
-        nodeStack.top()->addChild(n);
-    }
-    pushStack(n);
+    dontPopAtEnd();
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::UiQualifiedId *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiObjectInitializer *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
-
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectInitializer"),
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if (!nodeStack.isEmpty()) {
-        nodeStack.top()->addChild(n);
-    }
-    pushStack(n);
+    dontPopAtEnd();
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::UiObjectInitializer *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiObjectMember *exp) {
     debug(exp);
-    // ABSTRACT
     dontPopAtEnd();
     return true; }
 
@@ -179,9 +188,9 @@ bool QmlVisitor::visit(QQmlJS::AST::UiHeaderItemList *exp) {
                                      getSource(exp), tokenMap);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
-        t->addChild(n);
 
         if (t->getNodeType().compare(nodeType) != 0) {
+            t->addChild(n);
             pushStack(n);
         } else {
             dontPopAtEnd();
@@ -217,6 +226,14 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiPragma *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
+    NodeWrapper *v = new NodeWrapper(exp->name.toString(), QString("String"), QString("PublicMemberName"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokenMap);
+    NodeWrapper *t = new NodeWrapper(exp->memberType.toString(), QString("String"), QString("PublicMemberType"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokenMap);
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
     tokenMap.insert("defaultToken", isTokenPresent(exp->defaultToken));
@@ -225,13 +242,15 @@ bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
     tokenMap.insert("readonlyToken", isTokenPresent(exp->readonlyToken));
     tokenMap.insert("typeModifierToken", isTokenPresent(exp->typeModifierToken));
     tokenMap.insert("typeToken", isTokenPresent(exp->typeToken));
-    NodeWrapper *n = new NodeWrapper(exp->memberType.toString(), QString("String"), QString("PublicMember"),
+    NodeWrapper *n = new NodeWrapper("", "", QString("PublicMember"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
+    n->addChild(v);
+    n->addChild(t);
     pushStack(n);
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::UiPublicMember *) { commonEndVisit(); }
@@ -281,24 +300,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiParameterList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiObjectMemberList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    const QString nodeType = QString("ObjectMemberList");
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if (!nodeStack.isEmpty()) {
-        NodeWrapper *t = nodeStack.top();
-        t->addChild(n);
-
-        if (t->getNodeType().compare(nodeType) != 0) {
-            pushStack(n);
-        } else {
-            dontPopAtEnd();
-        }
-    } else {
-        pushStack(n);
-    }
+    dontPopAtEnd();
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::UiObjectMemberList *) { commonEndVisit(); }
 
@@ -312,9 +314,9 @@ bool QmlVisitor::visit(QQmlJS::AST::UiArrayMemberList *exp) {
                                      getSource(exp), tokenMap);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
-        t->addChild(n);
 
         if (t->getNodeType().compare(nodeType) != 0) {
+            t->addChild(n);
             pushStack(n);
         } else {
             dontPopAtEnd();
@@ -497,24 +499,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::Elision *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::PropertyAssignmentList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    const QString nodeType = QString("PropertyAssignmentList");
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if (!nodeStack.isEmpty()) {
-        NodeWrapper *t = nodeStack.top();
-        t->addChild(n);
-
-        if (t->getNodeType().compare(nodeType) != 0) {
-            pushStack(n);
-        } else {
-            dontPopAtEnd();
-        }
-    } else {
-        pushStack(n);
-    }
+    dontPopAtEnd();
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::PropertyAssignmentList *) { commonEndVisit(); }
 
@@ -533,9 +518,26 @@ bool QmlVisitor::visit(QQmlJS::AST::PropertyGetterSetter *exp) {
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
+
     pushStack(n);
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::PropertyGetterSetter *) { commonEndVisit(); }
+
+bool QmlVisitor::visit(QQmlJS::AST::PropertyNameAndValue *exp) {
+    debug(exp);
+    QMap<QString, bool> tokenMap;
+    tokenMap.insert("lbraceToken", isTokenPresent(exp->colonToken));
+    tokenMap.insert("rbraceToken", isTokenPresent(exp->commaToken));
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PropertyNameAndValue"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokenMap);
+    if (!nodeStack.isEmpty()) {
+        nodeStack.top()->addChild(n);
+    }
+
+    pushStack(n);
+    return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::PropertyNameAndValue *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::NestedExpression *exp) {
@@ -689,9 +691,9 @@ bool QmlVisitor::visit(QQmlJS::AST::ArgumentList *exp) {
                                      getSource(exp), tokenMap);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
-        t->addChild(n);
 
         if (t->getNodeType().compare(nodeType) != 0) {
+            t->addChild(n);
             pushStack(n);
         } else {
             dontPopAtEnd();
@@ -940,23 +942,24 @@ void QmlVisitor::endVisit(QQmlJS::AST::StatementList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::VariableDeclarationList *exp) {
     debug(exp);
-    // not done crap
     QMap<QString, bool> tokenMap;
-    tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
-
-    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("VariableDeclaration"),
+    const QString nodeType = QString("VariableDeclaraionList");
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
+    if (!nodeStack.isEmpty()) {
+        NodeWrapper *t = nodeStack.top();
 
-
-    if(!nodeStack.empty())
-    {
-        nodeStack.top()->addChild(n);
+        if (t->getNodeType().compare(nodeType) != 0) {
+            t->addChild(n);
+            pushStack(n);
+        } else {
+            dontPopAtEnd();
+        }
+    } else {
+        pushStack(n);
     }
-    pushStack(n);
-
-
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::VariableDeclarationList *) { commonEndVisit(); }
 
@@ -982,7 +985,6 @@ void QmlVisitor::endVisit(QQmlJS::AST::VariableDeclaration *) { commonEndVisit()
 
 bool QmlVisitor::visit(QQmlJS::AST::EmptyStatement *exp) {
     debug(exp);
-    //ok
     QMap<QString, bool> tokenMap;
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
 
@@ -1002,27 +1004,13 @@ void QmlVisitor::endVisit(QQmlJS::AST::EmptyStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ExpressionStatement *exp) {
     debug(exp);
-    //ok
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-
-    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ExpressionStatement"),
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if(!nodeStack.empty())
-    {
-        nodeStack.top()->addChild(n);
-    }
-    pushStack(n);
-
+    dontPopAtEnd();
 
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::ExpressionStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::IfStatement *exp) {
     debug(exp);
-    //ok
     QMap<QString, bool> tokenMap;
     tokenMap.insert("ifToken", isTokenPresent(exp->ifToken));
     tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
@@ -1045,7 +1033,6 @@ void QmlVisitor::endVisit(QQmlJS::AST::IfStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::DoWhileStatement *exp) {
     debug(exp);
-    //ok
     QMap<QString, bool> tokenMap;
     tokenMap.insert("whileToken", isTokenPresent(exp->whileToken));
     tokenMap.insert("rparenToken", isTokenPresent(exp->lparenToken));
@@ -1068,7 +1055,6 @@ void QmlVisitor::endVisit(QQmlJS::AST::DoWhileStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::WhileStatement *exp) {
     debug(exp);
-    //ok
     QMap<QString, bool> tokenMap;
     tokenMap.insert("whileToken", isTokenPresent(exp->whileToken));
     tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
@@ -1090,7 +1076,6 @@ void QmlVisitor::endVisit(QQmlJS::AST::WhileStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ForStatement *exp) {
     debug(exp);
-    //ok
     QMap<QString, bool> tokenMap;
     tokenMap.insert("forToken", isTokenPresent(exp->forToken));
     tokenMap.insert("firstSemicolonToken", isTokenPresent(exp->firstSemicolonToken));
@@ -1293,7 +1278,6 @@ void QmlVisitor::endVisit(QQmlJS::AST::SwitchStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::CaseBlock *exp) {
     debug(exp);
-    //maybe remove and add all children to SwitchStatement instead
     QMap<QString, bool> tokenMap;
     tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
     tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
@@ -1313,7 +1297,6 @@ void QmlVisitor::endVisit(QQmlJS::AST::CaseBlock *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::CaseClauses *exp) {
     debug(exp);
-    //Holder for lists of CaseClause
     QMap<QString, bool> tokenMap;
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClauses"),
@@ -1472,8 +1455,16 @@ void QmlVisitor::endVisit(QQmlJS::AST::Finally *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::FunctionDeclaration *exp) {
     debug(exp);
-    // should be empty, removed from wrapped-AST.
-    dontPopAtEnd();
+    QMap<QString, bool> tokenMap;
+    NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("FunctionDeclaration"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokenMap);
+    if(!nodeStack.empty())
+    {
+        nodeStack.top()->addChild(n);
+    }
+    pushStack(n);
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::FunctionDeclaration *) { commonEndVisit(); }
 
@@ -1503,18 +1494,39 @@ void QmlVisitor::endVisit(QQmlJS::AST::FunctionExpression *) { commonEndVisit();
 bool QmlVisitor::visit(QQmlJS::AST::FormalParameterList *exp) {
     debug(exp);
     QMap<QString, bool> tokenMap;
-    tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-
-    NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("FormalParameterList"),
+    const QString nodeType = QString("FormalParameterList");
+    NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap);
-    if(!nodeStack.empty())
-    {
-        nodeStack.top()->addChild(n);
+    if (!nodeStack.isEmpty()) {
+        NodeWrapper *t = nodeStack.top();
+
+        if (t->getNodeType().compare(nodeType) != 0) {
+            t->addChild(n);
+            pushStack(n);
+        } else {
+            dontPopAtEnd();
+        }
+    } else {
+        pushStack(n);
     }
-    dontPopAtEnd();
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+    tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
+    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    NodeWrapper *p = new NodeWrapper(exp->name.toString(), QString("String"), QString("FormalParameter"),
+                                     exp->firstSourceLocation().startLine,
+                                     exp->firstSourceLocation().startColumn,
+                                     getSource(exp), tokenMap);
+    if(!nodeStack.empty()) {
+        nodeStack.top()->addChild(p);
+    }
+    if (exp->next != nullptr) {
+        visit(exp->next);
+        endVisit(exp->next);
+    }
 
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::FormalParameterList *) { commonEndVisit(); }
@@ -1538,18 +1550,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::Program *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::SourceElements *exp) {
     debug(exp);
-
-    QMap<QString, bool> tokenMap;
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("SourceElements"),
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if(!nodeStack.empty())
-    {
-        nodeStack.top()->addChild(n);
-    }
-    pushStack(n);
-
+    dontPopAtEnd();
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::SourceElements *) { commonEndVisit(); }
 
@@ -1571,16 +1572,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::FunctionSourceElement *) { commonEndVisit
 
 bool QmlVisitor::visit(QQmlJS::AST::StatementSourceElement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("StatementSourceElement"),
-                                     exp->firstSourceLocation().startLine,
-                                     exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
-    if(!nodeStack.empty())
-    {
-        nodeStack.top()->addChild(n);
-    }
-    pushStack(n);
+    dontPopAtEnd();
 
     return true; }
 void QmlVisitor::endVisit(QQmlJS::AST::StatementSourceElement *) { commonEndVisit(); }
