@@ -156,7 +156,11 @@ QPointer<RetType> KRuleVisitor::visitAU(AU *p) {
     Expr *e1 = p->expr_1->clone();
     Expr *e21 = p->expr_2->clone();
     Expr *e22 = p->expr_2->clone();
-    ENot *v = new ENot(new EPQ(new EU(new ENot(e21), new ENot(new EOr(e1, e22)))));
+    Expr *e23 = p->expr_2->clone();
+    ENot *v = new ENot(new EOr(
+                           new EPQ(new EU(new ENot(e21),
+                                          new ENot(new EOr(e1, e22)))),
+                           new EPQ(new EG(new ENot(e23)))));
     QPointer<RetType> r = v->accept(this);
     delete v;
     return r;
