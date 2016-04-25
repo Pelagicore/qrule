@@ -1,3 +1,9 @@
+// Copyright (C) 2016 Pelagicore
+//
+// You may use this file under the terms of the GPLv3 license.
+// See the file LICENSE from this package for details.
+//
+// SPDX-License-Identifier: GPL-3.0
 /* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
