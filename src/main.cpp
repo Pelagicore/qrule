@@ -66,6 +66,9 @@ int main(int argv, char *argc[]) {
 
     QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments);
 
+    qDebug() << "############################################";
+    qDebug() << "                XML OUTPUtT";
+    qDebug() << "############################################";
     printOutput(violations, name);
 
     return violations.isEmpty() ? 0 : 1;

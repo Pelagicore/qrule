@@ -135,6 +135,8 @@ private:
     NodeWrapper *node;
     NodeWrapper *quantifiedNode;
 
+    QString indent;
+
     void assertType(const QPointer<RetType> &ret, RetType::RetTypeE type);
     QString currentRuleTag = "";
     QString currentRuleSeverity = "";

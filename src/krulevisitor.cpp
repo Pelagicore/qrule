@@ -36,6 +36,9 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         currentRuleASTScope = extractQString(rrule->astscope_->accept(this));
         currentRuleExplanation = extractQString(rrule->explanation_->accept(this));
 
+        qDebug() << "#########################################################";
+        qDebug() << "            Verifying rule "<<currentRuleTag;
+        qDebug() << "#########################################################";
         NodeWrapper* rootNode = node;
         if (!extractBool(rrule->quantifier_->accept(this))) {
             KRuleOutput* outp;
@@ -188,8 +191,10 @@ QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
         const QList<NodeWrapper*> childrn = node->getChildren();
         if (!childrn.isEmpty()) {
             bool breakCondition = false;
+            indent += "  ";
             foreach(NodeWrapper *child, childrn) {
                 node = child;
+                qDebug() << indent << child->getNodeType();
 
                 bool res = extractBool(visitEG(eg));
                 if (res) {
@@ -197,6 +202,7 @@ QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
                         break;
                 }
             }
+            indent.chop(2);
             success = handleBreakCondition(breakCondition);
 
         } else {
@@ -219,8 +225,10 @@ QPointer<RetType> KRuleVisitor::visitEU(EU *eu) {
             const QList<NodeWrapper*> childrn = node->getChildren();
             if (!childrn.isEmpty()) {
                 bool breakCondition = false;
+                indent += "  ";
                 foreach(NodeWrapper *child, childrn) {
                     node = child;
+                    qDebug() << indent << child->getNodeType();
 
                     bool res = extractBool(visitEU(eu));
                     if (res) {
@@ -228,6 +236,7 @@ QPointer<RetType> KRuleVisitor::visitEU(EU *eu) {
                             break;
                     }
                 }
+                indent.chop(2);
                 success = handleBreakCondition(breakCondition);
             } else {
                 success = false;
@@ -246,14 +255,17 @@ QPointer<RetType> KRuleVisitor::visitEX(EX *ex) {
     const QList<NodeWrapper*> childrn = node->getChildren();
     if (!childrn.isEmpty()) {
         bool breakCondition = false;
+        indent += "  ";
         foreach(NodeWrapper *child, childrn) {
             node = child;
+            qDebug() << indent << child->getNodeType();
             bool res = extractBool(ex->expr_->accept(this));
             if (res) {
                     breakCondition = true;
                     break;
             }
         }
+        indent.chop(2);
         success = handleBreakCondition(breakCondition);
     } else {
         success = false;
@@ -377,7 +389,7 @@ QPointer<RetType> KRuleVisitor::visitEMatch(EMatch *exp) {
     if (regexp.exactMatch(toMatch)) {
         s = true;
     }
-    qDebug() << regexp.pattern() << " ? " << node->getValue() << s;
+    qDebug() << indent << regexp.pattern() << " ? " << node->getValue() << s;
     return new RetTypeBool(s);
 }
 
@@ -385,7 +397,7 @@ QPointer<RetType> KRuleVisitor::visitESEq(ESEq *exp) {
 
     QString s1 = extractQString(exp->satom_1->accept(this));
     QString s2 = extractQString(exp->satom_2->accept(this));
-
+    qDebug() << indent << s1 << "=" << s2 << (s1 == s2);
     return new RetTypeBool(s1 == s2);
 }
 
