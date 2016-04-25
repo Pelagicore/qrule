@@ -4,8 +4,22 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
+
 #include "nodewrapper.h"
 #include <QDebug>
+
+NodeWrapper::NodeWrapper(const NodeWrapper *other):
+    row(other->row),
+    col(other->col),
+    value(other->value),
+    valueType(other->valueType),
+    nodeType(other->nodeType),
+    source(other->source),
+    tokenMap(other->tokenMap) {
+    foreach(NodeWrapper* child, other->children) {
+        addChild(new NodeWrapper(child));
+    }
+}
 
 NodeWrapper::~NodeWrapper() {
     foreach(const NodeWrapper* n, children) {

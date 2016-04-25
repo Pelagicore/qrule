@@ -19,6 +19,8 @@ public:
         value(value), valueType(valueType), nodeType(nodeType), row(row), col(col),
         source(source), tokenMap(tokenMap) {}
 
+    NodeWrapper(const NodeWrapper *other);
+
     ~NodeWrapper();
 
     void addChild(NodeWrapper *node);
@@ -45,9 +47,6 @@ private:
     const quint32 row;
     const quint32 col;
     const QStringRef source;
-
-
-
 
     void innerPrint(const int);
     void innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes);
