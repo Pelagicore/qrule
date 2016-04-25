@@ -125,4 +125,31 @@ const QString NodeWrapper::getId() {
     return name;
 }
 
+bool NodeWrapper::dropNode(NodeWrapper* node) {
+    if (!children.isEmpty()) {
+       if (children.removeAll(node) > 0) {
+           return true;
+       } else {
+           foreach(NodeWrapper* child, children) {
+               if (*child == *node) {
+                   delete child;
+                   children.removeOne(child);
+                   return true;
+               } else if (child->dropNode(node)) {
+                   return true;
+               }
+           }
+           return false;
+       }
+    } else {
+        return false;
+    }
+}
 
+inline bool NodeWrapper::operator==(NodeWrapper &other) {
+    return getId() == other.getId();
+}
+
+inline bool NodeWrapper::operator!=(NodeWrapper &other) {
+    return !(this->operator==(other));
+}

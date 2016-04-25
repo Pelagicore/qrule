@@ -24,6 +24,9 @@ public:
 
     ~NodeWrapper();
 
+    inline bool operator==(NodeWrapper &other);
+    inline bool operator!=(NodeWrapper &other);
+
     void addChild(NodeWrapper *node);
     const QString getValue();
     const QString getValueType();
@@ -37,6 +40,7 @@ public:
 
     const QList<NodeWrapper*> getNodes(QString nodeType);
     const QString getId();
+    bool  dropNode(NodeWrapper* id);
 
     QString getOutput();
 
