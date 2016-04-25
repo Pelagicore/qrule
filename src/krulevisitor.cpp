@@ -40,7 +40,9 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         qDebug() << "            Verifying rule "<<currentRuleTag;
         qDebug() << "#########################################################";
         NodeWrapper* rootNode = node;
-        if (!extractBool(rrule->quantifier_->accept(this))) {
+        NodeWrapper* rootClone = new NodeWrapper(rootNode);
+        node = rootClone;
+        while (!extractBool(rrule->quantifier_->accept(this))) {
             KRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
                 outp = failedRules[currentRuleTag];
@@ -52,7 +54,10 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
                                                    node->getRow(),
                                                    node->getCol()));
             failedRules.insert(currentRuleTag, outp);
+            rootClone->dropNode(node);
+            node = rootClone;
         }
+
         node = rootNode;
     }
     catch(NotImplemented &) {}
