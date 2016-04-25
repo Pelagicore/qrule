@@ -4,6 +4,7 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
+
 #ifndef NODEWRAPPER_H
 #define NODEWRAPPER_H
 
@@ -35,6 +36,7 @@ public:
     void print();
 
     const QList<NodeWrapper*> getNodes(QString nodeType);
+    const QString getId();
 
     QString getOutput();
 

@@ -79,15 +79,13 @@ void NodeWrapper::innerPrint(const int indent) {
 
 QString NodeWrapper::getOutput(){
 
-        QString name = QString().append(nodeType).append("_v").append(QString(value).replace(".", "").replace(" ", ""))
-                .append("_r").append(QString::number(row)).append("_c").append(QString::number(col));
+        QString name = getId();
         QString output;
 
         if (!children.isEmpty()) {
         QString bind = QString(name).append(" -> {");
         foreach(NodeWrapper* child, children) {
-            QString childName = QString().append(child->getNodeType()).append("_v").append(QString(child->getValue()).replace(".", "").replace(" ", ""))
-                    .append("_r").append(QString::number(child->getRow())).append("_c").append(QString::number(child->getCol()));
+            QString childName = child->getId();
             bind = bind.append(childName).append(" ");
             output = output.append(child->getOutput());
         }
@@ -119,5 +117,12 @@ void NodeWrapper::innerGetNodes(QStringList searchList, const QStringList& origi
     }
 }
 
+const QString NodeWrapper::getId() {
+    QString name = QString().append(nodeType)
+                            .append("_v").append(QString(value).replace(".", "_").replace(" ", "_"))
+                            .append("_r").append(QString::number(row))
+                            .append("_c").append(QString::number(col));
+    return name;
+}
 
 
