@@ -127,20 +127,16 @@ const QString NodeWrapper::getId() {
 
 bool NodeWrapper::dropNode(NodeWrapper* node) {
     if (!children.isEmpty()) {
-       if (children.removeAll(node) > 0) {
-           return true;
-       } else {
-           foreach(NodeWrapper* child, children) {
-               if (*child == *node) {
-                   delete child;
-                   children.removeOne(child);
-                   return true;
-               } else if (child->dropNode(node)) {
-                   return true;
-               }
+       foreach(NodeWrapper* child, children) {
+           if (*child == *node) {
+               delete child;
+               children.removeOne(child);
+               return true;
+           } else if (child->dropNode(node)) {
+               return true;
            }
-           return false;
        }
+       return false;
     } else {
         return false;
     }
