@@ -17,3 +17,6 @@ void KRuleOutput::addCodeOccurrances(KRuleOutput* kro) {
 QList<CodeOccurrance>& KRuleOutput::getOccurrances() {
     return codeOccurrances;
 }
+bool KRuleOutput::operator ==(const KRuleOutput &other){
+    return this->tag==other.tag;
+}

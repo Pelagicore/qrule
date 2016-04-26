@@ -26,17 +26,24 @@
 #include "private/qqmljsengine_p.h"
 #include "QmlVisitor.h"
 
+
+
 class KRuleEngine {
 public:
     KRuleEngine(const QString &kRuleFilename,bool s_setDot);
 
     QList<KRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames);
 private:
+
+    QMap<QString, KRuleOutput*> ruleViolations;
+    QMap<QString, NodeWrapper*> importedASTs;
+
     RuleSet* kruleTree;
-    QMap<QString, KRuleOutput*> verifyQMLFile(const QString &qmlFilename);
+    void verifyQMLFile(const QFileInfo &qmlFilename);
+
 
     QString readCode(QString qmlFilename);
-    QMap<QString, KRuleOutput*> mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, QMap<QString, KRuleOutput*> m2);
+    void mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map);
 
     bool createDot;
 };

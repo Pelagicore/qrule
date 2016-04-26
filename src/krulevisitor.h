@@ -42,8 +42,8 @@ public:
 
 class KRuleVisitor : public Visitor {
 public:
-    KRuleVisitor(QString filename, QString code, NodeWrapper *node):
-        filename(filename), code(code), node(node) {}
+    KRuleVisitor(NodeWrapper *node):
+        node(node) {}
     QPointer<RetType> visitRuleSet(RuleSet*);
     QPointer<RetType> visitRule(Rule*);
     QPointer<RetType> visitASTScope(ASTScope*);
@@ -119,18 +119,12 @@ public:
 
 private:
 
-    const QStringRef printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end);
-    const QStringRef getSource(const QQmlJS::AST::Node *exp);
-
     const bool handleBreakCondition(const bool breakCondition);
 
     QString overPaths;
     const bool extractBool(const QPointer<RetType> &ret);
     const QString extractQString(const QPointer<RetType> &ret);
     const quint32 extractUInt(const QPointer<RetType> &ret);
-
-    QString filename;
-    QString code;
 
     NodeWrapper *node;
     NodeWrapper *quantifiedNode;

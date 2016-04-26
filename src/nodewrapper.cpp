@@ -15,6 +15,7 @@ NodeWrapper::NodeWrapper(const NodeWrapper *other):
     valueType(other->valueType),
     nodeType(other->nodeType),
     source(other->source),
+    fileName(other->fileName),
     tokenMap(other->tokenMap) {
     foreach(NodeWrapper* child, other->children) {
         addChild(new NodeWrapper(child));
@@ -53,6 +54,9 @@ const quint32 NodeWrapper::getRow() {
 
 const quint32 NodeWrapper::getCol() {
     return col;
+}
+const QFileInfo NodeWrapper::getFileName(){
+    return fileName;
 }
 
 const QList<NodeWrapper *>& NodeWrapper::getChildren() {
@@ -148,4 +152,22 @@ inline bool NodeWrapper::operator==(NodeWrapper &other) {
 
 inline bool NodeWrapper::operator!=(NodeWrapper &other) {
     return !(this->operator==(other));
+}
+
+void NodeWrapper::merge(const NodeWrapper &other) {
+    foreach(NodeWrapper* ochild, other.children) {
+        bool add = true;
+        foreach(NodeWrapper* child, children) {
+            if (ochild->getValue() == child->getValue() &&
+                ochild->getNodeType() == child->getNodeType()) {
+                if (ochild->getNodeType() == "ScriptBinding") {
+                    add = false;
+                }
+
+            }
+        }
+        if (add) {
+            addChild(new NodeWrapper(ochild));
+        }
+    }
 }

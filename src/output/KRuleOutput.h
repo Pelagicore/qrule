@@ -39,6 +39,7 @@ public:
     const QString rulecause;
     const QString explanation;
     QList<CodeOccurrance>& getOccurrances();
+    bool operator==(const KRuleOutput &k);
 private:
     QList<CodeOccurrance> codeOccurrances;
 };

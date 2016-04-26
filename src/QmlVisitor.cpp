@@ -20,7 +20,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiObjectDefinition *exp) {
     NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("ObjectDefinition"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -36,7 +36,7 @@ bool QmlVisitor::visit(QQmlJS::AST::IdentifierExpression *exp) {
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("IdentifierExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -58,7 +58,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiScriptBinding *exp)  {
     NodeWrapper *n = new NodeWrapper(name, QString(), QString("ScriptBinding"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -74,7 +74,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FunctionBody *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionBody"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -112,7 +112,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiImport *exp) {
     NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("Import"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
 
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
@@ -161,7 +161,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiArrayBinding *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayBinding"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -176,7 +176,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiProgram *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ProgramRoot"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -191,7 +191,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiHeaderItemList *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
 
@@ -221,7 +221,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiPragma *exp) {
     NodeWrapper *n = new NodeWrapper(name, QString(), QString("Pragma"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -235,11 +235,11 @@ bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
     NodeWrapper *v = new NodeWrapper(exp->name.toString(), QString("String"), QString("PublicMemberName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     NodeWrapper *t = new NodeWrapper(exp->memberType.toString(), QString("String"), QString("PublicMemberType"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
     tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
     tokenMap.insert("defaultToken", isTokenPresent(exp->defaultToken));
@@ -251,7 +251,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
     NodeWrapper *n = new NodeWrapper("", "", QString("PublicMember"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -269,7 +269,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiObjectBinding *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectBinding"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -286,15 +286,15 @@ bool QmlVisitor::visit(QQmlJS::AST::UiParameterList *exp) {
     NodeWrapper *p = new NodeWrapper(QString(), QString(), QString("Parameter"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("Name"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), QMap<QString, bool>());
+                                     getSource(exp), QMap<QString, bool>(), filename);
     NodeWrapper *t = new NodeWrapper(exp->type.toString(), QString("String"), QString("Type"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), QMap<QString, bool>());
+                                     getSource(exp), QMap<QString, bool>(), filename);
     p->addChild(n);
     p->addChild(t);
     if (!nodeStack.isEmpty()) {
@@ -317,7 +317,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiArrayMemberList *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
 
@@ -340,7 +340,7 @@ bool QmlVisitor::visit(QQmlJS::AST::VariableStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("VariableStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -356,7 +356,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ThisExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString("this"), QString("Token"), QString("ThisExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -372,7 +372,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NullExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString("null"), QString("Token"), QString("NullExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -388,7 +388,7 @@ bool QmlVisitor::visit(QQmlJS::AST::TrueLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(QString("true"), QString("bool"), QString("TrueLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -404,7 +404,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FalseLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(QString("false"), QString("bool"), QString("FalseLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -420,7 +420,7 @@ bool QmlVisitor::visit(QQmlJS::AST::StringLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(exp->value.toString(), QString("String"), QString("StringLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -435,7 +435,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NumericLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(QString::number(exp->value), QString("Double"), QString("NumericLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -450,7 +450,7 @@ bool QmlVisitor::visit(QQmlJS::AST::RegExpLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(exp->pattern.toString(), QString("String"), QString("RegExpLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -467,7 +467,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ArrayLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -483,7 +483,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ObjectLiteral *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -520,7 +520,7 @@ bool QmlVisitor::visit(QQmlJS::AST::PropertyGetterSetter *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PropertyGetterSetter"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -537,7 +537,7 @@ bool QmlVisitor::visit(QQmlJS::AST::PropertyNameAndValue *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PropertyNameAndValue"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -554,7 +554,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NestedExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("NestedExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -569,7 +569,7 @@ bool QmlVisitor::visit(QQmlJS::AST::IdentifierPropertyName *exp) {
     NodeWrapper *n = new NodeWrapper(exp->id.toString(), QString("String"), QString("IdentifierPropertyName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -584,7 +584,7 @@ bool QmlVisitor::visit(QQmlJS::AST::StringLiteralPropertyName *exp) {
     NodeWrapper *n = new NodeWrapper(exp->id.toString(), QString("String"), QString("StringLiteralPropertyName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -599,7 +599,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NumericLiteralPropertyName *exp) {
     NodeWrapper *n = new NodeWrapper(QString::number(exp->id), QString("Double"), QString("NumericLiteralPropertyName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -615,7 +615,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ArrayMemberExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayMemberExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -631,7 +631,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FieldMemberExpression *exp) {
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("FieldMemberExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -648,7 +648,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NewMemberExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("NewMemberExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -663,7 +663,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NewExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("NewExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -679,7 +679,7 @@ bool QmlVisitor::visit(QQmlJS::AST::CallExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("CallExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -694,7 +694,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ArgumentList *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
 
@@ -717,7 +717,7 @@ bool QmlVisitor::visit(QQmlJS::AST::PostIncrementExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PostIncrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -732,7 +732,7 @@ bool QmlVisitor::visit(QQmlJS::AST::PostDecrementExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PostDecrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -747,7 +747,7 @@ bool QmlVisitor::visit(QQmlJS::AST::DeleteExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("DeleteExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -762,7 +762,7 @@ bool QmlVisitor::visit(QQmlJS::AST::VoidExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("VoidExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -777,7 +777,7 @@ bool QmlVisitor::visit(QQmlJS::AST::TypeOfExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("TypeOfExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -792,7 +792,7 @@ bool QmlVisitor::visit(QQmlJS::AST::PreIncrementExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PreIncrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -807,7 +807,7 @@ bool QmlVisitor::visit(QQmlJS::AST::PreDecrementExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PreDecrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -822,7 +822,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UnaryPlusExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("UnaryPlusExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         nodeStack.top()->addChild(n);
     }
@@ -837,7 +837,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UnaryMinusExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("UnaryMinusExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     addWrapper(n);
     dontPopAtEnd();
     return true; }
@@ -852,7 +852,7 @@ bool QmlVisitor::visit(QQmlJS::AST::TildeExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("TildeExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -871,7 +871,7 @@ bool QmlVisitor::visit(QQmlJS::AST::NotExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("NotExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -889,7 +889,7 @@ bool QmlVisitor::visit(QQmlJS::AST::BinaryExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("BinaryExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -908,7 +908,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ConditionalExpression *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ConditionalExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -928,7 +928,7 @@ bool QmlVisitor::visit(QQmlJS::AST::Block *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Block"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
 
 
     if(!nodeStack.empty())
@@ -953,7 +953,7 @@ bool QmlVisitor::visit(QQmlJS::AST::VariableDeclarationList *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
 
@@ -978,7 +978,7 @@ bool QmlVisitor::visit(QQmlJS::AST::VariableDeclaration *exp) {
     NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String"), QString("VariableDeclaration"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -997,7 +997,7 @@ bool QmlVisitor::visit(QQmlJS::AST::EmptyStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("EmptyStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1026,7 +1026,7 @@ bool QmlVisitor::visit(QQmlJS::AST::IfStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("IfStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1049,7 +1049,7 @@ bool QmlVisitor::visit(QQmlJS::AST::DoWhileStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("DoWhileStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1069,7 +1069,7 @@ bool QmlVisitor::visit(QQmlJS::AST::WhileStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("WhileStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1092,7 +1092,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ForStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ForStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1117,7 +1117,7 @@ bool QmlVisitor::visit(QQmlJS::AST::LocalForStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("LocalForStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1139,7 +1139,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ForEachStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ForEachStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1163,7 +1163,7 @@ bool QmlVisitor::visit(QQmlJS::AST::LocalForEachStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("LocalForEachStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1184,7 +1184,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ContinueStatement *exp) {
     NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("ContinueStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1205,7 +1205,7 @@ bool QmlVisitor::visit(QQmlJS::AST::BreakStatement *exp) {
     NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("BreakStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1226,7 +1226,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ReturnStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ReturnStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1249,7 +1249,7 @@ bool QmlVisitor::visit(QQmlJS::AST::WithStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("WithStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1271,7 +1271,7 @@ bool QmlVisitor::visit(QQmlJS::AST::SwitchStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("SwitchStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1291,7 +1291,7 @@ bool QmlVisitor::visit(QQmlJS::AST::CaseBlock *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseBlock"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1308,7 +1308,7 @@ bool QmlVisitor::visit(QQmlJS::AST::CaseClauses *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClauses"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1328,7 +1328,7 @@ bool QmlVisitor::visit(QQmlJS::AST::CaseClause *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClause"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1348,7 +1348,7 @@ bool QmlVisitor::visit(QQmlJS::AST::DefaultClause *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("DefaultClause"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1369,7 +1369,7 @@ bool QmlVisitor::visit(QQmlJS::AST::LabelledStatement *exp) {
     NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("LabelledStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1390,7 +1390,7 @@ bool QmlVisitor::visit(QQmlJS::AST::ThrowStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ThrowStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1409,7 +1409,7 @@ bool QmlVisitor::visit(QQmlJS::AST::TryStatement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("TryStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1432,7 +1432,7 @@ bool QmlVisitor::visit(QQmlJS::AST::Catch *exp) {
     NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String"), QString("Catch"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1450,7 +1450,7 @@ bool QmlVisitor::visit(QQmlJS::AST::Finally *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Finally"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1465,7 +1465,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FunctionDeclaration *exp) {
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("FunctionDeclaration"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1487,7 +1487,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FunctionExpression *exp) {
     NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String") , QString("FunctionExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1504,7 +1504,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FormalParameterList *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if (!nodeStack.isEmpty()) {
         NodeWrapper *t = nodeStack.top();
 
@@ -1525,7 +1525,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FormalParameterList *exp) {
     NodeWrapper *p = new NodeWrapper(exp->name.toString(), QString("String"), QString("FormalParameter"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty()) {
         nodeStack.top()->addChild(p);
     }
@@ -1544,7 +1544,7 @@ bool QmlVisitor::visit(QQmlJS::AST::Program *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("Program"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1566,7 +1566,7 @@ bool QmlVisitor::visit(QQmlJS::AST::FunctionSourceElement *exp) {
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionSourceElement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), tokenMap);
+                                     getSource(exp), tokenMap, filename);
     if(!nodeStack.empty())
     {
         nodeStack.top()->addChild(n);
@@ -1591,6 +1591,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::DebuggerStatement *) { commonEndVisit(); 
 
 void QmlVisitor::debug(const QQmlJS::AST::Node *exp) {
     QString name = QString(typeid(*exp).name());
+
     name = name.remove(QRegExp(".*AST[0-9]*"));
     name.chop(1);
 

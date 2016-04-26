@@ -8,6 +8,7 @@
 #ifndef NODEWRAPPER_H
 #define NODEWRAPPER_H
 
+#include <QFileInfo>
 #include <QList>
 #include <QMap>
 
@@ -16,9 +17,9 @@
 class NodeWrapper {
 public:
     NodeWrapper(const QString value, const QString valueType, const QString nodeType,
-                quint32 row, quint32 col, const QStringRef source, const QMap<QString, bool> tokenMap):
+                quint32 row, quint32 col, const QStringRef source, const QMap<QString, bool> tokenMap,const QFileInfo fileName):
         value(value), valueType(valueType), nodeType(nodeType), row(row), col(col),
-        source(source), tokenMap(tokenMap) {}
+        source(source), tokenMap(tokenMap), fileName(fileName) {}
 
     NodeWrapper(const NodeWrapper *other);
 
@@ -34,6 +35,7 @@ public:
     const QStringRef getSource();
     const quint32 getRow();
     const quint32 getCol();
+    const QFileInfo getFileName();
     const QList<NodeWrapper *>& getChildren();
     const QMap<QString, bool>& getTokenMap();
     void print();
@@ -44,6 +46,8 @@ public:
 
     QString getOutput();
 
+    void merge(const NodeWrapper &other);
+
 private:
     QList<NodeWrapper *> children;
     const QMap<QString, bool> tokenMap;
@@ -53,6 +57,7 @@ private:
     const quint32 row;
     const quint32 col;
     const QStringRef source;
+    const QFileInfo fileName;
 
     void innerPrint(const int);
     void innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes);

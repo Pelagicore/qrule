@@ -29,7 +29,7 @@
 
 class QmlVisitor: public QQmlJS::AST::Visitor {
 public:
-    QmlVisitor(QString code, QString filename): _code(code), filename(filename){}
+    QmlVisitor(QString code, QFileInfo filename): _code(code), filename(filename){}
     virtual ~QmlVisitor() {
     }
 
@@ -221,7 +221,6 @@ public:
 
 
     NodeWrapper* getWrappedRoot();
-
 private:
     QString indent = "";
 
@@ -229,7 +228,8 @@ private:
     QString notPairedParamName  = "";
     QString _code;
 
-    QString filename;
+    QFileInfo filename;
+
 
     NodeWrapper *rootNode = nullptr;
     QStack<NodeWrapper*> nodeStack;

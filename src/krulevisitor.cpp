@@ -50,7 +50,7 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
                 outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
                                        currentRuleASTScope, currentRuleCause, currentRuleExplanation);
             }
-            outp->addCodeOccurrance(CodeOccurrance(node->getSource().toString(), filename,
+            outp->addCodeOccurrance(CodeOccurrance(node->getSource().toString(), node->getFileName().absoluteFilePath(),
                                                    node->getRow(),
                                                    node->getCol()));
             failedRules.insert(currentRuleTag, outp);
@@ -62,14 +62,6 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
     }
     catch(NotImplemented &) {}
     return QPointer<RetType>();
-}
-
-const QStringRef KRuleVisitor::printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end) {
-    return QStringRef(&code, start.offset, end.offset + end.length - start.offset);
-}
-
-const QStringRef KRuleVisitor::getSource(const QQmlJS::AST::Node *exp) {
-    return printable(exp->firstSourceLocation(), exp->lastSourceLocation());
 }
 
 QPointer<RetType> KRuleVisitor::visitASTGlobally(ASTGlobally *) {

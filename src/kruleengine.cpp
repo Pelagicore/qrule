@@ -26,18 +26,23 @@ KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot) {
     }
 }
 
+/**
+ * @brief KRuleEngine::verifyQMLFiles
+ * @param qmlFilenames
+ * @return
+ */
 QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames) {
-    QMap<QString, KRuleOutput*> ruleViolationsMap;
-    foreach (const QString &qmlFilename, qmlFilenames) {
-        QMap<QString, KRuleOutput*> otherMap = verifyQMLFile(qmlFilename);
-        ruleViolationsMap = mergeOccurranceMap(ruleViolationsMap, otherMap);
-    }
 
-    return ruleViolationsMap.values();
+    foreach (const QString &qmlFilename, qmlFilenames) {
+        verifyQMLFile(qmlFilename);
+    }
+    return ruleViolations.values();
 }
 
-QMap<QString, KRuleOutput*> KRuleEngine::verifyQMLFile(const QString &qmlFilename) {
-    QString code = readCode(qmlFilename);
+
+void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
+
+    QString code = readCode(qmlFilename.absoluteFilePath());
 
     QQmlJS::Engine engine;
     QQmlJS::Lexer lexer = QQmlJS::Lexer(&engine);
@@ -50,27 +55,63 @@ QMap<QString, KRuleOutput*> KRuleEngine::verifyQMLFile(const QString &qmlFilenam
 
     if (!success) {
         foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
-            qWarning("%s:%d : %s", qPrintable(qmlFilename), m.loc.startLine, qPrintable(m.message));
+            qWarning("%s:%d : %s", qPrintable(qmlFilename.absoluteFilePath()), m.loc.startLine, qPrintable(m.message));
 
         }
     }
 
-    // Parse the QML AST and produce a wrapped version of it.
-    QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename);
+    // with import -- do the same but extend without imports.
+    QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename.absoluteFilePath());
     parser.ast()->accept(&qmlVisitor);
+
     NodeWrapper* wrappedRoot = qmlVisitor.getWrappedRoot();
+
+    //1. Get list of imports.
+    QList<NodeWrapper*> importFiles = wrappedRoot->getNodes("Import");
+    foreach(NodeWrapper* importNode, importFiles) {
+        QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/").append(importNode->getValue()));
+        if (!importedASTs.contains(info.absoluteFilePath())) {
+            verifyQMLFile(info);
+        }
+    }
+
+
+    //2. Add imported file to AST.
+    QList<NodeWrapper*> nodes = wrappedRoot->getNodes("ObjectDefinition");
+    foreach(NodeWrapper* objectNode, nodes) {
+        foreach(QString importedPath, importedASTs.keys()) {
+            if (objectNode->getValue() == QFileInfo(importedPath).baseName()) {
+                NodeWrapper* importedNode = importedASTs.value(importedPath);
+                objectNode->merge(*importedNode);
+            }
+        }
+
+    }
+
     wrappedRoot->print();
 
-    KRuleVisitor kruleVisitor = KRuleVisitor(qmlFilename, code, wrappedRoot);
+    // VERIFY
+    KRuleVisitor kruleVisitor = KRuleVisitor(wrappedRoot);
     kruleTree->accept(&kruleVisitor);
-    
+
+    // ADD TO IMPORTEDASTS
+    NodeWrapper* objectPointer;
+    if (wrappedRoot->getChildren().first()->getNodeType() == "ObjectDefinition") {
+        objectPointer = new NodeWrapper(wrappedRoot->getChildren().first());
+    } else {
+        objectPointer = new NodeWrapper(wrappedRoot->getChildren().last());
+    }
+
+    importedASTs.insert(qmlFilename.absoluteFilePath(), objectPointer);
+
+
     // create dot files of the wrapped AST
     if(createDot)
     {
-        QString dotFile = qmlFilename;
+        QString dotFile = qmlFilename.absoluteFilePath();
         if(isJavaScript){
             dotFile.chop(2);
-        }else{
+        } else {
             dotFile.chop(3);
         }
         dotFile.append("dot");
@@ -81,8 +122,6 @@ QMap<QString, KRuleOutput*> KRuleEngine::verifyQMLFile(const QString &qmlFilenam
 
         }
     }
-    return kruleVisitor.getFailures();
-
 }
 
 QString KRuleEngine::readCode(QString qmlFilename) {
@@ -97,15 +136,14 @@ QString KRuleEngine::readCode(QString qmlFilename) {
     return code;
 }
 
-QMap<QString, KRuleOutput*> KRuleEngine::mergeOccurranceMap(QMap<QString, KRuleOutput*> m1, QMap<QString, KRuleOutput*> m2) {
-    foreach(QString key, m2.keys()) {
-        if (m1.contains(key)) {
-            KRuleOutput* ko = m1[key];
-            ko->addCodeOccurrances(m2[key]);
-            m1.insert(key, ko);
+void KRuleEngine::mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map) {
+    foreach(QString key, map.keys()) {
+        if (ruleViolations.contains(key)) {
+            KRuleOutput* ko = ruleViolations[key];
+            ko->addCodeOccurrances(map[key]);
+            ruleViolations.insert(key, ko);
         } else {
-            m1.insert(key, m2[key]);
+            ruleViolations.insert(key, map[key]);
         }
     }
-    return m1;
 }
