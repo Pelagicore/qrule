@@ -51,6 +51,9 @@ int main(int argv, char *argc[]) {
     QCommandLineOption setOutput(QStringList() << "o" << "outPutFile", QLatin1String("Change name of the output file"),"nameFile", "output.xml");
     commandLine.addOption(setOutput);
 
+    QCommandLineOption setPath(QStringList() << "p" << "path", QLatin1String("Change project path"),"path","");
+    commandLine.addOption(setPath);
+
     commandLine.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
     commandLine.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
 
@@ -69,9 +72,12 @@ int main(int argv, char *argc[]) {
     bool s_setOutputFile = commandLine.isSet(setOutput);
     QString name = commandLine.value(setOutput);
 
+    bool s_setDirectory = commandLine.isSet(setPath);
+    QString path = commandLine.value(setPath);
+
     QStringList arguments = commandLine.positionalArguments();
     QString kruleFilename = arguments.takeFirst();
-    KRuleEngine kruleEngine = KRuleEngine(kruleFilename, s_setDot);
+    KRuleEngine kruleEngine = KRuleEngine(kruleFilename, s_setDot, path);
 
     QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments);
 

@@ -6,9 +6,9 @@
 // SPDX-License-Identifier: GPL-3.0
 #include "kruleengine.h"
 
-KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot) {
+KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot, QString path):createDot(s_setDot), path(path) {
     FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
-    createDot = s_setDot;
+
     if (!kruleFile) {
       qWarning() << "Error opening krule file: " << kruleFilename;
       throw ParseException(QString(kruleFilename).prepend("Could not open KRule file "));
@@ -34,7 +34,8 @@ KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot) {
 QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames) {
 
     foreach (const QString &qmlFilename, qmlFilenames) {
-        verifyQMLFile(qmlFilename);
+        QString p="";
+        verifyQMLFile(p.append(path).append(qmlFilename));
     }
     return ruleViolations.values();
 }
@@ -107,7 +108,7 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     KRuleVisitor kruleVisitor = KRuleVisitor(wrappedRoot);
     kruleTree->accept(&kruleVisitor);
 
-    // ADD TO IMPORTEDASTS
+    // ADD TO IMPORTEDASTSdirectorydirecdirectorytory
     NodeWrapper* objectPointer;
     if (wrappedRoot->getChildren().first()->getNodeType() == "ObjectDefinition") {
         objectPointer = new NodeWrapper(wrappedRoot->getChildren().first());

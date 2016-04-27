@@ -30,7 +30,7 @@
 
 class KRuleEngine {
 public:
-    KRuleEngine(const QString &kRuleFilename,bool s_setDot);
+    KRuleEngine(const QString &kRuleFilename, bool s_setDot, QString path);
 
     QList<KRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames);
 private:
@@ -46,6 +46,8 @@ private:
     void mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map);
 
     bool createDot;
+    QString path;
+
 };
 
 #endif // KRULEENGINE_H
