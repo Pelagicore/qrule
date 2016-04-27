@@ -374,7 +374,7 @@ QPointer<RetType> KRuleVisitor::visitEPossToken(EPossToken *exp) {
 }
 
 QPointer<RetType> KRuleVisitor::visitEExistToken(EExistToken *exp) {
-    bool b = node->getTokenMap().value(QString(exp->string_.c_str()));
+    bool b = node->hasToken(QString(exp->string_.c_str()));
     return new RetTypeBool(b);
 }
 

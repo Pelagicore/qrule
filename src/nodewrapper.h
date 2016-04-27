@@ -17,7 +17,7 @@
 class NodeWrapper {
 public:
     NodeWrapper(const QString value, const QString valueType, const QString nodeType,
-                quint32 row, quint32 col, const QStringRef source, const QMap<QString, bool> tokenMap,const QFileInfo fileName):
+                quint32 row, quint32 col, const QStringRef source, const QMap<QString, QString> tokenMap,const QFileInfo fileName):
         value(value), valueType(valueType), nodeType(nodeType), row(row), col(col),
         source(source), tokenMap(tokenMap), fileName(fileName) {}
 
@@ -37,7 +37,9 @@ public:
     const quint32 getCol();
     const QFileInfo getFileName();
     const QList<NodeWrapper *>& getChildren();
-    const QMap<QString, bool>& getTokenMap();
+    const QMap<QString, QString>& getTokenMap();
+    bool hasToken(const QString &key);
+    QString getToken(const QString &key);
     void print();
 
     const QList<NodeWrapper*> getNodes(QString nodeType);
@@ -50,7 +52,7 @@ public:
 
 private:
     QList<NodeWrapper *> children;
-    const QMap<QString, bool> tokenMap;
+    const QMap<QString, QString> tokenMap;
     const QString value;
     const QString valueType;
     const QString nodeType;

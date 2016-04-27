@@ -9,7 +9,7 @@
 
 bool QmlVisitor::visit(QQmlJS::AST::UiObjectDefinition *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
 
     QQmlJS::AST::UiQualifiedId* next = exp->qualifiedTypeNameId->next;
     QString name = exp->qualifiedTypeNameId->name.toString();
@@ -32,7 +32,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiObjectDefinition*) { commonEndVisit(); 
 
 bool QmlVisitor::visit(QQmlJS::AST::IdentifierExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("IdentifierExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -47,8 +47,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::IdentifierExpression *) { commonEndVisit(
 
 bool QmlVisitor::visit(QQmlJS::AST::UiScriptBinding *exp)  {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
     QQmlJS::AST::UiQualifiedId* next = exp->qualifiedId->next;
     QString name = exp->qualifiedId->name.toString();
     while (next != nullptr) {
@@ -70,7 +70,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiScriptBinding *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::FunctionBody *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionBody"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -86,12 +86,12 @@ void QmlVisitor::endVisit(QQmlJS::AST::FunctionBody *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiImport *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("asToken", isTokenPresent(exp->asToken));
-    tokenMap.insert("importToken", isTokenPresent(exp->importToken));
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("versionToken", isTokenPresent(exp->versionToken));
-    tokenMap.insert("fileNameToken", isTokenPresent(exp->fileNameToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("asToken", stringifyToken(exp->asToken));
+    tokenMap.insert("importToken", stringifyToken(exp->importToken));
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("versionToken", stringifyToken(exp->versionToken));
+    tokenMap.insert("fileNameToken", stringifyToken(exp->fileNameToken));
 
     QString name;
     if (exp->importUri != nullptr) {
@@ -153,10 +153,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiSourceElement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiArrayBinding *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
-    tokenMap.insert("lbracketToken", isTokenPresent(exp->lbracketToken));
-    tokenMap.insert("rbracketToken", isTokenPresent(exp->rbracketToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
+    tokenMap.insert("lbracketToken", stringifyToken(exp->lbracketToken));
+    tokenMap.insert("rbracketToken", stringifyToken(exp->rbracketToken));
 
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayBinding"),
                                      exp->firstSourceLocation().startLine,
@@ -171,7 +171,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiArrayBinding *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiProgram *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
 
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ProgramRoot"),
                                      exp->firstSourceLocation().startLine,
@@ -186,7 +186,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiProgram *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiHeaderItemList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     const QString nodeType = QString("HeaderItemList");
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
@@ -209,8 +209,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiHeaderItemList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiPragma *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
 
     QQmlJS::AST::UiQualifiedPragmaId* next = exp->pragmaType->next;
     QString name = exp->pragmaType->name.toString();
@@ -231,7 +231,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiPragma *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     NodeWrapper *v = new NodeWrapper(exp->name.toString(), QString("String"), QString("PublicMemberName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -240,14 +240,14 @@ bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap, filename);
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
-    tokenMap.insert("defaultToken", isTokenPresent(exp->defaultToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-    tokenMap.insert("propertyToken", isTokenPresent(exp->propertyToken));
-    tokenMap.insert("readonlyToken", isTokenPresent(exp->readonlyToken));
-    tokenMap.insert("typeModifierToken", isTokenPresent(exp->typeModifierToken));
-    tokenMap.insert("typeToken", isTokenPresent(exp->typeToken));
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
+    tokenMap.insert("defaultToken", stringifyToken(exp->defaultToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
+    tokenMap.insert("propertyToken", stringifyToken(exp->propertyToken));
+    tokenMap.insert("readonlyToken", stringifyToken(exp->readonlyToken));
+    tokenMap.insert("typeModifierToken", stringifyToken(exp->typeModifierToken));
+    tokenMap.insert("typeToken", stringifyToken(exp->typeToken));
     NodeWrapper *n = new NodeWrapper("", "", QString("PublicMember"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -263,8 +263,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiPublicMember *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiObjectBinding *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
 
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectBinding"),
                                      exp->firstSourceLocation().startLine,
@@ -279,10 +279,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiObjectBinding *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::UiParameterList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-    tokenMap.insert("propertyTypeToken", isTokenPresent(exp->propertyTypeToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("commaToken", stringifyToken(exp->commaToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
+    tokenMap.insert("propertyTypeToken", stringifyToken(exp->propertyTypeToken));
     NodeWrapper *p = new NodeWrapper(QString(), QString(), QString("Parameter"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -290,11 +290,11 @@ bool QmlVisitor::visit(QQmlJS::AST::UiParameterList *exp) {
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("Name"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), QMap<QString, bool>(), filename);
+                                     getSource(exp), QMap<QString, QString>(), filename);
     NodeWrapper *t = new NodeWrapper(exp->type.toString(), QString("String"), QString("Type"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
-                                     getSource(exp), QMap<QString, bool>(), filename);
+                                     getSource(exp), QMap<QString, QString>(), filename);
     p->addChild(n);
     p->addChild(t);
     if (!nodeStack.isEmpty()) {
@@ -312,7 +312,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiObjectMemberList *) { commonEndVisit();
 
 bool QmlVisitor::visit(QQmlJS::AST::UiArrayMemberList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     const QString nodeType = QString("ArrayMemberList");
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
@@ -335,8 +335,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::UiArrayMemberList *) { commonEndVisit(); 
 
 bool QmlVisitor::visit(QQmlJS::AST::VariableStatement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("declarationKindToken", isTokenPresent(exp->declarationKindToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("declarationKindToken", stringifyToken(exp->declarationKindToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("VariableStatement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -351,8 +351,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::VariableStatement *) { commonEndVisit(); 
 
 bool QmlVisitor::visit(QQmlJS::AST::ThisExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("thisToken", isTokenPresent(exp->thisToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("thisToken", stringifyToken(exp->thisToken));
     NodeWrapper *n = new NodeWrapper(QString("this"), QString("Token"), QString("ThisExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -367,8 +367,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::ThisExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::NullExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("nullToken", isTokenPresent(exp->nullToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("nullToken", stringifyToken(exp->nullToken));
     NodeWrapper *n = new NodeWrapper(QString("null"), QString("Token"), QString("NullExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -383,8 +383,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::NullExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::TrueLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("trueToken", isTokenPresent(exp->trueToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("trueToken", stringifyToken(exp->trueToken));
     NodeWrapper *n = new NodeWrapper(QString("true"), QString("bool"), QString("TrueLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -399,8 +399,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::TrueLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::FalseLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("falseToken", isTokenPresent(exp->falseToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("falseToken", stringifyToken(exp->falseToken));
     NodeWrapper *n = new NodeWrapper(QString("false"), QString("bool"), QString("FalseLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -415,8 +415,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::FalseLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::StringLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("literalToken", isTokenPresent(exp->literalToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("literalToken", stringifyToken(exp->literalToken));
     NodeWrapper *n = new NodeWrapper(exp->value.toString(), QString("String"), QString("StringLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -430,8 +430,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::StringLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::NumericLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("literalToken", isTokenPresent(exp->literalToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("literalToken", stringifyToken(exp->literalToken));
     NodeWrapper *n = new NodeWrapper(QString::number(exp->value), QString("Double"), QString("NumericLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -445,8 +445,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::NumericLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::RegExpLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("literalToken", isTokenPresent(exp->literalToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("literalToken", stringifyToken(exp->literalToken));
     NodeWrapper *n = new NodeWrapper(exp->pattern.toString(), QString("String"), QString("RegExpLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -460,10 +460,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::RegExpLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ArrayLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
-    tokenMap.insert("lbracketToken", isTokenPresent(exp->lbracketToken));
-    tokenMap.insert("rbracketToken", isTokenPresent(exp->rbracketToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("commaToken", stringifyToken(exp->commaToken));
+    tokenMap.insert("lbracketToken", stringifyToken(exp->lbracketToken));
+    tokenMap.insert("rbracketToken", stringifyToken(exp->rbracketToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -477,9 +477,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::ArrayLiteral *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ObjectLiteral *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lbraceToken", stringifyToken(exp->lbraceToken));
+    tokenMap.insert("rbraceToken", stringifyToken(exp->rbraceToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ObjectLiteral"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -511,12 +511,12 @@ void QmlVisitor::endVisit(QQmlJS::AST::PropertyAssignmentList *) { commonEndVisi
 
 bool QmlVisitor::visit(QQmlJS::AST::PropertyGetterSetter *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
-    tokenMap.insert("getSetToken", isTokenPresent(exp->getSetToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lbraceToken", stringifyToken(exp->lbraceToken));
+    tokenMap.insert("rbraceToken", stringifyToken(exp->rbraceToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
+    tokenMap.insert("getSetToken", stringifyToken(exp->getSetToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PropertyGetterSetter"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -531,9 +531,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::PropertyGetterSetter *) { commonEndVisit(
 
 bool QmlVisitor::visit(QQmlJS::AST::PropertyNameAndValue *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->colonToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->commaToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lbraceToken", stringifyToken(exp->colonToken));
+    tokenMap.insert("rbraceToken", stringifyToken(exp->commaToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PropertyNameAndValue"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -548,9 +548,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::PropertyNameAndValue *) { commonEndVisit(
 
 bool QmlVisitor::visit(QQmlJS::AST::NestedExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("NestedExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -564,8 +564,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::NestedExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::IdentifierPropertyName *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("porpertyNameToken", isTokenPresent(exp->propertyNameToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("porpertyNameToken", stringifyToken(exp->propertyNameToken));
     NodeWrapper *n = new NodeWrapper(exp->id.toString(), QString("String"), QString("IdentifierPropertyName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -579,8 +579,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::IdentifierPropertyName *) { commonEndVisi
 
 bool QmlVisitor::visit(QQmlJS::AST::StringLiteralPropertyName *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("propertyNameToken", isTokenPresent(exp->propertyNameToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("propertyNameToken", stringifyToken(exp->propertyNameToken));
     NodeWrapper *n = new NodeWrapper(exp->id.toString(), QString("String"), QString("StringLiteralPropertyName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -594,8 +594,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::StringLiteralPropertyName *) { commonEndV
 
 bool QmlVisitor::visit(QQmlJS::AST::NumericLiteralPropertyName *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("propertyNameToken", isTokenPresent(exp->propertyNameToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("propertyNameToken", stringifyToken(exp->propertyNameToken));
     NodeWrapper *n = new NodeWrapper(QString::number(exp->id), QString("Double"), QString("NumericLiteralPropertyName"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -609,9 +609,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::NumericLiteralPropertyName *) { commonEnd
 
 bool QmlVisitor::visit(QQmlJS::AST::ArrayMemberExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbracketToken", isTokenPresent(exp->lbracketToken));
-    tokenMap.insert("rbracketToken", isTokenPresent(exp->rbracketToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lbracketToken", stringifyToken(exp->lbracketToken));
+    tokenMap.insert("rbracketToken", stringifyToken(exp->rbracketToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("ArrayMemberExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -625,9 +625,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::ArrayMemberExpression *) { commonEndVisit
 
 bool QmlVisitor::visit(QQmlJS::AST::FieldMemberExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("dotToken", isTokenPresent(exp->dotToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("dotToken", stringifyToken(exp->dotToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
     NodeWrapper *n = new NodeWrapper(exp->name.toString(), QString("String"), QString("FieldMemberExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -641,10 +641,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::FieldMemberExpression *) { commonEndVisit
 
 bool QmlVisitor::visit(QQmlJS::AST::NewMemberExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("newToken", isTokenPresent(exp->newToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("newToken", stringifyToken(exp->newToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("NewMemberExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -658,8 +658,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::NewMemberExpression *) { commonEndVisit()
 
 bool QmlVisitor::visit(QQmlJS::AST::NewExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("newToken", isTokenPresent(exp->newToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("newToken", stringifyToken(exp->newToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("NewExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -673,9 +673,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::NewExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::CallExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("CallExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -689,7 +689,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::CallExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ArgumentList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     const QString nodeType = QString("ArgumentList");
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
@@ -712,8 +712,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::ArgumentList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::PostIncrementExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("incrementToken", isTokenPresent(exp->incrementToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("incrementToken", stringifyToken(exp->incrementToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PostIncrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -727,8 +727,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::PostIncrementExpression *) { commonEndVis
 
 bool QmlVisitor::visit(QQmlJS::AST::PostDecrementExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("decrementToken", isTokenPresent(exp->decrementToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("decrementToken", stringifyToken(exp->decrementToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PostDecrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -742,8 +742,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::PostDecrementExpression *) { commonEndVis
 
 bool QmlVisitor::visit(QQmlJS::AST::DeleteExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("deleteToken", isTokenPresent(exp->deleteToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("deleteToken", stringifyToken(exp->deleteToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("DeleteExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -757,8 +757,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::DeleteExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::VoidExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("voidToken", isTokenPresent(exp->voidToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("voidToken", stringifyToken(exp->voidToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("VoidExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -772,8 +772,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::VoidExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::TypeOfExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("typeofToken", isTokenPresent(exp->typeofToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("typeofToken", stringifyToken(exp->typeofToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("TypeOfExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -787,8 +787,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::TypeOfExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::PreIncrementExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("incrementToken", isTokenPresent(exp->incrementToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("incrementToken", stringifyToken(exp->incrementToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PreIncrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -802,8 +802,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::PreIncrementExpression *) { commonEndVisi
 
 bool QmlVisitor::visit(QQmlJS::AST::PreDecrementExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("decrementToken", isTokenPresent(exp->decrementToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("decrementToken", stringifyToken(exp->decrementToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("PreDecrementExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -817,8 +817,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::PreDecrementExpression *) { commonEndVisi
 
 bool QmlVisitor::visit(QQmlJS::AST::UnaryPlusExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("plusToken", isTokenPresent(exp->plusToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("plusToken", stringifyToken(exp->plusToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("UnaryPlusExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -832,8 +832,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::UnaryPlusExpression *) { commonEndVisit()
 
 bool QmlVisitor::visit(QQmlJS::AST::UnaryMinusExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("minusToken", isTokenPresent(exp->minusToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("minusToken", stringifyToken(exp->minusToken));
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("UnaryMinusExpression"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -845,9 +845,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::UnaryMinusExpression *) { commonEndVisit(
 
 bool QmlVisitor::visit(QQmlJS::AST::TildeExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
 
-    tokenMap.insert("tildeToken", isTokenPresent(exp->tildeToken));
+    tokenMap.insert("tildeToken", stringifyToken(exp->tildeToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("TildeExpression"),
                                      exp->firstSourceLocation().startLine,
@@ -864,9 +864,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::TildeExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::NotExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
 
-    tokenMap.insert("notToken", isTokenPresent(exp->notToken));
+    tokenMap.insert("notToken", stringifyToken(exp->notToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("NotExpression"),
                                      exp->firstSourceLocation().startLine,
@@ -883,8 +883,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::NotExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::BinaryExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("operatorToken", isTokenPresent(exp->operatorToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("operatorToken", stringifyToken(exp->operatorToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("BinaryExpression"),
                                      exp->firstSourceLocation().startLine,
@@ -901,9 +901,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::BinaryExpression *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ConditionalExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("questionToken", isTokenPresent(exp->questionToken));
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("questionToken", stringifyToken(exp->questionToken));
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ConditionalExpression"),
                                      exp->firstSourceLocation().startLine,
@@ -921,9 +921,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::ConditionalExpression *) { commonEndVisit
 bool QmlVisitor::visit(QQmlJS::AST::Block *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lbraceToken", stringifyToken(exp->lbraceToken));
+    tokenMap.insert("rbraceToken", stringifyToken(exp->rbraceToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Block"),
                                      exp->firstSourceLocation().startLine,
@@ -948,7 +948,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::StatementList *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::VariableDeclarationList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     const QString nodeType = QString("VariableDeclaraionList");
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
@@ -972,8 +972,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::VariableDeclarationList *) { commonEndVis
 bool QmlVisitor::visit(QQmlJS::AST::VariableDeclaration *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
 
     NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String"), QString("VariableDeclaration"),
                                      exp->firstSourceLocation().startLine,
@@ -991,8 +991,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::VariableDeclaration *) { commonEndVisit()
 
 bool QmlVisitor::visit(QQmlJS::AST::EmptyStatement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("EmptyStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1017,11 +1017,11 @@ void QmlVisitor::endVisit(QQmlJS::AST::ExpressionStatement *) { commonEndVisit()
 
 bool QmlVisitor::visit(QQmlJS::AST::IfStatement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("ifToken", isTokenPresent(exp->ifToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
-    tokenMap.insert("elseToken", isTokenPresent(exp->elseToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("ifToken", stringifyToken(exp->ifToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
+    tokenMap.insert("elseToken", stringifyToken(exp->elseToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("IfStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1039,12 +1039,12 @@ void QmlVisitor::endVisit(QQmlJS::AST::IfStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::DoWhileStatement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("whileToken", isTokenPresent(exp->whileToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->rparenToken));
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("doToken", isTokenPresent(exp->doToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("whileToken", stringifyToken(exp->whileToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->rparenToken));
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("doToken", stringifyToken(exp->doToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("DoWhileStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1061,10 +1061,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::DoWhileStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::WhileStatement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("whileToken", isTokenPresent(exp->whileToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("whileToken", stringifyToken(exp->whileToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("WhileStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1082,12 +1082,12 @@ void QmlVisitor::endVisit(QQmlJS::AST::WhileStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::ForStatement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("forToken", isTokenPresent(exp->forToken));
-    tokenMap.insert("firstSemicolonToken", isTokenPresent(exp->firstSemicolonToken));
-    tokenMap.insert("secondSemicolonToken", isTokenPresent(exp->secondSemicolonToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("forToken", stringifyToken(exp->forToken));
+    tokenMap.insert("firstSemicolonToken", stringifyToken(exp->firstSemicolonToken));
+    tokenMap.insert("secondSemicolonToken", stringifyToken(exp->secondSemicolonToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ForStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1106,13 +1106,13 @@ void QmlVisitor::endVisit(QQmlJS::AST::ForStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::LocalForStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("forToken", isTokenPresent(exp->forToken));
-    tokenMap.insert("firstSemicolonToken", isTokenPresent(exp->firstSemicolonToken));
-    tokenMap.insert("varToken", isTokenPresent(exp->varToken));
-    tokenMap.insert("secondSemicolonToken", isTokenPresent(exp->secondSemicolonToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("forToken", stringifyToken(exp->forToken));
+    tokenMap.insert("firstSemicolonToken", stringifyToken(exp->firstSemicolonToken));
+    tokenMap.insert("varToken", stringifyToken(exp->varToken));
+    tokenMap.insert("secondSemicolonToken", stringifyToken(exp->secondSemicolonToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("LocalForStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1130,11 +1130,11 @@ void QmlVisitor::endVisit(QQmlJS::AST::LocalForStatement *) { commonEndVisit(); 
 bool QmlVisitor::visit(QQmlJS::AST::ForEachStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("forToken", isTokenPresent(exp->forToken));
-    tokenMap.insert("inToken", isTokenPresent(exp->inToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("forToken", stringifyToken(exp->forToken));
+    tokenMap.insert("inToken", stringifyToken(exp->inToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ForEachStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1153,12 +1153,12 @@ void QmlVisitor::endVisit(QQmlJS::AST::ForEachStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::LocalForEachStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("forToken", isTokenPresent(exp->forToken));
-    tokenMap.insert("inToken", isTokenPresent(exp->inToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("varToken", isTokenPresent(exp->varToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("forToken", stringifyToken(exp->forToken));
+    tokenMap.insert("inToken", stringifyToken(exp->inToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("varToken", stringifyToken(exp->varToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("LocalForEachStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1176,10 +1176,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::LocalForEachStatement *) { commonEndVisit
 bool QmlVisitor::visit(QQmlJS::AST::ContinueStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("continueToken", isTokenPresent(exp->continueToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("continueToken", stringifyToken(exp->continueToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
 
     NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("ContinueStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1197,10 +1197,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::ContinueStatement *) { commonEndVisit(); 
 bool QmlVisitor::visit(QQmlJS::AST::BreakStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("breakToken", isTokenPresent(exp->breakToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("breakToken", stringifyToken(exp->breakToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
 
     NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("BreakStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1219,9 +1219,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::BreakStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::ReturnStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("returnToken", isTokenPresent(exp->returnToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("returnToken", stringifyToken(exp->returnToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ReturnStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1240,10 +1240,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::ReturnStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::WithStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
-    tokenMap.insert("withToken", isTokenPresent(exp->withToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
+    tokenMap.insert("withToken", stringifyToken(exp->withToken));
 
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("WithStatement"),
@@ -1262,10 +1262,10 @@ void QmlVisitor::endVisit(QQmlJS::AST::WithStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::SwitchStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
-    tokenMap.insert("switchToken", isTokenPresent(exp->switchToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
+    tokenMap.insert("switchToken", stringifyToken(exp->switchToken));
 
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("SwitchStatement"),
@@ -1284,9 +1284,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::SwitchStatement *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::CaseBlock *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("lbraceToken", stringifyToken(exp->lbraceToken));
+    tokenMap.insert("rbraceToken", stringifyToken(exp->rbraceToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseBlock"),
                                      exp->firstSourceLocation().startLine,
@@ -1303,7 +1303,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::CaseBlock *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::CaseClauses *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClauses"),
                                      exp->firstSourceLocation().startLine,
@@ -1321,9 +1321,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::CaseClauses *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::CaseClause *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
-    tokenMap.insert("caseToken", isTokenPresent(exp->caseToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
+    tokenMap.insert("caseToken", stringifyToken(exp->caseToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("CaseClause"),
                                      exp->firstSourceLocation().startLine,
@@ -1341,9 +1341,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::CaseClause *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::DefaultClause *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
-    tokenMap.insert("defaultToken", isTokenPresent(exp->defaultToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
+    tokenMap.insert("defaultToken", stringifyToken(exp->defaultToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("DefaultClause"),
                                      exp->firstSourceLocation().startLine,
@@ -1362,9 +1362,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::DefaultClause *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::LabelledStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("colonToken", isTokenPresent(exp->colonToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("colonToken", stringifyToken(exp->colonToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
 
     NodeWrapper *n = new NodeWrapper(exp->label.toString(),QString("String"), QString("LabelledStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1383,9 +1383,9 @@ void QmlVisitor::endVisit(QQmlJS::AST::LabelledStatement *) { commonEndVisit(); 
 bool QmlVisitor::visit(QQmlJS::AST::ThrowStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("semicolonToken", isTokenPresent(exp->semicolonToken));
-    tokenMap.insert("throwToken", isTokenPresent(exp->throwToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("semicolonToken", stringifyToken(exp->semicolonToken));
+    tokenMap.insert("throwToken", stringifyToken(exp->throwToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("ThrowStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1403,8 +1403,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::ThrowStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::TryStatement *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("tryToken", isTokenPresent(exp->tryToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("tryToken", stringifyToken(exp->tryToken));
 
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("TryStatement"),
                                      exp->firstSourceLocation().startLine,
@@ -1423,11 +1423,11 @@ void QmlVisitor::endVisit(QQmlJS::AST::TryStatement *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::Catch *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("catchToken", isTokenPresent(exp->catchToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("catchToken", stringifyToken(exp->catchToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
 
     NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String"), QString("Catch"),
                                      exp->firstSourceLocation().startLine,
@@ -1445,8 +1445,8 @@ void QmlVisitor::endVisit(QQmlJS::AST::Catch *) { commonEndVisit(); }
 bool QmlVisitor::visit(QQmlJS::AST::Finally *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("finallyToken", isTokenPresent(exp->finallyToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("finallyToken", stringifyToken(exp->finallyToken));
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("Finally"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -1461,7 +1461,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::Finally *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::FunctionDeclaration *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(),QString(), QString("FunctionDeclaration"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -1476,13 +1476,13 @@ void QmlVisitor::endVisit(QQmlJS::AST::FunctionDeclaration *) { commonEndVisit()
 
 bool QmlVisitor::visit(QQmlJS::AST::FunctionExpression *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
-    tokenMap.insert("functionToken", isTokenPresent(exp->functionToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
-    tokenMap.insert("lbraceToken", isTokenPresent(exp->lbraceToken));
-    tokenMap.insert("rbraceToken", isTokenPresent(exp->rbraceToken));
-    tokenMap.insert("rparenToken", isTokenPresent(exp->rparenToken));
-    tokenMap.insert("lparenToken", isTokenPresent(exp->lparenToken));
+    QMap<QString, QString> tokenMap;
+    tokenMap.insert("functionToken", stringifyToken(exp->functionToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
+    tokenMap.insert("lbraceToken", stringifyToken(exp->lbraceToken));
+    tokenMap.insert("rbraceToken", stringifyToken(exp->rbraceToken));
+    tokenMap.insert("rparenToken", stringifyToken(exp->rparenToken));
+    tokenMap.insert("lparenToken", stringifyToken(exp->lparenToken));
 
     NodeWrapper *n = new NodeWrapper(exp->name.toString(),QString("String") , QString("FunctionExpression"),
                                      exp->firstSourceLocation().startLine,
@@ -1499,7 +1499,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::FunctionExpression *) { commonEndVisit();
 
 bool QmlVisitor::visit(QQmlJS::AST::FormalParameterList *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     const QString nodeType = QString("FormalParameterList");
     NodeWrapper *n = new NodeWrapper(QString(), QString(), nodeType,
                                      exp->firstSourceLocation().startLine,
@@ -1520,8 +1520,8 @@ bool QmlVisitor::visit(QQmlJS::AST::FormalParameterList *exp) {
 
     /////////////////////////////////////////////////////////////////////////////////////
 
-    tokenMap.insert("commaToken", isTokenPresent(exp->commaToken));
-    tokenMap.insert("identifierToken", isTokenPresent(exp->identifierToken));
+    tokenMap.insert("commaToken", stringifyToken(exp->commaToken));
+    tokenMap.insert("identifierToken", stringifyToken(exp->identifierToken));
     NodeWrapper *p = new NodeWrapper(exp->name.toString(), QString("String"), QString("FormalParameter"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -1540,7 +1540,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::FormalParameterList *) { commonEndVisit()
 bool QmlVisitor::visit(QQmlJS::AST::Program *exp) {
     debug(exp);
 
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("Program"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -1562,7 +1562,7 @@ void QmlVisitor::endVisit(QQmlJS::AST::SourceElements *) { commonEndVisit(); }
 
 bool QmlVisitor::visit(QQmlJS::AST::FunctionSourceElement *exp) {
     debug(exp);
-    QMap<QString, bool> tokenMap;
+    QMap<QString, QString> tokenMap;
     NodeWrapper *n = new NodeWrapper(QString(), QString(), QString("FunctionSourceElement"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
@@ -1654,6 +1654,7 @@ void QmlVisitor::dontPopAtEnd() {
     shouldPopStack.push(false);
 }
 
-const bool QmlVisitor::isTokenPresent(const QQmlJS::AST::SourceLocation &sl) {
-    return QStringRef(&_code, sl.offset, sl.length).length() > 0;
+const QString QmlVisitor::stringifyToken(const QQmlJS::AST::SourceLocation &sl) {
+    QStringRef qref = QStringRef(&_code, sl.offset, sl.length);
+    return qref.toString();
 }

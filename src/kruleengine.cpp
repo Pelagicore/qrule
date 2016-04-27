@@ -68,10 +68,17 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
 
     //1. Get list of imports.
     QList<NodeWrapper*> importFiles = wrappedRoot->getNodes("Import");
+    QMap<QString, QString> importAliasMap;
     foreach(NodeWrapper* importNode, importFiles) {
-        QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/").append(importNode->getValue()));
-        if (!importedASTs.contains(info.absoluteFilePath())) {
-            verifyQMLFile(info);
+        if (importNode->getToken("fileNameToken").contains("\"")) {
+            QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/")
+                                       .append(importNode->getToken("fileNameToken").replace("\"","")));
+            if (importNode->hasToken("asToken")) {
+                importAliasMap.insert(info.absoluteFilePath(), importNode->getValue());
+            }
+            if (!importedASTs.contains(info.absoluteFilePath())) {
+                verifyQMLFile(info);
+            }
         }
     }
 
@@ -80,7 +87,13 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     QList<NodeWrapper*> nodes = wrappedRoot->getNodes("ObjectDefinition");
     foreach(NodeWrapper* objectNode, nodes) {
         foreach(QString importedPath, importedASTs.keys()) {
-            if (objectNode->getValue() == QFileInfo(importedPath).baseName()) {
+            QString importName;
+            if (importAliasMap.contains(importedPath)) {
+                importName = importAliasMap.value(importedPath);
+            } else {
+                importName = QFileInfo(importedPath).baseName();
+            }
+            if (objectNode->getValue() == importName) {
                 NodeWrapper* importedNode = importedASTs.value(importedPath);
                 objectNode->merge(*importedNode);
             }

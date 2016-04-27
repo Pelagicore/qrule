@@ -63,7 +63,7 @@ const QList<NodeWrapper *>& NodeWrapper::getChildren() {
     return children;
 }
 
-const QMap<QString, bool>& NodeWrapper::getTokenMap() {
+const QMap<QString, QString>& NodeWrapper::getTokenMap() {
     return tokenMap;
 }
 
@@ -127,6 +127,14 @@ const QString NodeWrapper::getId() {
                             .append("_r").append(QString::number(row))
                             .append("_c").append(QString::number(col));
     return name;
+}
+
+bool NodeWrapper::hasToken(const QString &key) {
+    return !tokenMap.value(key).isEmpty();
+}
+
+QString NodeWrapper::getToken(const QString &key) {
+    return tokenMap.value(key);
 }
 
 bool NodeWrapper::dropNode(NodeWrapper* node) {

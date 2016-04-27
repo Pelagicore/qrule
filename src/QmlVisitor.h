@@ -240,7 +240,7 @@ private:
 
     void addWrapper(NodeWrapper *n);
 
-    const bool isTokenPresent(const QQmlJS::AST::SourceLocation &sl);
+    const QString stringifyToken(const QQmlJS::AST::SourceLocation &sl);
     const QStringRef getSource(const QQmlJS::AST::Node *);
     const QStringRef printable(const QQmlJS::AST::SourceLocation &start, const QQmlJS::AST::SourceLocation &end);
 
