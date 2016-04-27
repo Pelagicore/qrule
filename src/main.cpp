@@ -29,6 +29,9 @@ void printOutput(const QList<KRuleOutput*> &ruleViolations, QString fileName) {
     delete xof;
 }
 
+void messageHandler(QtMsgType t, const QMessageLogContext &context, const QString &msg) {
+}
+
 int main(int argv, char *argc[]) {
     // Setup commandline parser
     QCoreApplication app(argv, argc);
@@ -38,6 +41,9 @@ int main(int argv, char *argc[]) {
     commandLine.setApplicationDescription(QLatin1String("Semantic rule engine for verifying QML code."));
     commandLine.addHelpOption();
     commandLine.addVersionOption();
+
+    QCommandLineOption setDebug(QStringList() << "debug", QLatin1String("Enable debugging messages"));
+    commandLine.addOption(setDebug);
 
     QCommandLineOption setDot(QStringList() << "d" << "dotty", QLatin1String("Create dot file for each QML file"));
     commandLine.addOption(setDot);
@@ -50,6 +56,9 @@ int main(int argv, char *argc[]) {
 
     commandLine.process(app);
 
+    if (!commandLine.isSet(setDebug)) {
+        qInstallMessageHandler(messageHandler);
+    }
 
     // Display help instead of running the KRule Engine if too few arguments were given
     if (commandLine.positionalArguments().length() < 2) {
