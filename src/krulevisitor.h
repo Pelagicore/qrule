@@ -127,6 +127,7 @@ private:
     const quint32 extractUInt(const QPointer<RetType> &ret);
 
     NodeWrapper *node;
+    NodeWrapper *blameNode;
     NodeWrapper *quantifiedNode;
 
     QString indent;

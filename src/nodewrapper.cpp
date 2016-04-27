@@ -32,7 +32,7 @@ void NodeWrapper::addChild(NodeWrapper *node) {
     children.append(node);
 }
 
-const QStringRef NodeWrapper::getSource() {
+const QString NodeWrapper::getSource() {
     return source;
 }
 

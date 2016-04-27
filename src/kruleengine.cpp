@@ -107,6 +107,7 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     // VERIFY
     KRuleVisitor kruleVisitor = KRuleVisitor(wrappedRoot);
     kruleTree->accept(&kruleVisitor);
+    mergeOccurranceMap(kruleVisitor.getFailures());
 
     // ADD TO IMPORTEDASTSdirectorydirecdirectorytory
     NodeWrapper* objectPointer;

@@ -42,7 +42,9 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         NodeWrapper* rootNode = node;
         NodeWrapper* rootClone = new NodeWrapper(rootNode);
         node = rootClone;
+        blameNode = node;
         while (!extractBool(rrule->quantifier_->accept(this))) {
+            qDebug() << "FAILURE at node" << blameNode->getId();
             KRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
                 outp = failedRules[currentRuleTag];
@@ -50,15 +52,16 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
                 outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
                                        currentRuleASTScope, currentRuleCause, currentRuleExplanation);
             }
-            outp->addCodeOccurrance(CodeOccurrance(node->getSource().toString(), node->getFileName().absoluteFilePath(),
-                                                   node->getRow(),
-                                                   node->getCol()));
+            outp->addCodeOccurrance(CodeOccurrance(blameNode->getSource(),
+                                                   blameNode->getFileName().absoluteFilePath(),
+                                                   blameNode->getRow(),
+                                                   blameNode->getCol()));
             failedRules.insert(currentRuleTag, outp);
-            rootClone->dropNode(node);
-            node = rootClone;
+            rootClone->dropNode(blameNode);
+            blameNode = node;
         }
-
         node = rootNode;
+        delete rootClone;
     }
     catch(NotImplemented &) {}
     return QPointer<RetType>();
@@ -189,11 +192,14 @@ QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
         if (!childrn.isEmpty()) {
             bool breakCondition = false;
             indent += "  ";
+            NodeWrapper* n = node;
             foreach(NodeWrapper *child, childrn) {
                 node = child;
-                qDebug() << indent << child->getNodeType();
+                blameNode = child;
+                qDebug() << indent << child->getId();
 
                 bool res = extractBool(visitEG(eg));
+                node = n;
                 if (res) {
                         breakCondition = true;
                         break;
@@ -223,11 +229,14 @@ QPointer<RetType> KRuleVisitor::visitEU(EU *eu) {
             if (!childrn.isEmpty()) {
                 bool breakCondition = false;
                 indent += "  ";
+                NodeWrapper* n = node;
                 foreach(NodeWrapper *child, childrn) {
                     node = child;
-                    qDebug() << indent << child->getNodeType();
+                    blameNode = child;
+                    qDebug() << indent << child->getId();
 
                     bool res = extractBool(visitEU(eu));
+                    node = n;
                     if (res) {
                             breakCondition = true;
                             break;
@@ -253,10 +262,13 @@ QPointer<RetType> KRuleVisitor::visitEX(EX *ex) {
     if (!childrn.isEmpty()) {
         bool breakCondition = false;
         indent += "  ";
+        NodeWrapper* n = node;
         foreach(NodeWrapper *child, childrn) {
             node = child;
+            blameNode = child;
             qDebug() << indent << child->getNodeType();
             bool res = extractBool(ex->expr_->accept(this));
+            node = n;
             if (res) {
                     breakCondition = true;
                     break;
@@ -426,14 +438,22 @@ QPointer<RetType> KRuleVisitor::visitEBEq(EBEq *eeq){
 
 QPointer<RetType> KRuleVisitor::visitEAnd(EAnd *eand) {
     const bool b1 = extractBool(eand->expr_1->accept(this));
-    const bool b2 = extractBool(eand->expr_2->accept(this));
-    return new RetTypeBool(b1 && b2);
+    if (b1) {
+        const bool b2 = extractBool(eand->expr_2->accept(this));
+        return new RetTypeBool(b2);
+    } else {
+        return new RetTypeBool(false);
+    }
 }
 
 QPointer<RetType> KRuleVisitor::visitEOr(EOr *eor) {
     const bool b1 = extractBool(eor->expr_1->accept(this));
-    const bool b2 = extractBool(eor->expr_2->accept(this));
-    return new RetTypeBool(b1 || b2);
+    if (b1) {
+        return new RetTypeBool(true);
+    } else {
+        const bool b2 = extractBool(eor->expr_2->accept(this));
+        return new RetTypeBool(b2);
+    }
 }
 
 QPointer<RetType> KRuleVisitor::visitEPQ(EPQ *epq) {
