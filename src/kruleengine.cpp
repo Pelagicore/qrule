@@ -6,6 +6,8 @@
 // SPDX-License-Identifier: GPL-3.0
 #include "kruleengine.h"
 
+#include <QDir>
+
 KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot, QString path):createDot(s_setDot), path(path) {
     FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
 
@@ -137,6 +139,76 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
 
         }
     }
+}
+
+QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileInfo &qmldirFile, const float version) {
+    QMap<QString, QPair<float, QFileInfo>> filemap;
+    if (qmldirFile.exists()) {
+        QString filePath = qmldirFile.absoluteFilePath();
+
+        QFile file(filePath);
+        file.open(QIODevice::ReadOnly);
+
+        QTextStream in(&file);
+        QStringList lines;
+        while(!in.atEnd()) {
+            QString line = in.readLine();
+            lines.append(line);
+        }
+
+        file.close();
+
+        QDir d = qmldirFile.dir();
+        foreach(QString line, lines) {
+            QString lc = QString(line);
+            bool comment = lc.replace(" ", "").replace("\t", "").at(0) == '#';
+
+            if (!comment) {
+                QStringList cols = line.split(" ");
+
+                QString type = cols.first();
+                QString reference;
+                float readVersion = 0;
+                if (type == "module") {
+                    reference = cols.at(1);
+                }
+                else if (type == "internal") {
+                  // reference = cols.at(1);
+                } else if (type == "plugin") {
+                  //  reference = cols.at(1);
+                } else if (type == "typeinfo") {
+                  //  reference = cols.at(1);
+                } else if (type == "classname") {
+                  //  reference = cols.at(1);
+                } else if (type == "depends") {
+                    reference = cols.at(1);
+                    readVersion = cols.at(2).toFloat();
+                    QMap<QString, QPair<float, QFileInfo>> result =
+                            parseQmlDirFile(QFileInfo(d, reference), version);
+                    filemap.unite(result);
+
+                } else if (type == "designersupported") {
+                    reference = cols.at(1);
+                } else {
+                    if (type == "singleton") {
+                       reference = cols.at(1);
+                      readVersion = cols.at(2).toFloat();
+                    } else {
+                       type = "default";
+                       reference = cols.at(0);
+                       readVersion = cols.at(1).toFloat();
+                    }
+                    if (readVersion <= version &&
+                            (!filemap.contains(reference) || readVersion > filemap.value(reference).first)) {
+                        filemap.insert(reference, QPair<float, QFileInfo>(readVersion, QFileInfo(d, cols.last())));
+                    }
+                }
+
+            }
+        }
+    }
+
+    return filemap;
 }
 
 QString KRuleEngine::readCode(QString qmlFilename) {

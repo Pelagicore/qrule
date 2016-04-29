@@ -12,6 +12,7 @@
 #include <QMap>
 #include <QString>
 #include <QFileInfo>
+#include <QPair>
 
 #include <output/KRuleOutput.h>
 
@@ -25,6 +26,7 @@
 #include "private/qqmljsparser_p.h"
 #include "private/qqmljsengine_p.h"
 #include "QmlVisitor.h"
+#include <QDir>
 
 
 
@@ -44,6 +46,8 @@ private:
 
     QString readCode(QString qmlFilename);
     void mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map);
+
+    QMap<QString, QPair<float, QFileInfo>> parseQmlDirFile(const QFileInfo &qmldirFile, const float version);
 
     bool createDot;
     QString path;
