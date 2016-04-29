@@ -44,76 +44,83 @@ class KRuleVisitor : public Visitor {
 public:
     KRuleVisitor(NodeWrapper *node):
         node(node) {}
-    QPointer<RetType> visitRuleSet(RuleSet*);
-    QPointer<RetType> visitRule(Rule*);
-    QPointer<RetType> visitASTScope(ASTScope*);
-    QPointer<RetType> visitRuleCause(RuleCause*);
-    QPointer<RetType> visitExplanation(Explanation*);
-    QPointer<RetType> visitTag(Tag*);
-    QPointer<RetType> visitSeverity(Severity*);
-    QPointer<RetType> visitQuantifier(Quantifier*);
-    QPointer<RetType> visitPathQuantifier(PathQuantifier*);
-    QPointer<RetType> visitIAtom(IAtom*);
-    QPointer<RetType> visitSAtom(SAtom*);
-    QPointer<RetType> visitExpr(Expr*);
-    QPointer<RetType> visitRSet(RSet*);
-    QPointer<RetType> visitRRule(RRule*);
-    QPointer<RetType> visitASTGlobally(ASTGlobally*);
-    QPointer<RetType> visitASTFile(ASTFile*);
-    QPointer<RetType> visitASTImported(ASTImported*);
-    QPointer<RetType> visitRCLang(RCLang*);
-    QPointer<RetType> visitRCPolicy(RCPolicy*);
-    QPointer<RetType> visitExplan(Explan*);
-    QPointer<RetType> visitNoexplan(Noexplan*);
-    QPointer<RetType> visitTTag(TTag*);
-    QPointer<RetType> visitSevInfo(SevInfo*);
-    QPointer<RetType> visitSevWarning(SevWarning*);
-    QPointer<RetType> visitSevCritical(SevCritical*);
-    QPointer<RetType> visitQExpr(QExpr*);
-    QPointer<RetType> visitQFor(QFor*);
-    QPointer<RetType> visitAG(AG*);
-    QPointer<RetType> visitAF(AF*);
-    QPointer<RetType> visitAX(AX*);
-    QPointer<RetType> visitAU(AU*);
-    QPointer<RetType> visitEG(EG*);
-    QPointer<RetType> visitEF(EF*);
-    QPointer<RetType> visitEX(EX*);
-    QPointer<RetType> visitEU(EU*);
-    QPointer<RetType> visitIFRow(IFRow*);
-    QPointer<RetType> visitIFCol(IFCol*);
-    QPointer<RetType> visitIInt(IInt*);
-    QPointer<RetType> visitINrChildren(INrChildren*);
-    QPointer<RetType> visitIRow(IRow*);
-    QPointer<RetType> visitICol(ICol*);
-    QPointer<RetType> visitSString(SString*);
-    QPointer<RetType> visitSFValue(SFValue*);
-    QPointer<RetType> visitSValue(SValue*);
-    QPointer<RetType> visitSValueType(SValueType*);
-    QPointer<RetType> visitSNodeType(SNodeType*);
-    QPointer<RetType> visitSConcat(SConcat*);
-    QPointer<RetType> visitETrue(ETrue*);
-    QPointer<RetType> visitEFalse(EFalse*);
-    QPointer<RetType> visitEParant(EParant*);
-    QPointer<RetType> visitENot(ENot*);
-    QPointer<RetType> visitEImpl(EImpl*);
-    QPointer<RetType> visitEBEq(EBEq*);
-    QPointer<RetType> visitEPossToken(EPossToken*);
-    QPointer<RetType> visitEExistToken(EExistToken*);
-    QPointer<RetType> visitEILtEq(EILtEq*);
-    QPointer<RetType> visitEIGtEq(EIGtEq*);
-    QPointer<RetType> visitEILt(EILt*);
-    QPointer<RetType> visitEIGt(EIGt*);
-    QPointer<RetType> visitEIEq(EIEq*);
-    QPointer<RetType> visitEMatch(EMatch*);
-    QPointer<RetType> visitESEq(ESEq*);
-    QPointer<RetType> visitEAnd(EAnd*);
-    QPointer<RetType> visitEOr(EOr*);
-    QPointer<RetType> visitEPQ(EPQ*);
-    QPointer<RetType> visitListRule(ListRule*);
-    QPointer<RetType> visitListExpr(ListExpr*);
 
-    QPointer<RetType> visitInteger(Integer);
-    QPointer<RetType> visitString(String);
+    QPointer<RetType> visitRuleSet(RuleSet* p);
+    QPointer<RetType> visitRule(Rule* p);
+    QPointer<RetType> visitASTScope(ASTScope* p);
+    QPointer<RetType> visitRuleCause(RuleCause* p);
+    QPointer<RetType> visitExplanation(Explanation* p);
+    QPointer<RetType> visitTag(Tag* p);
+    QPointer<RetType> visitSeverity(Severity* p);
+    QPointer<RetType> visitPathQuantifier(PathQuantifier* p);
+    QPointer<RetType> visitIAtom(IAtom* p);
+    QPointer<RetType> visitSAtom(SAtom* p);
+    QPointer<RetType> visitExpr(Expr* p);
+    QPointer<RetType> visitFilter(Filter* p);
+    QPointer<RetType> visitRSet(RSet* p);
+    QPointer<RetType> visitRRule(RRule* p);
+    QPointer<RetType> visitASTGlobally(ASTGlobally* p);
+    QPointer<RetType> visitASTFile(ASTFile* p);
+    QPointer<RetType> visitASTImported(ASTImported* p);
+    QPointer<RetType> visitRCLang(RCLang* p);
+    QPointer<RetType> visitRCPolicy(RCPolicy* p);
+    QPointer<RetType> visitExplan(Explan* p);
+    QPointer<RetType> visitNoexplan(Noexplan* p);
+    QPointer<RetType> visitTTag(TTag* p);
+    QPointer<RetType> visitSevInfo(SevInfo* p);
+    QPointer<RetType> visitSevWarning(SevWarning* p);
+    QPointer<RetType> visitSevCritical(SevCritical* p);
+    QPointer<RetType> visitAG(AG* p);
+    QPointer<RetType> visitAF(AF* p);
+    QPointer<RetType> visitAX(AX* p);
+    QPointer<RetType> visitAU(AU* p);
+    QPointer<RetType> visitEG(EG* p);
+    QPointer<RetType> visitEF(EF* p);
+    QPointer<RetType> visitEX(EX* p);
+    QPointer<RetType> visitEU(EU* p);
+    QPointer<RetType> visitIFRow(IFRow* p);
+    QPointer<RetType> visitIFCol(IFCol* p);
+    QPointer<RetType> visitIInt(IInt* p);
+    QPointer<RetType> visitINrChildren(INrChildren* p);
+    QPointer<RetType> visitIRow(IRow* p);
+    QPointer<RetType> visitICol(ICol* p);
+    QPointer<RetType> visitSString(SString* p);
+    QPointer<RetType> visitSFValue(SFValue* p);
+    QPointer<RetType> visitSValue(SValue* p);
+    QPointer<RetType> visitSValueType(SValueType* p);
+    QPointer<RetType> visitSNodeType(SNodeType* p);
+    QPointer<RetType> visitSConcat(SConcat* p);
+    QPointer<RetType> visitETrue(ETrue* p);
+    QPointer<RetType> visitEFalse(EFalse* p);
+    QPointer<RetType> visitEParant(EParant* p);
+    QPointer<RetType> visitENot(ENot* p);
+    QPointer<RetType> visitEBEq(EBEq* p);
+    QPointer<RetType> visitEPossToken(EPossToken* p);
+    QPointer<RetType> visitEExistToken(EExistToken* p);
+    QPointer<RetType> visitEILtEq(EILtEq* p);
+    QPointer<RetType> visitEIGtEq(EIGtEq* p);
+    QPointer<RetType> visitEILt(EILt* p);
+    QPointer<RetType> visitEIGt(EIGt* p);
+    QPointer<RetType> visitEIEq(EIEq* p);
+    QPointer<RetType> visitEMatch(EMatch* p);
+    QPointer<RetType> visitESEq(ESEq* p);
+    QPointer<RetType> visitEAnd(EAnd* p);
+    QPointer<RetType> visitEOr(EOr* p);
+    QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ* p);
+    QPointer<RetType> visitEPQ(EPQ* p);
+    QPointer<RetType> visitEImpl(EImpl* p);
+    QPointer<RetType> visitFString(FString* p);
+    QPointer<RetType> visitListRule(ListRule* p);
+    QPointer<RetType> visitListExpr(ListExpr* p);
+    QPointer<RetType> visitListFilter(ListFilter* p);
+
+    QPointer<RetType> visitInteger(Integer p);
+    QPointer<RetType> visitString(String p);
+
+    QPointer<RetType> visitChar(Char) {}
+    QPointer<RetType> visitDouble(Double) {}
+    QPointer<RetType> visitIdent(Ident) {}
+
 
     QMap<QString, KRuleOutput*> getFailures();
 
@@ -128,7 +135,7 @@ private:
 
     NodeWrapper *node;
     NodeWrapper *blameNode;
-    NodeWrapper *quantifiedNode;
+    QList<NodeWrapper*> quantifiedNode;
 
     QString indent;
 

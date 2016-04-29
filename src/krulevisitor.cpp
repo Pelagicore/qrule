@@ -9,6 +9,7 @@
 #include <gen/Printer.H>
 #include <QPointer>
 #include <QRegExp>
+#include <QStack>
 
 QPointer<RetType> KRuleVisitor::visitRuleSet(RuleSet *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitRule(Rule *) {} //abstract class
@@ -21,7 +22,7 @@ QPointer<RetType> KRuleVisitor::visitIAtom(IAtom *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitSAtom(SAtom *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitExpr(Expr *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitPathQuantifier(PathQuantifier *) {}
-QPointer<RetType> KRuleVisitor::visitQuantifier(Quantifier *) {}
+QPointer<RetType> KRuleVisitor::visitFilter(Filter *) {}
 
 
 QPointer<RetType> KRuleVisitor::visitRSet(RSet *rset) {
@@ -43,7 +44,7 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         NodeWrapper* rootClone = new NodeWrapper(rootNode);
         node = rootClone;
         blameNode = node;
-        while (!extractBool(rrule->quantifier_->accept(this))) {
+        while (!extractBool(rrule->expr_->accept(this))) {
             qDebug() << "FAILURE at node" << blameNode->getId();
             KRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
@@ -111,16 +112,17 @@ QPointer<RetType> KRuleVisitor::visitSevCritical(SevCritical *) {
     return new RetTypeString(QString("Critical"));
 }
 
-QPointer<RetType> KRuleVisitor::visitQExpr(QExpr *exp) {
-    return exp->expr_->accept(this);
-}
+QPointer<RetType> KRuleVisitor::visitEFirstOrdQ(EFirstOrdQ *exp) {
 
-QPointer<RetType> KRuleVisitor::visitQFor(QFor *exp) {
+    QStack<QString> filterStack;
+    for(auto &f : *(exp->listfilter_)) {
+        filterStack.push(extractQString(f->accept(this)));
+    }
 
-    const QList<NodeWrapper*> ls = node->getNodes(QString(exp->string_.c_str()));
+    const QList<NodeWrapper*> ls = node->getNodes(filterStack);
     NodeWrapper* startNode = node;
     foreach(NodeWrapper* n, ls) {
-        quantifiedNode = n;
+        quantifiedNode.append(n);
 
         QPointer<RetType> r = exp->expr_->accept(this);
         bool b = extractBool(r);
@@ -130,7 +132,7 @@ QPointer<RetType> KRuleVisitor::visitQFor(QFor *exp) {
             return new RetTypeBool(false);
         }
         node = startNode;
-        quantifiedNode = nullptr;
+        quantifiedNode.removeFirst();
     }
 
     return new RetTypeBool(true);
@@ -291,16 +293,16 @@ QPointer<RetType> KRuleVisitor::visitINrChildren(INrChildren *) {
     return new RetTypeUInt((quint32) node->getChildren().length());
 }
 
-QPointer<RetType> KRuleVisitor::visitIFRow(IFRow *) {
-    if (quantifiedNode != nullptr) {
-        return new RetTypeUInt(quantifiedNode->getRow());
+QPointer<RetType> KRuleVisitor::visitIFRow(IFRow *e) {
+    if (!quantifiedNode.isEmpty()) {
+        return new RetTypeUInt(quantifiedNode[e->integer_]->getRow());
     }
     throw NoQuantification();
 }
 
-QPointer<RetType> KRuleVisitor::visitIFCol(IFCol *) {
-    if (quantifiedNode != nullptr) {
-        return new RetTypeUInt(quantifiedNode->getCol());
+QPointer<RetType> KRuleVisitor::visitIFCol(IFCol *e) {
+    if (!quantifiedNode.isEmpty()) {
+        return new RetTypeUInt(quantifiedNode[e->integer_]->getCol());
     }
     throw NoQuantification();
 }
@@ -367,9 +369,9 @@ QPointer<RetType> KRuleVisitor::visitSString(SString *exp) {
     return new RetTypeString(QString(exp->string_.c_str()));
 }
 
-QPointer<RetType> KRuleVisitor::visitSFValue(SFValue *) {
-    if (quantifiedNode != nullptr) {
-        return new RetTypeString(quantifiedNode->getValue());
+QPointer<RetType> KRuleVisitor::visitSFValue(SFValue *e) {
+    if (!quantifiedNode.isEmpty()) {
+        return new RetTypeString(quantifiedNode[e->integer_]->getValue());
     }
     throw NoQuantification();
 }
@@ -460,6 +462,10 @@ QPointer<RetType> KRuleVisitor::visitEPQ(EPQ *epq) {
     return epq->pathquantifier_->accept(this);
 }
 
+QPointer<RetType> KRuleVisitor::visitFString(FString* p) {
+    return new RetTypeString(p->string_.c_str());
+}
+
 /**
  * @brief KRuleVisitor::visitListRule Iterates over the defined rules.
  * @param listrule
@@ -474,6 +480,13 @@ QPointer<RetType> KRuleVisitor::visitListRule(ListRule* listrule) {
 
 QPointer<RetType> KRuleVisitor::visitListExpr(ListExpr* listexpr) {
     for (ListExpr::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i) {
+      (*i)->accept(this);
+    }
+    return new RetTypeBool(false);
+}
+
+QPointer<RetType> KRuleVisitor::visitListFilter(ListFilter* listexpr) {
+    for (ListFilter::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i) {
       (*i)->accept(this);
     }
     return new RetTypeBool(false);

@@ -4,6 +4,7 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
+
 #ifndef PRINTER_HEADER
 #define PRINTER_HEADER
 
@@ -11,7 +12,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <QPointer>
 
 
 /* Certain applications may improve performance by changing the buffer size */
@@ -57,9 +57,6 @@ void render(char* s);
   QPointer<RetType> visitSevInfo(SevInfo *p);
   QPointer<RetType> visitSevWarning(SevWarning *p);
   QPointer<RetType> visitSevCritical(SevCritical *p);
-  QPointer<RetType> visitQuantifier(Quantifier *p); /* abstract class */
-  QPointer<RetType> visitQExpr(QExpr *p);
-  QPointer<RetType> visitQFor(QFor *p);
   QPointer<RetType> visitPathQuantifier(PathQuantifier *p); /* abstract class */
   QPointer<RetType> visitAG(AG *p);
   QPointer<RetType> visitAF(AF *p);
@@ -88,7 +85,6 @@ void render(char* s);
   QPointer<RetType> visitEFalse(EFalse *p);
   QPointer<RetType> visitEParant(EParant *p);
   QPointer<RetType> visitENot(ENot *p);
-  QPointer<RetType> visitEImpl(EImpl *p);
   QPointer<RetType> visitEBEq(EBEq *p);
   QPointer<RetType> visitEPossToken(EPossToken *p);
   QPointer<RetType> visitEExistToken(EExistToken *p);
@@ -101,8 +97,13 @@ void render(char* s);
   QPointer<RetType> visitESEq(ESEq *p);
   QPointer<RetType> visitEAnd(EAnd *p);
   QPointer<RetType> visitEOr(EOr *p);
+  QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ *p);
   QPointer<RetType> visitEPQ(EPQ *p);
+  QPointer<RetType> visitEImpl(EImpl *p);
   QPointer<RetType> visitListExpr(ListExpr* p);
+  QPointer<RetType> visitFilter(Filter *p); /* abstract class */
+  QPointer<RetType> visitFString(FString *p);
+  QPointer<RetType> visitListFilter(ListFilter* p);
 
   QPointer<RetType> visitInteger(Integer i);
   QPointer<RetType> visitDouble(Double d);
@@ -197,9 +198,6 @@ class ShowAbsyn : public Visitor
   QPointer<RetType> visitSevInfo(SevInfo *p);
   QPointer<RetType> visitSevWarning(SevWarning *p);
   QPointer<RetType> visitSevCritical(SevCritical *p);
-  QPointer<RetType> visitQuantifier(Quantifier *p); /* abstract class */
-  QPointer<RetType> visitQExpr(QExpr *p);
-  QPointer<RetType> visitQFor(QFor *p);
   QPointer<RetType> visitPathQuantifier(PathQuantifier *p); /* abstract class */
   QPointer<RetType> visitAG(AG *p);
   QPointer<RetType> visitAF(AF *p);
@@ -228,7 +226,6 @@ class ShowAbsyn : public Visitor
   QPointer<RetType> visitEFalse(EFalse *p);
   QPointer<RetType> visitEParant(EParant *p);
   QPointer<RetType> visitENot(ENot *p);
-  QPointer<RetType> visitEImpl(EImpl *p);
   QPointer<RetType> visitEBEq(EBEq *p);
   QPointer<RetType> visitEPossToken(EPossToken *p);
   QPointer<RetType> visitEExistToken(EExistToken *p);
@@ -241,8 +238,13 @@ class ShowAbsyn : public Visitor
   QPointer<RetType> visitESEq(ESEq *p);
   QPointer<RetType> visitEAnd(EAnd *p);
   QPointer<RetType> visitEOr(EOr *p);
+  QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ *p);
   QPointer<RetType> visitEPQ(EPQ *p);
+  QPointer<RetType> visitEImpl(EImpl *p);
   QPointer<RetType> visitListExpr(ListExpr* p);
+  QPointer<RetType> visitFilter(Filter *p); /* abstract class */
+  QPointer<RetType> visitFString(FString *p);
+  QPointer<RetType> visitListFilter(ListFilter* p);
 
   QPointer<RetType> visitInteger(Integer i);
   QPointer<RetType> visitDouble(Double d);

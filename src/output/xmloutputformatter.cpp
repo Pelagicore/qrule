@@ -23,7 +23,7 @@ QString XMLOutputFormatter::format(){
                 .append("\" severity=\"").append(ko->severity)
                 .append("\" astscope=\"").append(ko->astscope)
                 .append("\" rulecause=\"").append(ko->rulecause)
-                .append("\">");
+                .append("\">\n");
         QString kruleEndTag = "</krule>\n";
         QString explanationTag = QString().append("<explanation>\n").append(ko->explanation).append("\n</explanation>");
 

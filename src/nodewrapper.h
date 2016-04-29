@@ -11,6 +11,7 @@
 #include <QFileInfo>
 #include <QList>
 #include <QMap>
+#include <QStack>
 
 
 
@@ -44,6 +45,7 @@ public:
     void print();
 
     const QList<NodeWrapper*> getNodes(QString nodeType);
+    const QList<NodeWrapper*> getNodes(QStack<QString> nodeType);
     const QString getId();
     bool  dropNode(NodeWrapper* id);
 
@@ -63,7 +65,7 @@ private:
     const QFileInfo fileName;
 
     void innerPrint(const int);
-    void innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes);
+    void innerGetNodes(QStack<QString> searchList, const QStack<QString>& originalList, QList<NodeWrapper*>& nodes);
 };
 
 #endif // NODEWRAPPER_H

@@ -4,6 +4,7 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
+
 #ifndef ABSYN_HEADER
 #define ABSYN_HEADER
 
@@ -35,11 +36,11 @@ class RuleCause;
 class Explanation;
 class Tag;
 class Severity;
-class Quantifier;
 class PathQuantifier;
 class IAtom;
 class SAtom;
 class Expr;
+class Filter;
 class RSet;
 class RRule;
 class ASTGlobally;
@@ -53,8 +54,6 @@ class TTag;
 class SevInfo;
 class SevWarning;
 class SevCritical;
-class QExpr;
-class QFor;
 class AG;
 class AF;
 class AX;
@@ -79,7 +78,6 @@ class ETrue;
 class EFalse;
 class EParant;
 class ENot;
-class EImpl;
 class EBEq;
 class EPossToken;
 class EExistToken;
@@ -92,9 +90,13 @@ class EMatch;
 class ESEq;
 class EAnd;
 class EOr;
+class EFirstOrdQ;
 class EPQ;
+class EImpl;
+class FString;
 class ListRule;
 class ListExpr;
+class ListFilter;
 
 
 /********************   Visitor Interfaces    ********************/
@@ -109,11 +111,11 @@ public:
   virtual QPointer<RetType> visitExplanation(Explanation *p) = 0;
   virtual QPointer<RetType> visitTag(Tag *p) = 0;
   virtual QPointer<RetType> visitSeverity(Severity *p) = 0;
-  virtual QPointer<RetType> visitQuantifier(Quantifier *p) = 0;
   virtual QPointer<RetType> visitPathQuantifier(PathQuantifier *p) = 0;
   virtual QPointer<RetType> visitIAtom(IAtom *p) = 0;
   virtual QPointer<RetType> visitSAtom(SAtom *p) = 0;
   virtual QPointer<RetType> visitExpr(Expr *p) = 0;
+  virtual QPointer<RetType> visitFilter(Filter *p) = 0;
   virtual QPointer<RetType> visitRSet(RSet *p) = 0;
   virtual QPointer<RetType> visitRRule(RRule *p) = 0;
   virtual QPointer<RetType> visitASTGlobally(ASTGlobally *p) = 0;
@@ -127,8 +129,6 @@ public:
   virtual QPointer<RetType> visitSevInfo(SevInfo *p) = 0;
   virtual QPointer<RetType> visitSevWarning(SevWarning *p) = 0;
   virtual QPointer<RetType> visitSevCritical(SevCritical *p) = 0;
-  virtual QPointer<RetType> visitQExpr(QExpr *p) = 0;
-  virtual QPointer<RetType> visitQFor(QFor *p) = 0;
   virtual QPointer<RetType> visitAG(AG *p) = 0;
   virtual QPointer<RetType> visitAF(AF *p) = 0;
   virtual QPointer<RetType> visitAX(AX *p) = 0;
@@ -153,7 +153,6 @@ public:
   virtual QPointer<RetType> visitEFalse(EFalse *p) = 0;
   virtual QPointer<RetType> visitEParant(EParant *p) = 0;
   virtual QPointer<RetType> visitENot(ENot *p) = 0;
-  virtual QPointer<RetType> visitEImpl(EImpl *p) = 0;
   virtual QPointer<RetType> visitEBEq(EBEq *p) = 0;
   virtual QPointer<RetType> visitEPossToken(EPossToken *p) = 0;
   virtual QPointer<RetType> visitEExistToken(EExistToken *p) = 0;
@@ -166,13 +165,21 @@ public:
   virtual QPointer<RetType> visitESEq(ESEq *p) = 0;
   virtual QPointer<RetType> visitEAnd(EAnd *p) = 0;
   virtual QPointer<RetType> visitEOr(EOr *p) = 0;
+  virtual QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ *p) = 0;
   virtual QPointer<RetType> visitEPQ(EPQ *p) = 0;
+  virtual QPointer<RetType> visitEImpl(EImpl *p) = 0;
+  virtual QPointer<RetType> visitFString(FString *p) = 0;
   virtual QPointer<RetType> visitListRule(ListRule *p) = 0;
   virtual QPointer<RetType> visitListExpr(ListExpr *p) = 0;
+  virtual QPointer<RetType> visitListFilter(ListFilter *p) = 0;
 
 
   virtual QPointer<RetType> visitInteger(Integer x) = 0;
+  virtual QPointer<RetType> visitChar(Char x) = 0;
+  virtual QPointer<RetType> visitDouble(Double x) = 0;
   virtual QPointer<RetType> visitString(String x) = 0;
+  virtual QPointer<RetType> visitIdent(Ident x) = 0;
+
 };
 
 
@@ -235,13 +242,6 @@ public:
 
 };
 
-class Quantifier : public Visitable
-{
-public:
-  virtual Quantifier *clone() const = 0;
-
-};
-
 class PathQuantifier : public Visitable
 {
 public:
@@ -270,6 +270,13 @@ public:
 
 };
 
+class Filter : public Visitable
+{
+public:
+  virtual Filter *clone() const = 0;
+
+};
+
 
 
 class RSet : public RuleSet
@@ -294,11 +301,11 @@ public:
   RuleCause *rulecause_;
   ASTScope *astscope_;
   Explanation *explanation_;
-  Quantifier *quantifier_;
+  Expr *expr_;
 
   RRule(const RRule &);
   RRule &operator=(const RRule &);
-  RRule(Tag *p1, Severity *p2, RuleCause *p3, ASTScope *p4, Explanation *p5, Quantifier *p6);
+  RRule(Tag *p1, Severity *p2, RuleCause *p3, ASTScope *p4, Explanation *p5, Expr *p6);
   ~RRule();
   virtual QPointer<RetType> accept(Visitor *v);
   virtual RRule *clone() const;
@@ -450,35 +457,6 @@ public:
   void swap(SevCritical &);
 };
 
-class QExpr : public Quantifier
-{
-public:
-  Expr *expr_;
-
-  QExpr(const QExpr &);
-  QExpr &operator=(const QExpr &);
-  QExpr(Expr *p1);
-  ~QExpr();
-  virtual QPointer<RetType> accept(Visitor *v);
-  virtual QExpr *clone() const;
-  void swap(QExpr &);
-};
-
-class QFor : public Quantifier
-{
-public:
-  String string_;
-  Expr *expr_;
-
-  QFor(const QFor &);
-  QFor &operator=(const QFor &);
-  QFor(String p1, Expr *p2);
-  ~QFor();
-  virtual QPointer<RetType> accept(Visitor *v);
-  virtual QFor *clone() const;
-  void swap(QFor &);
-};
-
 class AG : public PathQuantifier
 {
 public:
@@ -596,10 +574,11 @@ public:
 class IFRow : public IAtom
 {
 public:
+  Integer integer_;
 
   IFRow(const IFRow &);
   IFRow &operator=(const IFRow &);
-  IFRow();
+  IFRow(Integer p1);
   ~IFRow();
   virtual QPointer<RetType> accept(Visitor *v);
   virtual IFRow *clone() const;
@@ -609,10 +588,11 @@ public:
 class IFCol : public IAtom
 {
 public:
+  Integer integer_;
 
   IFCol(const IFCol &);
   IFCol &operator=(const IFCol &);
-  IFCol();
+  IFCol(Integer p1);
   ~IFCol();
   virtual QPointer<RetType> accept(Visitor *v);
   virtual IFCol *clone() const;
@@ -689,10 +669,11 @@ public:
 class SFValue : public SAtom
 {
 public:
+  Integer integer_;
 
   SFValue(const SFValue &);
   SFValue &operator=(const SFValue &);
-  SFValue();
+  SFValue(Integer p1);
   ~SFValue();
   virtual QPointer<RetType> accept(Visitor *v);
   virtual SFValue *clone() const;
@@ -805,21 +786,6 @@ public:
   virtual QPointer<RetType> accept(Visitor *v);
   virtual ENot *clone() const;
   void swap(ENot &);
-};
-
-class EImpl : public Expr
-{
-public:
-  Expr *expr_1;
-  Expr *expr_2;
-
-  EImpl(const EImpl &);
-  EImpl &operator=(const EImpl &);
-  EImpl(Expr *p1, Expr *p2);
-  ~EImpl();
-  virtual QPointer<RetType> accept(Visitor *v);
-  virtual EImpl *clone() const;
-  void swap(EImpl &);
 };
 
 class EBEq : public Expr
@@ -1000,6 +966,21 @@ public:
   void swap(EOr &);
 };
 
+class EFirstOrdQ : public Expr
+{
+public:
+  ListFilter *listfilter_;
+  Expr *expr_;
+
+  EFirstOrdQ(const EFirstOrdQ &);
+  EFirstOrdQ &operator=(const EFirstOrdQ &);
+  EFirstOrdQ(ListFilter *p1, Expr *p2);
+  ~EFirstOrdQ();
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual EFirstOrdQ *clone() const;
+  void swap(EFirstOrdQ &);
+};
+
 class EPQ : public Expr
 {
 public:
@@ -1012,6 +993,35 @@ public:
   virtual QPointer<RetType> accept(Visitor *v);
   virtual EPQ *clone() const;
   void swap(EPQ &);
+};
+
+class EImpl : public Expr
+{
+public:
+  Expr *expr_1;
+  Expr *expr_2;
+
+  EImpl(const EImpl &);
+  EImpl &operator=(const EImpl &);
+  EImpl(Expr *p1, Expr *p2);
+  ~EImpl();
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual EImpl *clone() const;
+  void swap(EImpl &);
+};
+
+class FString : public Filter
+{
+public:
+  String string_;
+
+  FString(const FString &);
+  FString &operator=(const FString &);
+  FString(String p1);
+  ~FString();
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual FString *clone() const;
+  void swap(FString &);
 };
 
 
@@ -1028,6 +1038,13 @@ class ListExpr : public Visitable, public std::vector<Expr*>
 public:
   virtual QPointer<RetType> accept(Visitor *v);
   virtual ListExpr *clone() const;
+};
+
+class ListFilter : public Visitable, public std::vector<Filter*>
+{
+public:
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual ListFilter *clone() const;
 };
 
 

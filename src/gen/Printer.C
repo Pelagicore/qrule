@@ -4,6 +4,7 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
+
 /*** BNFC-Generated Pretty Printer and Abstract Syntax Viewer ***/
 
 #include <string>
@@ -140,7 +141,7 @@ QPointer<RetType> PrintAbsyn::visitRRule(RRule* p)
   _i_ = 0; p->astscope_->accept(this);
   _i_ = 0; p->explanation_->accept(this);
   render("::");
-  _i_ = 0; p->quantifier_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -243,7 +244,7 @@ QPointer<RetType> PrintAbsyn::visitListRule(ListRule *listrule)
   for (ListRule::const_iterator i = listrule->begin() ; i != listrule->end() ; ++i)
   {
     (*i)->accept(this);
-    if (i != listrule->end() - 1) render(',');
+    render("");
   }
 }QPointer<RetType> PrintAbsyn::visitTag(Tag*p) {} //abstract class
 
@@ -297,35 +298,6 @@ QPointer<RetType> PrintAbsyn::visitSevCritical(SevCritical* p)
   _i_ = oldi;
 }
 
-QPointer<RetType> PrintAbsyn::visitQuantifier(Quantifier*p) {} //abstract class
-
-QPointer<RetType> PrintAbsyn::visitQExpr(QExpr* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  _i_ = 0; p->expr_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-QPointer<RetType> PrintAbsyn::visitQFor(QFor* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render("forAll");
-  visitString(p->string_);
-  render(':');
-  _i_ = 0; p->expr_->accept(this);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 QPointer<RetType> PrintAbsyn::visitPathQuantifier(PathQuantifier*p) {} //abstract class
 
 QPointer<RetType> PrintAbsyn::visitAG(AG* p)
@@ -334,7 +306,7 @@ QPointer<RetType> PrintAbsyn::visitAG(AG* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("AG");
-  _i_ = 10; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -347,7 +319,7 @@ QPointer<RetType> PrintAbsyn::visitAF(AF* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("AF");
-  _i_ = 10; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -360,7 +332,7 @@ QPointer<RetType> PrintAbsyn::visitAX(AX* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("AX");
-  _i_ = 10; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -373,9 +345,9 @@ QPointer<RetType> PrintAbsyn::visitAU(AU* p)
   if (oldi > 0) render(_L_PAREN);
 
   render('A');
-  _i_ = 10; p->expr_1->accept(this);
+  _i_ = 0; p->expr_1->accept(this);
   render('U');
-  _i_ = 10; p->expr_2->accept(this);
+  _i_ = 0; p->expr_2->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -388,7 +360,7 @@ QPointer<RetType> PrintAbsyn::visitEG(EG* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("EG");
-  _i_ = 10; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -401,7 +373,7 @@ QPointer<RetType> PrintAbsyn::visitEF(EF* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("EF");
-  _i_ = 10; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -414,7 +386,7 @@ QPointer<RetType> PrintAbsyn::visitEX(EX* p)
   if (oldi > 0) render(_L_PAREN);
 
   render("EX");
-  _i_ = 10; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -427,9 +399,9 @@ QPointer<RetType> PrintAbsyn::visitEU(EU* p)
   if (oldi > 0) render(_L_PAREN);
 
   render('E');
-  _i_ = 10; p->expr_1->accept(this);
+  _i_ = 0; p->expr_1->accept(this);
   render('U');
-  _i_ = 10; p->expr_2->accept(this);
+  _i_ = 0; p->expr_2->accept(this);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -444,6 +416,7 @@ QPointer<RetType> PrintAbsyn::visitIFRow(IFRow* p)
   if (oldi > 0) render(_L_PAREN);
 
   render('R');
+  visitInteger(p->integer_);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -456,6 +429,7 @@ QPointer<RetType> PrintAbsyn::visitIFCol(IFCol* p)
   if (oldi > 0) render(_L_PAREN);
 
   render('C');
+  visitInteger(p->integer_);
 
   if (oldi > 0) render(_R_PAREN);
 
@@ -530,6 +504,7 @@ QPointer<RetType> PrintAbsyn::visitSFValue(SFValue* p)
   if (oldi > 2) render(_L_PAREN);
 
   render('V');
+  visitInteger(p->integer_);
 
   if (oldi > 2) render(_R_PAREN);
 
@@ -618,7 +593,7 @@ QPointer<RetType> PrintAbsyn::visitEParant(EParant* p)
   if (oldi > 10) render(_L_PAREN);
 
   render('(');
-  _i_ = 1; p->expr_->accept(this);
+  _i_ = 0; p->expr_->accept(this);
   render(')');
 
   if (oldi > 10) render(_R_PAREN);
@@ -635,20 +610,6 @@ QPointer<RetType> PrintAbsyn::visitENot(ENot* p)
   _i_ = 10; p->expr_->accept(this);
 
   if (oldi > 9) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-QPointer<RetType> PrintAbsyn::visitEImpl(EImpl* p)
-{
-  int oldi = _i_;
-  if (oldi > 8) render(_L_PAREN);
-
-  _i_ = 8; p->expr_1->accept(this);
-  render("->");
-  _i_ = 9; p->expr_2->accept(this);
-
-  if (oldi > 8) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -823,12 +784,40 @@ QPointer<RetType> PrintAbsyn::visitEOr(EOr* p)
   _i_ = oldi;
 }
 
+QPointer<RetType> PrintAbsyn::visitEFirstOrdQ(EFirstOrdQ* p)
+{
+  int oldi = _i_;
+  if (oldi > 3) render(_L_PAREN);
+
+  render("forAll");
+  if(p->listfilter_) {_i_ = 0; p->listfilter_->accept(this);}  render(':');
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 3) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
 QPointer<RetType> PrintAbsyn::visitEPQ(EPQ* p)
+{
+  int oldi = _i_;
+  if (oldi > 3) render(_L_PAREN);
+
+  _i_ = 0; p->pathquantifier_->accept(this);
+
+  if (oldi > 3) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitEImpl(EImpl* p)
 {
   int oldi = _i_;
   if (oldi > 2) render(_L_PAREN);
 
-  _i_ = 0; p->pathquantifier_->accept(this);
+  _i_ = 2; p->expr_1->accept(this);
+  render("->");
+  _i_ = 3; p->expr_2->accept(this);
 
   if (oldi > 2) render(_R_PAREN);
 
@@ -841,6 +830,27 @@ QPointer<RetType> PrintAbsyn::visitListExpr(ListExpr *listexpr)
   {
     (*i)->accept(this);
     render("");
+  }
+}QPointer<RetType> PrintAbsyn::visitFilter(Filter*p) {} //abstract class
+
+QPointer<RetType> PrintAbsyn::visitFString(FString* p)
+{
+  int oldi = _i_;
+  if (oldi > 0) render(_L_PAREN);
+
+  visitString(p->string_);
+
+  if (oldi > 0) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitListFilter(ListFilter *listfilter)
+{
+  for (ListFilter::const_iterator i = listfilter->begin() ; i != listfilter->end() ; ++i)
+  {
+    (*i)->accept(this);
+    if (i != listfilter->end() - 1) render('.');
   }
 }QPointer<RetType> PrintAbsyn::visitInteger(Integer i)
 {
@@ -927,7 +937,7 @@ QPointer<RetType> ShowAbsyn::visitRRule(RRule* p)
   bufAppend(']');
   bufAppend(' ');
   bufAppend('[');
-  if (p->quantifier_)  p->quantifier_->accept(this);
+  if (p->expr_)  p->expr_->accept(this);
   bufAppend(']');
   bufAppend(')');
 }
@@ -1001,30 +1011,6 @@ QPointer<RetType> ShowAbsyn::visitSevWarning(SevWarning* p)
 QPointer<RetType> ShowAbsyn::visitSevCritical(SevCritical* p)
 {
   bufAppend("SevCritical");
-}
-QPointer<RetType> ShowAbsyn::visitQuantifier(Quantifier* p) {} //abstract class
-
-QPointer<RetType> ShowAbsyn::visitQExpr(QExpr* p)
-{
-  bufAppend('(');
-  bufAppend("QExpr");
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->expr_)  p->expr_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
-}
-QPointer<RetType> ShowAbsyn::visitQFor(QFor* p)
-{
-  bufAppend('(');
-  bufAppend("QFor");
-  bufAppend(' ');
-  visitString(p->string_);
-  bufAppend(' ');
-  bufAppend('[');
-  if (p->expr_)  p->expr_->accept(this);
-  bufAppend(']');
-  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitPathQuantifier(PathQuantifier* p) {} //abstract class
 
@@ -1112,11 +1098,19 @@ QPointer<RetType> ShowAbsyn::visitIAtom(IAtom* p) {} //abstract class
 
 QPointer<RetType> ShowAbsyn::visitIFRow(IFRow* p)
 {
+  bufAppend('(');
   bufAppend("IFRow");
+  bufAppend(' ');
+  visitInteger(p->integer_);
+  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitIFCol(IFCol* p)
 {
+  bufAppend('(');
   bufAppend("IFCol");
+  bufAppend(' ');
+  visitInteger(p->integer_);
+  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitIInt(IInt* p)
 {
@@ -1150,28 +1144,23 @@ QPointer<RetType> ShowAbsyn::visitSString(SString* p)
 }
 QPointer<RetType> ShowAbsyn::visitSFValue(SFValue* p)
 {
+  bufAppend('(');
   bufAppend("SFValue");
+  bufAppend(' ');
+  visitInteger(p->integer_);
+  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitSValue(SValue* p)
 {
-  bufAppend('(');
   bufAppend("SValue");
-  bufAppend(' ');
-  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitSValueType(SValueType* p)
 {
-  bufAppend('(');
   bufAppend("SValueType");
-  bufAppend(' ');
-  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitSNodeType(SNodeType* p)
 {
-  bufAppend('(');
   bufAppend("SNodeType");
-  bufAppend(' ');
-  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitSConcat(SConcat* p)
 {
@@ -1212,16 +1201,6 @@ QPointer<RetType> ShowAbsyn::visitENot(ENot* p)
   bufAppend('[');
   if (p->expr_)  p->expr_->accept(this);
   bufAppend(']');
-  bufAppend(')');
-}
-QPointer<RetType> ShowAbsyn::visitEImpl(EImpl* p)
-{
-  bufAppend('(');
-  bufAppend("EImpl");
-  bufAppend(' ');
-  p->expr_1->accept(this);
-  bufAppend(' ');
-  p->expr_2->accept(this);
   bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitEBEq(EBEq* p)
@@ -1344,6 +1323,20 @@ QPointer<RetType> ShowAbsyn::visitEOr(EOr* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
+QPointer<RetType> ShowAbsyn::visitEFirstOrdQ(EFirstOrdQ* p)
+{
+  bufAppend('(');
+  bufAppend("EFirstOrdQ");
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listfilter_)  p->listfilter_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->expr_)  p->expr_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
 QPointer<RetType> ShowAbsyn::visitEPQ(EPQ* p)
 {
   bufAppend('(');
@@ -1354,12 +1347,41 @@ QPointer<RetType> ShowAbsyn::visitEPQ(EPQ* p)
   bufAppend(']');
   bufAppend(')');
 }
+QPointer<RetType> ShowAbsyn::visitEImpl(EImpl* p)
+{
+  bufAppend('(');
+  bufAppend("EImpl");
+  bufAppend(' ');
+  p->expr_1->accept(this);
+  bufAppend(' ');
+  p->expr_2->accept(this);
+  bufAppend(')');
+}
 QPointer<RetType> ShowAbsyn::visitListExpr(ListExpr *listexpr)
 {
   for (ListExpr::const_iterator i = listexpr->begin() ; i != listexpr->end() ; ++i)
   {
     (*i)->accept(this);
     if (i != listexpr->end() - 1) bufAppend(", ");
+  }
+}
+
+QPointer<RetType> ShowAbsyn::visitFilter(Filter* p) {} //abstract class
+
+QPointer<RetType> ShowAbsyn::visitFString(FString* p)
+{
+  bufAppend('(');
+  bufAppend("FString");
+  bufAppend(' ');
+  visitString(p->string_);
+  bufAppend(')');
+}
+QPointer<RetType> ShowAbsyn::visitListFilter(ListFilter *listfilter)
+{
+  for (ListFilter::const_iterator i = listfilter->begin() ; i != listfilter->end() ; ++i)
+  {
+    (*i)->accept(this);
+    if (i != listfilter->end() - 1) bufAppend(", ");
   }
 }
 

@@ -4,6 +4,7 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
+
 #ifndef PARSER_HEADER_FILE
 #define PARSER_HEADER_FILE
 
@@ -19,12 +20,13 @@ class Explanation;
 class ListRule;
 class Tag;
 class Severity;
-class Quantifier;
 class PathQuantifier;
 class IAtom;
 class SAtom;
 class Expr;
 class ListExpr;
+class Filter;
+class ListFilter;
 
 typedef union
 {
@@ -40,12 +42,13 @@ typedef union
   ListRule* listrule_;
   Tag* tag_;
   Severity* severity_;
-  Quantifier* quantifier_;
   PathQuantifier* pathquantifier_;
   IAtom* iatom_;
   SAtom* satom_;
   Expr* expr_;
   ListExpr* listexpr_;
+  Filter* filter_;
+  ListFilter* listfilter_;
 } YYSTYPE;
 
 RuleSet* pRuleSet(FILE *inp);
@@ -64,8 +67,6 @@ Tag* pTag(FILE *inp);
 Tag* pTag(const char *str);
 Severity* pSeverity(FILE *inp);
 Severity* pSeverity(const char *str);
-Quantifier* pQuantifier(FILE *inp);
-Quantifier* pQuantifier(const char *str);
 PathQuantifier* pPathQuantifier(FILE *inp);
 PathQuantifier* pPathQuantifier(const char *str);
 IAtom* pIAtom(FILE *inp);
@@ -76,6 +77,10 @@ Expr* pExpr(FILE *inp);
 Expr* pExpr(const char *str);
 ListExpr* pListExpr(FILE *inp);
 ListExpr* pListExpr(const char *str);
+Filter* pFilter(FILE *inp);
+Filter* pFilter(const char *str);
+ListFilter* pListFilter(FILE *inp);
+ListFilter* pListFilter(const char *str);
 
 
 

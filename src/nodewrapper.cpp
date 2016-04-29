@@ -101,22 +101,27 @@ QString NodeWrapper::getOutput(){
 }
 
 const QList<NodeWrapper*> NodeWrapper::getNodes(QString comparisonNodeType) {
-    QStringList list = comparisonNodeType.split('.');
+    QStack<QString> stack;
+    stack.push(comparisonNodeType);
+    return getNodes(stack);
+}
+
+const QList<NodeWrapper*> NodeWrapper::getNodes(QStack<QString> stack) {
     QList<NodeWrapper*> nodes = QList<NodeWrapper*>();
-    innerGetNodes(list, list, nodes);
+    innerGetNodes(stack, stack, nodes);
     return nodes;
 }
 
-void NodeWrapper::innerGetNodes(QStringList searchList, const QStringList& originalList, QList<NodeWrapper*>& nodes) {
-    QString str = searchList.takeFirst();
+void NodeWrapper::innerGetNodes(QStack<QString> searchStack, const QStack<QString>& originalStack, QList<NodeWrapper*>& nodes) {
+    QString str = searchStack.pop();
     if (nodeType != str) {
-        searchList = originalList;
-    } else if (searchList.isEmpty()) {
+        searchStack = originalStack;
+    } else if (searchStack.isEmpty()) {
         nodes.append(this);
-        searchList = originalList;
+        searchStack = originalStack;
     }
     foreach(NodeWrapper* child, children) {
-        child->innerGetNodes(searchList, originalList, nodes);
+        child->innerGetNodes(searchStack, originalStack, nodes);
 
     }
 }
