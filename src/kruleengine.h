@@ -39,6 +39,8 @@ private:
 
     QMap<QString, KRuleOutput*> ruleViolations;
     QMap<QString, NodeWrapper*> importedASTs;
+    QMap<QString, QList<QFileInfo>> avalibleFiles;
+
 
     RuleSet* kruleTree;
     void verifyQMLFile(const QFileInfo &qmlFilename);

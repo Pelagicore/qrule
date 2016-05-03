@@ -5,8 +5,9 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 #include "kruleengine.h"
-
 #include <QDir>
+
+
 
 KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot, QString path):createDot(s_setDot), path(path) {
     FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
@@ -69,7 +70,43 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
 
     NodeWrapper* wrappedRoot = qmlVisitor.getWrappedRoot();
 
-    //1. Get list of imports.
+    //Do the same but for all files in the directory.
+
+    //1. Get list of import directories.
+
+    // get all files in the current directory directory
+    //avalibleFiles
+
+    QStringList nameFilter("*.qml");
+    QDir directory(qmlFilename.absoluteDir());
+    QStringList qmlFiles = directory.entryList(nameFilter);
+    // add all fiels to avalibleFiles
+
+    foreach (QString s, qmlFiles)
+    {
+        QFileInfo qFile = QFileInfo(directory,s);
+        if(s != qmlFilename.fileName() )
+        {
+            if(!avalibleFiles.contains(qmlFilename.absoluteFilePath()))
+            {
+                QList<QFileInfo> list;
+                list.insert(0,qFile);
+                avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
+            }
+            else
+            {
+                QList<QFileInfo> list =avalibleFiles.take(qmlFilename.absoluteFilePath());
+                list.insert(list.length(),qFile);
+                avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
+            }
+        }
+
+
+    }
+
+
+
+    // Add all qmlfiles to be part of the list of avalible files.
     QList<NodeWrapper*> importFiles = wrappedRoot->getNodes("Import");
     QMap<QString, QString> importAliasMap;
     foreach(NodeWrapper* importNode, importFiles) {
@@ -79,9 +116,47 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
             if (importNode->hasToken("asToken")) {
                 importAliasMap.insert(info.absoluteFilePath(), importNode->getValue());
             }
-            if (!importedASTs.contains(info.absoluteFilePath())) {
-                verifyQMLFile(info);
+            //catalog add all sub files to importlist and run verifyQMLFile
+            if (info.completeSuffix()=="")
+            {
+
+                QStringList nameFilter("*.qml");
+
+                QDir directory(info.absoluteFilePath().append("/"));
+                QStringList qmlFiles = directory.entryList(nameFilter);
+                // add all fiels to avalibleFiles
+                foreach (QString s, qmlFiles)
+                {
+                    QFileInfo qFile = QFileInfo(directory,s);
+                    if(!avalibleFiles.contains(qmlFilename.absoluteFilePath()))
+                    {
+                        QList<QFileInfo> list;
+                        list.insert(0,qFile);
+                        avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
+                    }
+                    else
+                    {
+                        QList<QFileInfo> list =avalibleFiles.take(qmlFilename.absoluteFilePath());
+                        list.insert(list.length(),qFile);
+                        avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
+                    }
+
+
+                }
+
             }
+
+            foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath()))
+            {
+                if (!importedASTs.contains(f.fileName())) {
+
+                     verifyQMLFile(f);
+
+
+                }
+            }
+
+
         }
     }
 
@@ -111,7 +186,7 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     kruleTree->accept(&kruleVisitor);
     mergeOccurranceMap(kruleVisitor.getFailures());
 
-    // ADD TO IMPORTEDASTSdirectorydirecdirectorytory
+    // ADD TO IMPORTEDASTSdirectory
     NodeWrapper* objectPointer;
     if (wrappedRoot->getChildren().first()->getNodeType() == "ObjectDefinition") {
         objectPointer = new NodeWrapper(wrappedRoot->getChildren().first());
