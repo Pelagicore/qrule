@@ -308,9 +308,11 @@ QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileIn
                 } else if (type == "depends") {
                     reference = cols.at(1);
                     readVersion = cols.at(2).toFloat();
-                    QMap<QString, QPair<float, QFileInfo>> result =
-                            parseQmlDirFile(QFileInfo(d, reference), version);
-                    filemap.unite(result);
+                    QMap<QString, QPair<float, QFileInfo>> result = parseQmlDirFile(QFileInfo(d, reference), version);
+                    QString prefix = qmldirFile.dir().dirName();
+                    foreach(QString key, result.keys()) {
+                        filemap.insert(prefix + "." + key, result.value(key));
+                    }
 
                 } else if (type == "designersupported") {
                     reference = cols.at(1);
