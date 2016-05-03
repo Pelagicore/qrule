@@ -94,22 +94,33 @@ bool QmlVisitor::visit(QQmlJS::AST::UiImport *exp) {
     tokenMap.insert("fileNameToken", stringifyToken(exp->fileNameToken));
 
     QString name;
+    QString nodeType = "Import";
     if (exp->importUri != nullptr) {
-        QQmlJS::AST::UiQualifiedId* next = exp->importUri->next;
-        name = exp->importUri->name.toString();
-        while (next != nullptr) {
-            name.append(".").append(next->name);
-            next = next->next;
+        nodeType += "Uri";
+
+        if (!exp->importId.isNull()) {
+            name = exp->importId.toString();
+        } else{
+            QQmlJS::AST::UiQualifiedId* next = exp->importUri->next;
+            name = exp->importUri->name.toString();
+            while (next != nullptr) {
+                name.append(".").append(next->name);
+                next = next->next;
+            }
         }
-    } else if (!exp->importId.isNull()) {
-        name = exp->importId.toString();
-    } else if (!exp->fileName.isNull()) {
-        name = exp->fileName.toString();
+    }
+    else if (!exp->fileName.isNull()) {
+        nodeType += "Literal";
+        if (!exp->importId.isNull()) {
+            name = exp->importId.toString();
+        } else{
+            name = exp->fileName.toString();
+        }
     } else {
         name = "CASE NOT COVERED";
     }
 
-    NodeWrapper *n = new NodeWrapper(name, QString("String"), QString("Import"),
+    NodeWrapper *n = new NodeWrapper(name, QString("String"), nodeType,
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap, filename);

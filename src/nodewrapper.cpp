@@ -130,7 +130,8 @@ const QString NodeWrapper::getId() {
     QString name = QString().append(nodeType)
                             .append("_v").append(QString(value).replace(".", "_").replace(" ", "_"))
                             .append("_r").append(QString::number(row))
-                            .append("_c").append(QString::number(col));
+                            .append("_c").append(QString::number(col))
+                            .append("_f").append(fileName.baseName());
     return name;
 }
 

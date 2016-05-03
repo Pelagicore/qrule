@@ -5,7 +5,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 #include "kruleengine.h"
-#include <QDir>
+
 
 
 
@@ -76,6 +76,7 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
 
     // get all files in the current directory directory
     //avalibleFiles
+    QMap<QString, QList<QFileInfo>> avalibleFiles;
 
     QStringList nameFilter("*.qml");
     QDir directory(qmlFilename.absoluteDir());
@@ -105,10 +106,46 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     }
 
 
-
+    // uri
     // Add all qmlfiles to be part of the list of avalible files.
-    QList<NodeWrapper*> importFiles = wrappedRoot->getNodes("Import");
+    QList<NodeWrapper*> importFiles = wrappedRoot->getNodes("ImportUri");
+
+    //   ID       Path
     QMap<QString, QString> importAliasMap;
+
+    foreach(NodeWrapper* importNode, importFiles) {
+            QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/")
+                                       .append(importNode->getToken("fileNameToken").replace("\"","")));
+
+
+
+            // TODO should not be relative path. Should use -I flags
+            QMap<QString, QPair<float,QFileInfo>> temp =
+            parseQmlDirFile(info, importNode->getToken("versionToken").toFloat());
+
+            QString prefix = "";
+            if (importNode->hasToken("asToken")) {
+                prefix = QString(importNode->getValue()).append(".");
+            }
+
+            foreach (QString key, temp.keys())
+            {
+                foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
+                    const QString fullName = prefix + key;
+                    if (objectDef->getValue() == fullName) {
+                        QFileInfo f = temp.value(key).second;
+                        if (!importedASTs.contains(f.absoluteFilePath())) {
+                             verifyQMLFile(f);
+                        }
+
+                        importAliasMap.insert(f.absoluteFilePath(), fullName);
+
+                    }
+                }
+            }
+    }
+    // Literal
+    importFiles = wrappedRoot->getNodes("ImportLiteral");
     foreach(NodeWrapper* importNode, importFiles) {
         if (importNode->getToken("fileNameToken").contains("\"")) {
             QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/")
@@ -148,12 +185,25 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
 
             foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath()))
             {
-                if (!importedASTs.contains(f.fileName())) {
+                foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
+
+                    if (objectDef->getValue() == f.baseName()) {
+
+                        if (!importedASTs.contains(f.absoluteFilePath())) {
+                             verifyQMLFile(f);
+                        }
+
+                        importAliasMap.insert(f.absoluteFilePath(), f.baseName());
+
+                    }
+                }
+                /*
+                if (!importedASTs.contains(f.absoluteFilePath())) {
 
                      verifyQMLFile(f);
 
 
-                }
+                }*/
             }
 
 
