@@ -51,7 +51,7 @@ int main(int argv, char *argc[]) {
     QCommandLineOption setOutput(QStringList() << "o" << "outPutFile", QLatin1String("Change name of the output file"),"nameFile", "output.xml");
     commandLine.addOption(setOutput);
 
-    QCommandLineOption setPath(QStringList() << "p" << "path", QLatin1String("Change project path"),"path","");
+    QCommandLineOption setPath(QStringList() << "I" << "ImportPath", QLatin1String("Change project path"),"path","");
     commandLine.addOption(setPath);
 
     commandLine.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));

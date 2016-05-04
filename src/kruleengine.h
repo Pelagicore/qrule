@@ -51,7 +51,7 @@ private:
     QMap<QString, QPair<float, QFileInfo>> parseQmlDirFile(const QFileInfo &qmldirFile, const float version);
 
     bool createDot;
-    QString path;
+    QFileInfo path;
 
 };
 

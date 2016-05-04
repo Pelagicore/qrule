@@ -38,7 +38,7 @@ QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames)
 
     foreach (const QString &qmlFilename, qmlFilenames) {
         QString p="";
-        verifyQMLFile(p.append(path).append(qmlFilename));
+        verifyQMLFile(qmlFilename);
     }
     return ruleViolations.values();
 }
@@ -114,10 +114,9 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     QMap<QString, QString> importAliasMap;
 
     foreach(NodeWrapper* importNode, importFiles) {
-            QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/")
-                                       .append(importNode->getToken("fileNameToken").replace("\"","")));
 
-
+            QFileInfo info = QFileInfo(path.absoluteFilePath().append("/")
+                                       .append(importNode->getToken("fileNameToken")).replace(".","/").append("/qmldir"));
 
             // TODO should not be relative path. Should use -I flags
             QMap<QString, QPair<float,QFileInfo>> temp =
