@@ -32,27 +32,27 @@
 
 class KRuleEngine {
 public:
-    KRuleEngine(const QString &kRuleFilename, bool s_setDot, QString path);
+    KRuleEngine(const QString &kRuleFilename, QString importPath);
 
-    QList<KRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames);
+    QList<KRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames, const bool renderDot);
+
 private:
 
     QMap<QString, KRuleOutput*> ruleViolations;
     QMap<QString, NodeWrapper*> importedASTs;
 
-
     RuleSet* kruleTree;
-    void verifyQMLFile(const QFileInfo &qmlFilename);
-
+    void verifyQMLFile(const QFileInfo &qmlFilename, const bool renderDot);
 
     QString readCode(QString qmlFilename);
     void mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map);
 
     QMap<QString, QPair<float, QFileInfo>> parseQmlDirFile(const QFileInfo &qmldirFile, const float version);
 
-    bool createDot;
-    QFileInfo path;
+    QFileInfo importPath;
 
+    void parseUriImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const bool renderDot);
+    void parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const QFileInfo &qmlFilename, const bool renderDot);
 };
 
 #endif // KRULEENGINE_H

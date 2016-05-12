@@ -33,6 +33,7 @@ void messageHandler(QtMsgType t, const QMessageLogContext &context, const QStrin
 }
 
 int main(int argv, char *argc[]) {
+
     // Setup commandline parser
     QCoreApplication app(argv, argc);
     QCoreApplication::setApplicationName("KRuleEngine");
@@ -68,18 +69,17 @@ int main(int argv, char *argc[]) {
         commandLine.showHelp(-1);
     }
 
+    // Parse arguments
     bool s_setDot = commandLine.isSet(setDot);
-    bool s_setOutputFile = commandLine.isSet(setOutput);
     QString name = commandLine.value(setOutput);
-
-    bool s_setDirectory = commandLine.isSet(setPath);
     QString path = commandLine.value(setPath);
-
     QStringList arguments = commandLine.positionalArguments();
     QString kruleFilename = arguments.takeFirst();
-    KRuleEngine kruleEngine = KRuleEngine(kruleFilename, s_setDot, path);
 
-    QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments);
+    // Start KRuleEngine
+    KRuleEngine kruleEngine = KRuleEngine(kruleFilename, path);
+
+    QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments, s_setDot);
 
     qDebug() << "############################################";
     qDebug() << "                XML OUTPUtT";

@@ -8,8 +8,12 @@
 
 
 
-
-KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot, QString path):createDot(s_setDot), path(path) {
+/*!
+ * \brief KRuleEngine::KRuleEngine Constructs a QRuleEngine by parsing a given QRule file.
+ * \param kruleFilename A QString representing the path to the QRule file containing the rules to use.
+ * \param importPaths a QStringList that specifes import paths. Can be empty.
+ */
+KRuleEngine::KRuleEngine(const QString &kruleFilename, QString path): importPath(path) {
     FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
 
     if (!kruleFile) {
@@ -19,33 +23,120 @@ KRuleEngine::KRuleEngine(const QString &kruleFilename, bool s_setDot, QString pa
     kruleTree = pRuleSet(kruleFile);
 
     if (kruleTree) {
-        ShowAbsyn s = ShowAbsyn();
-    //    qDebug() << s.show(kruleTree);
-    //    qDebug() << "[Linearized Tree]\n";
-        PrintAbsyn p = PrintAbsyn();
-    //    qDebug() << p.print(kruleTree);
     } else {
         throw ParseException("Could not parse KRulefile");
     }
 }
 
-/**
- * @brief KRuleEngine::verifyQMLFiles
- * @param qmlFilenames
- * @return
+/*!
+ * \brief KRuleEngine::verifyQMLFiles Verifies the given QML files against the rules given at construction of this object.
+ * \param qmlFilenames A list of the paths to all the QML files that should be verifed.
+ * \return Any rule violations formatted as QRuleOutput
  */
-QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames) {
-
+QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames, bool renderDot) {
     foreach (const QString &qmlFilename, qmlFilenames) {
-        QString p="";
-        verifyQMLFile(qmlFilename);
+        verifyQMLFile(qmlFilename, renderDot);
     }
     return ruleViolations.values();
 }
 
 
-void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
+void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap,
+                                      const QFileInfo &qmlFilename, const bool renderDot) {
+    QMap<QString, QList<QFileInfo>> avalibleFiles;
 
+    const QStringList nameFilter("*.qml");
+    QDir directory = qmlFilename.dir();
+    QStringList qmlFiles = directory.entryList(nameFilter);
+
+    foreach (QString s, qmlFiles) {
+        if(s != qmlFilename.fileName()) {
+            QFileInfo qFile = QFileInfo(directory,s);
+            QList<QFileInfo> list;
+            if(avalibleFiles.contains(qmlFilename.absoluteFilePath())) {
+                list =avalibleFiles.take(qmlFilename.absoluteFilePath());
+            }
+            list.append(qFile);
+            avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
+        }
+    }
+
+    foreach(NodeWrapper* importNode, wrappedRoot->getNodes("ImportLiteral")) {
+        if (importNode->getToken("fileNameToken").contains("\"")) {
+            QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/")
+                                       .append(importNode->getToken("fileNameToken").replace("\"","")));
+            if (importNode->hasToken("asToken")) {
+                importAliasMap.insert(info.absoluteFilePath(), importNode->getValue());
+            }
+
+            //catalog add all sub files to importlist and run verifyQMLFile
+            if (info.completeSuffix() == "") {
+                QStringList nameFilter("*.qml");
+
+                QDir directory(info.absoluteFilePath().append("/"));
+                QStringList qmlFiles = directory.entryList(nameFilter);
+
+                foreach (QString s, qmlFiles) {
+                    QFileInfo qFile = QFileInfo(directory,s);
+                    QList<QFileInfo> list;
+                    if(avalibleFiles.contains(qmlFilename.absoluteFilePath())) {
+                        list = avalibleFiles.take(qmlFilename.absoluteFilePath());
+                    }
+                    list.append(qFile);
+                    avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
+                }
+            }
+
+            foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath())) {
+                foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
+                    if (objectDef->getValue() == f.baseName()) {
+
+                        if (!importedASTs.contains(f.absoluteFilePath())) {
+                             verifyQMLFile(f, renderDot);
+                        }
+
+                        importAliasMap.insert(f.absoluteFilePath(), f.baseName());
+
+                    }
+                }
+            }
+        }
+    }
+}
+
+void KRuleEngine::parseUriImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const bool renderDot) {
+    foreach(NodeWrapper* importNode, wrappedRoot->getNodes("ImportUri")) {
+        QFileInfo info = QFileInfo(importPath.absoluteFilePath().append("/")
+                                   .append(importNode->getToken("fileNameToken"))
+                                   .replace(".","/").append("/qmldir"));
+
+        QMap<QString, QPair<float,QFileInfo>> qmldirInfo =
+            parseQmlDirFile(info, importNode->getToken("versionToken").toFloat());
+
+        QString prefix = "";
+        if (importNode->hasToken("asToken")) {
+            prefix = QString(importNode->getValue()).append(".");
+        }
+
+        foreach (QString key, qmldirInfo.keys()) {
+            const QString fullName = prefix + key;
+            QFileInfo f = qmldirInfo.value(key).second;
+            foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
+                if (objectDef->getValue() == fullName) {
+                    if (!importedASTs.contains(f.absoluteFilePath())) {
+                         verifyQMLFile(f, renderDot);
+                    }
+
+                    importAliasMap.insert(f.absoluteFilePath(), fullName);
+                }
+            }
+        }
+    }
+}
+
+void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderDot) {
+
+    // Parse QML code
     QString code = readCode(qmlFilename.absoluteFilePath());
 
     QQmlJS::Engine engine;
@@ -55,162 +146,26 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
     bool isJavaScript = info.suffix().toLower() == QLatin1String("js");
     lexer.setCode(code, /*line = */ 1, /*qmlMode=*/ !isJavaScript);
     QQmlJS::Parser parser = QQmlJS::Parser(&engine);
-    bool success = isJavaScript ? parser.parseProgram() : parser.parse();
+    bool successfullParse = isJavaScript ? parser.parseProgram() : parser.parse();
 
-    if (!success) {
+    if (!successfullParse) {
         foreach (const QQmlJS::DiagnosticMessage &m, parser.diagnosticMessages()) {
-            qWarning("%s:%d : %s", qPrintable(qmlFilename.absoluteFilePath()), m.loc.startLine, qPrintable(m.message));
-
+            qWarning("%s:%d : %s", qPrintable(qmlFilename.absoluteFilePath()),
+                     m.loc.startLine, qPrintable(m.message));
         }
     }
 
-    // with import -- do the same but extend without imports.
+    // Wrap QML AST
     QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename.absoluteFilePath());
     parser.ast()->accept(&qmlVisitor);
-
     NodeWrapper* wrappedRoot = qmlVisitor.getWrappedRoot();
 
-    //Do the same but for all files in the directory.
-
-    //1. Get list of import directories.
-
-    // get all files in the current directory directory
-    //avalibleFiles
-    QMap<QString, QList<QFileInfo>> avalibleFiles;
-
-    QStringList nameFilter("*.qml");
-    QDir directory(qmlFilename.absoluteDir());
-    QStringList qmlFiles = directory.entryList(nameFilter);
-    // add all fiels to avalibleFiles
-
-    foreach (QString s, qmlFiles)
-    {
-        QFileInfo qFile = QFileInfo(directory,s);
-        if(s != qmlFilename.fileName() )
-        {
-            if(!avalibleFiles.contains(qmlFilename.absoluteFilePath()))
-            {
-                QList<QFileInfo> list;
-                list.insert(0,qFile);
-                avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
-            }
-            else
-            {
-                QList<QFileInfo> list =avalibleFiles.take(qmlFilename.absoluteFilePath());
-                list.insert(list.length(),qFile);
-                avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
-            }
-        }
-
-
-    }
-
-
-    // uri
-    // Add all qmlfiles to be part of the list of avalible files.
-    QList<NodeWrapper*> importFiles = wrappedRoot->getNodes("ImportUri");
-
-    //   ID       Path
+    // Parse and verify all imports
     QMap<QString, QString> importAliasMap;
+    parseUriImports(wrappedRoot, importAliasMap, renderDot);
+    parseLiteralImports(wrappedRoot, importAliasMap, qmlFilename, renderDot);
 
-    foreach(NodeWrapper* importNode, importFiles) {
-
-            QFileInfo info = QFileInfo(path.absoluteFilePath().append("/")
-                                       .append(importNode->getToken("fileNameToken")).replace(".","/").append("/qmldir"));
-
-            // TODO should not be relative path. Should use -I flags
-            QMap<QString, QPair<float,QFileInfo>> temp =
-            parseQmlDirFile(info, importNode->getToken("versionToken").toFloat());
-
-            QString prefix = "";
-            if (importNode->hasToken("asToken")) {
-                prefix = QString(importNode->getValue()).append(".");
-            }
-
-            foreach (QString key, temp.keys())
-            {
-                foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
-                    const QString fullName = prefix + key;
-                    if (objectDef->getValue() == fullName) {
-                        QFileInfo f = temp.value(key).second;
-                        if (!importedASTs.contains(f.absoluteFilePath())) {
-                             verifyQMLFile(f);
-                        }
-
-                        importAliasMap.insert(f.absoluteFilePath(), fullName);
-
-                    }
-                }
-            }
-    }
-    // Literal
-    importFiles = wrappedRoot->getNodes("ImportLiteral");
-    foreach(NodeWrapper* importNode, importFiles) {
-        if (importNode->getToken("fileNameToken").contains("\"")) {
-            QFileInfo info = QFileInfo(qmlFilename.canonicalPath().append("/")
-                                       .append(importNode->getToken("fileNameToken").replace("\"","")));
-            if (importNode->hasToken("asToken")) {
-                importAliasMap.insert(info.absoluteFilePath(), importNode->getValue());
-            }
-            //catalog add all sub files to importlist and run verifyQMLFile
-            if (info.completeSuffix()=="")
-            {
-
-                QStringList nameFilter("*.qml");
-
-                QDir directory(info.absoluteFilePath().append("/"));
-                QStringList qmlFiles = directory.entryList(nameFilter);
-                // add all fiels to avalibleFiles
-                foreach (QString s, qmlFiles)
-                {
-                    QFileInfo qFile = QFileInfo(directory,s);
-                    if(!avalibleFiles.contains(qmlFilename.absoluteFilePath()))
-                    {
-                        QList<QFileInfo> list;
-                        list.insert(0,qFile);
-                        avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
-                    }
-                    else
-                    {
-                        QList<QFileInfo> list =avalibleFiles.take(qmlFilename.absoluteFilePath());
-                        list.insert(list.length(),qFile);
-                        avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
-                    }
-
-
-                }
-
-            }
-
-            foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath()))
-            {
-                foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
-
-                    if (objectDef->getValue() == f.baseName()) {
-
-                        if (!importedASTs.contains(f.absoluteFilePath())) {
-                             verifyQMLFile(f);
-                        }
-
-                        importAliasMap.insert(f.absoluteFilePath(), f.baseName());
-
-                    }
-                }
-                /*
-                if (!importedASTs.contains(f.absoluteFilePath())) {
-
-                     verifyQMLFile(f);
-
-
-                }*/
-            }
-
-
-        }
-    }
-
-
-    //2. Add imported file to AST.
+    // Merge imported ASTs into top AST
     QList<NodeWrapper*> nodes = wrappedRoot->getNodes("ObjectDefinition");
     foreach(NodeWrapper* objectNode, nodes) {
         foreach(QString importedPath, importedASTs.keys()) {
@@ -225,17 +180,14 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
                 objectNode->merge(*importedNode);
             }
         }
-
     }
 
-    wrappedRoot->print();
-
-    // VERIFY
+    // Verify wrapped AST
     KRuleVisitor kruleVisitor = KRuleVisitor(wrappedRoot);
     kruleTree->accept(&kruleVisitor);
     mergeOccurranceMap(kruleVisitor.getFailures());
 
-    // ADD TO IMPORTEDASTSdirectory
+    // Add top object node to map over imported asts
     NodeWrapper* objectPointer;
     if (wrappedRoot->getChildren().first()->getNodeType() == "ObjectDefinition") {
         objectPointer = new NodeWrapper(wrappedRoot->getChildren().first());
@@ -245,10 +197,8 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename) {
 
     importedASTs.insert(qmlFilename.absoluteFilePath(), objectPointer);
 
-
-    // create dot files of the wrapped AST
-    if(createDot)
-    {
+    // Create dot files of the wrapped AST
+    if(renderDot) {
         QString dotFile = qmlFilename.absoluteFilePath();
         if(isJavaScript){
             dotFile.chop(2);
@@ -297,13 +247,9 @@ QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileIn
                     reference = cols.at(1);
                 }
                 else if (type == "internal") {
-                  // reference = cols.at(1);
                 } else if (type == "plugin") {
-                  //  reference = cols.at(1);
                 } else if (type == "typeinfo") {
-                  //  reference = cols.at(1);
                 } else if (type == "classname") {
-                  //  reference = cols.at(1);
                 } else if (type == "depends") {
                     reference = cols.at(1);
                     readVersion = cols.at(2).toFloat();
