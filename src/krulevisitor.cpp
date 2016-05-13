@@ -44,6 +44,14 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         qDebug() << "#########################################################";
 
         // pre-verification setup
+
+        if(currentRuleASTScope == "File") {
+            node = fileRoot;
+        } else {
+            node = superRoot;
+        }
+
+
         NodeWrapper* rootNode = node;
         NodeWrapper* rootClone = new NodeWrapper(rootNode);
         node = rootClone;

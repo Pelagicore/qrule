@@ -152,15 +152,16 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderD
     // Wrap QML AST
     QmlVisitor qmlVisitor = QmlVisitor(code, qmlFilename.absoluteFilePath());
     parser.ast()->accept(&qmlVisitor);
-    NodeWrapper* wrappedRoot = qmlVisitor.getWrappedRoot();
+    NodeWrapper* wrappedFileAST = qmlVisitor.getWrappedRoot();
 
     // Parse and verify all imports
     QMap<QString, QString> importAliasMap;
-    parseUriImports(wrappedRoot, importAliasMap, renderDot);
-    parseLiteralImports(wrappedRoot, importAliasMap, qmlFilename, renderDot);
+    parseUriImports(wrappedFileAST, importAliasMap, renderDot);
+    parseLiteralImports(wrappedFileAST, importAliasMap, qmlFilename, renderDot);
 
+    NodeWrapper* wrappedSuperAST = new NodeWrapper(wrappedFileAST);
     // Merge imported ASTs into top AST
-    QList<NodeWrapper*> nodes = wrappedRoot->getNodes("ObjectDefinition");
+    QList<NodeWrapper*> nodes = wrappedSuperAST->getNodes("ObjectDefinition");
     foreach(NodeWrapper* objectNode, nodes) {
         foreach(QString importedPath, importedASTs.keys()) {
             QString importName;
@@ -177,16 +178,16 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderD
     }
 
     // Verify wrapped AST
-    KRuleVisitor kruleVisitor = KRuleVisitor(wrappedRoot);
+    KRuleVisitor kruleVisitor = KRuleVisitor(wrappedSuperAST, wrappedFileAST);
     kruleTree->accept(&kruleVisitor);
     mergeOccurranceMap(kruleVisitor.getFailures());
 
     // Add top object node to map over imported asts
     NodeWrapper* objectPointer;
-    if (wrappedRoot->getChildren().first()->getNodeType() == "ObjectDefinition") {
-        objectPointer = new NodeWrapper(wrappedRoot->getChildren().first());
+    if (wrappedSuperAST->getChildren().first()->getNodeType() == "ObjectDefinition") {
+        objectPointer = new NodeWrapper(wrappedSuperAST->getChildren().first());
     } else {
-        objectPointer = new NodeWrapper(wrappedRoot->getChildren().last());
+        objectPointer = new NodeWrapper(wrappedSuperAST->getChildren().last());
     }
 
     importedASTs.insert(qmlFilename.absoluteFilePath(), objectPointer);
@@ -203,7 +204,7 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderD
         QFile fl2(dotFile);
         if(fl2.open(QFile::WriteOnly | QFile::Truncate)){
             QTextStream out(&fl2);
-            out << "digraph {" << qmlVisitor.getWrappedRoot()->getOutput() << " }";
+            out << "digraph {" << wrappedSuperAST->getOutput() << " }";
 
         }
     }

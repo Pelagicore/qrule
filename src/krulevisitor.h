@@ -42,8 +42,8 @@ public:
 
 class KRuleVisitor : public Visitor {
 public:
-    KRuleVisitor(NodeWrapper *node):
-        node(node) {}
+    KRuleVisitor(NodeWrapper *superRoot, NodeWrapper* fileRoot):
+        fileRoot(fileRoot), superRoot(superRoot) {}
 
     QPointer<RetType> visitRuleSet(RuleSet* p);
     QPointer<RetType> visitRule(Rule* p);
@@ -134,6 +134,8 @@ private:
     const quint32 extractUInt(const QPointer<RetType> &ret);
 
     NodeWrapper *node;
+    NodeWrapper *fileRoot;
+    NodeWrapper *superRoot;
     NodeWrapper *blameNode;
     QList<NodeWrapper*> quantifiedNode;
 
