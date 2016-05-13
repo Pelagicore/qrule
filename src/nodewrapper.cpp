@@ -128,10 +128,10 @@ void NodeWrapper::innerGetNodes(QStack<QString> searchStack, const QStack<QStrin
 
 const QString NodeWrapper::getId() {
     QString name = QString().append(nodeType)
-                            .append("_v").append(QString(value).replace(QRegExp("\W"), "_"))
+                            .append("_v").append(QString(value).replace(QRegExp("[^a-zA-Z1-9]"), "_"))
                             .append("_r").append(QString::number(row))
                             .append("_c").append(QString::number(col))
-                            .append("_f").append(fileName.baseName().replace(QRegExp("\W"),"_"));
+                            .append("_f").append(fileName.baseName().replace(QRegExp("[^a-zA-Z1-9]"),"_"));
     return name;
 }
 
