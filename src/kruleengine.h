@@ -29,11 +29,23 @@
 #include <QDir>
 
 
-
+/*!
+ * \brief The KRuleEngine class Verifies a set of QRules on QML files.
+ */
 class KRuleEngine {
 public:
+    /*!
+     * \brief KRuleEngine::KRuleEngine Constructs a QRuleEngine by parsing a given QRule file.
+     * \param kruleFilename A QString representing the path to the QRule file containing the rules to use.
+     * \param importPaths a QStringList that specifes import paths. Can be empty.
+     */
     KRuleEngine(const QString &kRuleFilename, QString importPath);
 
+    /*!
+     * \brief KRuleEngine::verifyQMLFiles Verifies the given QML files against the rules given at construction of this object.
+     * \param qmlFilenames A list of the paths to all the QML files that should be verifed.
+     * \return Any rule violations formatted as QRuleOutput
+     */
     QList<KRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames, const bool renderDot);
 
 private:
@@ -53,6 +65,7 @@ private:
 
     void parseUriImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const bool renderDot);
     void parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const QFileInfo &qmlFilename, const bool renderDot);
+    void extendAvailableFiles(const QFileInfo &qmlFilename, QMap<QString, QList<QFileInfo>> &avalibleFiles, QDir directory);
 };
 
 #endif // KRULEENGINE_H

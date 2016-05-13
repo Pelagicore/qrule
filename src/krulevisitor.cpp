@@ -21,8 +21,8 @@ QPointer<RetType> KRuleVisitor::visitSeverity(Severity *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitIAtom(IAtom *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitSAtom(SAtom *) {} //abstract class
 QPointer<RetType> KRuleVisitor::visitExpr(Expr *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitPathQuantifier(PathQuantifier *) {}
-QPointer<RetType> KRuleVisitor::visitFilter(Filter *) {}
+QPointer<RetType> KRuleVisitor::visitPathQuantifier(PathQuantifier *) {} //abstract class
+QPointer<RetType> KRuleVisitor::visitFilter(Filter *) {} //abstract class
 
 
 QPointer<RetType> KRuleVisitor::visitRSet(RSet *rset) {
@@ -31,6 +31,8 @@ QPointer<RetType> KRuleVisitor::visitRSet(RSet *rset) {
 
 QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
     try {
+
+        // Rule definition parsing
         currentRuleTag = extractQString(rrule->tag_->accept(this));
         currentRuleSeverity = extractQString(rrule->severity_->accept(this));
         currentRuleCause = extractQString(rrule->rulecause_->accept(this));
@@ -40,10 +42,16 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         qDebug() << "#########################################################";
         qDebug() << "            Verifying rule "<<currentRuleTag;
         qDebug() << "#########################################################";
+
+        // pre-verification setup
         NodeWrapper* rootNode = node;
         NodeWrapper* rootClone = new NodeWrapper(rootNode);
         node = rootClone;
         blameNode = node;
+
+        // Verify the same rule repeatedly removing any storing
+        // any failures in output format and then removing them from the AST.
+        // Continue until there are no more failures or there are no more AST.
         while (!extractBool(rrule->expr_->accept(this))) {
             qDebug() << "FAILURE at node" << blameNode->getId();
             KRuleOutput* outp;
@@ -64,7 +72,7 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         node = rootNode;
         delete rootClone;
     }
-    catch(NotImplemented &) {}
+    catch(NotImplemented &) { qDebug() << "found 'NotImplemented' at " << node->getId(); }
     return QPointer<RetType>();
 }
 
@@ -112,35 +120,9 @@ QPointer<RetType> KRuleVisitor::visitSevCritical(SevCritical *) {
     return new RetTypeString(QString("Critical"));
 }
 
-QPointer<RetType> KRuleVisitor::visitEFirstOrdQ(EFirstOrdQ *exp) {
-
-    QStack<QString> filterStack;
-    for(auto &f : *(exp->listfilter_)) {
-        filterStack.push(extractQString(f->accept(this)));
-    }
-
-    const QList<NodeWrapper*> ls = node->getNodes(filterStack);
-    NodeWrapper* startNode = node;
-    foreach(NodeWrapper* n, ls) {
-        quantifiedNode.append(n);
-
-        QPointer<RetType> r = exp->expr_->accept(this);
-        bool b = extractBool(r);
-
-        if (!b) {
-            node = n;
-            return new RetTypeBool(false);
-        }
-        node = startNode;
-        quantifiedNode.removeFirst();
-    }
-
-    return new RetTypeBool(true);
-}
-
-const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
-    return breakCondition ? true : false;
-}
+// ------------------------
+//  NORMALIZED EXPRESSIONS
+// ------------------------
 
 QPointer<RetType> KRuleVisitor::visitAF(AF *p) {
     ENot *v = new ENot(new EPQ(new EG(new ENot(p->expr_->clone()))));
@@ -184,105 +166,151 @@ QPointer<RetType> KRuleVisitor::visitEF(EF *p) {
     return r;
 }
 
-QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
-    bool success = false;
+// -------------------------
+//  IMPLEMENTED EXPRESSIONS
+// -------------------------
 
-    if (!extractBool(eg->expr_->accept(this))) {
-        success = false;
-    } else {
-        const QList<NodeWrapper*> childrn = node->getChildren();
-        if (!childrn.isEmpty()) {
-            bool breakCondition = false;
-            indent += "  ";
+// forAll [Filter]: expr
+QPointer<RetType> KRuleVisitor::visitEFirstOrdQ(EFirstOrdQ *exp) {
+
+    // Construct a stack from the filter list
+    QStack<QString> filterStack;
+    for(auto &f : *(exp->listfilter_)) {
+        filterStack.push(extractQString(f->accept(this)));
+    }
+
+    const QList<NodeWrapper*> ls = node->getNodes(filterStack);
+    NodeWrapper* startNode = node;
+    foreach(NodeWrapper* n, ls) {
+        // setup
+        quantifiedNode.append(n);
+
+        // verify expr
+        QPointer<RetType> r = exp->expr_->accept(this);
+        bool b = extractBool(r);
+
+        if (!b) {
+            // lazy break
+            node = n;
+            return new RetTypeBool(false);
+        }
+
+        // clean
+        node = startNode;
+        quantifiedNode.removeFirst();
+    }
+
+    return new RetTypeBool(true);
+}
+
+// helper function for EG, EX and EU
+const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
+    return breakCondition ? true : false;
+}
+
+
+QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
+
+    // if the inner expression does not hold
+    // at the current node there is no point in
+    // continuing recursing
+    if (extractBool(eg->expr_->accept(this))) {
+        if (node->getChildren().isEmpty()) {
+            // expr holds for current node and there are
+            // no children so then all is good
+            return new RetTypeBool(true);
+        } else {
             NodeWrapper* n = node;
-            foreach(NodeWrapper *child, childrn) {
+
+            // iterate children
+            foreach(NodeWrapper *child, node->getChildren()) {
+
+                // setup
                 node = child;
                 blameNode = child;
+                indent += "  ";
                 qDebug() << indent << child->getId();
 
+                // verify
                 bool res = extractBool(visitEG(eg));
+                indent.chop(2);
                 node = n;
                 if (res) {
-                        breakCondition = true;
-                        break;
+                    return new RetTypeBool(true);
                 }
             }
-            indent.chop(2);
-            success = handleBreakCondition(breakCondition);
-
-        } else {
-            success = true;
+            // did not hold for any child
         }
     }
 
-    return new RetTypeBool(success);
+    return new RetTypeBool(false);
 }
 
 QPointer<RetType> KRuleVisitor::visitEU(EU *eu) {
-    bool success = false;
 
-    const bool result2 = extractBool(eu->expr_2->accept(this));
-    if (result2) {
-        success = true;
+    // if the second expression that is the expression that has to
+    // finally hold holds now, then we return true
+    if (extractBool(eu->expr_2->accept(this))) {
+        return new RetTypeBool(true);
     } else {
-        const bool result1 = extractBool(eu->expr_1->accept(this));
-        if (result1) {
-            const QList<NodeWrapper*> childrn = node->getChildren();
-            if (!childrn.isEmpty()) {
-                bool breakCondition = false;
-                indent += "  ";
-                NodeWrapper* n = node;
-                foreach(NodeWrapper *child, childrn) {
-                    node = child;
-                    blameNode = child;
-                    qDebug() << indent << child->getId();
 
-                    bool res = extractBool(visitEU(eu));
-                    node = n;
-                    if (res) {
-                            breakCondition = true;
-                            break;
-                    }
-                }
+        // there is no point in looking further
+        // if there are no children or the first expression
+        // does not hold
+        if (!node->getChildren().isEmpty() && extractBool(eu->expr_1->accept(this))) {
+            NodeWrapper* n = node;
+
+            // iterate children
+            foreach(NodeWrapper *child, node->getChildren()) {
+
+                // setup
+                node = child;
+                blameNode = child;
+                indent += "  ";
+                qDebug() << indent << child->getId();
+
+                // verify
+                bool res = extractBool(visitEU(eu));
                 indent.chop(2);
-                success = handleBreakCondition(breakCondition);
-            } else {
-                success = false;
+                node = n;
+                if (res) {
+                    return new RetTypeBool(true);
+                }
             }
-        } else {
-            success = false;
         }
     }
 
-    return new RetTypeBool(success);
+    return new RetTypeBool(false);
 }
 
 QPointer<RetType> KRuleVisitor::visitEX(EX *ex) {
-    bool success = true;
 
-    const QList<NodeWrapper*> childrn = node->getChildren();
-    if (!childrn.isEmpty()) {
-        bool breakCondition = false;
-        indent += "  ";
+    // If there are no next node there are no
+    // point in trying to verify rules for it
+    if (!node->getChildren().isEmpty()) {
         NodeWrapper* n = node;
-        foreach(NodeWrapper *child, childrn) {
+
+        // iterate children
+        foreach(NodeWrapper *child, node->getChildren()) {
+
+            // setup
             node = child;
             blameNode = child;
+            indent += "  ";
             qDebug() << indent << child->getNodeType();
+
+            // verify
             bool res = extractBool(ex->expr_->accept(this));
+
+            indent.chop(2);
             node = n;
             if (res) {
-                    breakCondition = true;
-                    break;
+                return new RetTypeBool(true);
             }
         }
-        indent.chop(2);
-        success = handleBreakCondition(breakCondition);
-    } else {
-        success = false;
     }
 
-    return new RetTypeBool(success);
+    return new RetTypeBool(false);
 }
 
 QPointer<RetType> KRuleVisitor::visitIInt(IInt *ieint) {
@@ -420,16 +448,18 @@ QPointer<RetType> KRuleVisitor::visitENot(ENot *enot) {
     return new RetTypeBool(!extractBool(enot->expr_->accept(this)));
 }
 
+// Implication Left -> Right
 QPointer<RetType> KRuleVisitor::visitEImpl(EImpl *eimpl) {
+
     const bool leftExpression = extractBool(eimpl->expr_1->accept(this));
-    bool rtBool;
     if (leftExpression == true) {
+        // True -> Right = Right.
         const bool rightExpression = extractBool(eimpl->expr_2->accept(this));
-        rtBool = rightExpression == true;
+        return new RetTypeBool(rightExpression);
     } else {
-        rtBool = true;
+        // False -> Right = True, the value of Right does not matter.
+        return new RetTypeBool(true);
     }
-    return new RetTypeBool(rtBool);
 }
 
 QPointer<RetType> KRuleVisitor::visitEBEq(EBEq *eeq){
@@ -444,6 +474,7 @@ QPointer<RetType> KRuleVisitor::visitEAnd(EAnd *eand) {
         const bool b2 = extractBool(eand->expr_2->accept(this));
         return new RetTypeBool(b2);
     } else {
+        // lazy and
         return new RetTypeBool(false);
     }
 }
@@ -451,6 +482,7 @@ QPointer<RetType> KRuleVisitor::visitEAnd(EAnd *eand) {
 QPointer<RetType> KRuleVisitor::visitEOr(EOr *eor) {
     const bool b1 = extractBool(eor->expr_1->accept(this));
     if (b1) {
+        // lazy or
         return new RetTypeBool(true);
     } else {
         const bool b2 = extractBool(eor->expr_2->accept(this));
@@ -466,11 +498,6 @@ QPointer<RetType> KRuleVisitor::visitFString(FString* p) {
     return new RetTypeString(p->string_.c_str());
 }
 
-/**
- * @brief KRuleVisitor::visitListRule Iterates over the defined rules.
- * @param listrule
- * @return
- */
 QPointer<RetType> KRuleVisitor::visitListRule(ListRule* listrule) {
     for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i) {
       (*i)->accept(this);
@@ -501,26 +528,34 @@ QPointer<RetType> KRuleVisitor::visitString(String x) {
     return new RetTypeString(QString(x.c_str()));
 }
 
+/*!
+ * \brief KRuleVisitor::getFailures Returns any verification failures that were found during verification.
+ * \return A QMap of QRule tags to QRuleOutput.
+ */
 QMap<QString, KRuleOutput*> KRuleVisitor::getFailures() {
     return failedRules;
 }
 
+/*!
+ * \brief KRuleVisitor::assertType Verifies that a RetType is of a specific type.
+ * \param ret  The RetType to check.
+ * \param type The expected type of ret
+ */
 void KRuleVisitor::assertType(const QPointer<RetType> &ret, RetType::RetTypeE type) {
     if (ret.isNull() || ret->getType() != type) {
         throw BadType();
     }
 }
 
-/**
- * @brief KRuleVisitor::extractBool Tries to extract boolean data from the provided RetType.
+/*!
+ * \brief KRuleVisitor::extractBool Tries to extract boolean data from the provided RetType.
  *
  * Tries to extract boolean data from the provided RetType.
- * If this is successfull then the pointer will be deleted.
  * Else if this is not possible BadType will be thrown.
  *
- * @param ret The RetType to extract data from and finally delete.
- * @return The extracted boolean data.
- * @throws BadType if the provided RetType does not contain boolean data.
+ * \param ret The RetType to extract data from and finally delete.
+ * \return The extracted boolean data.
+ * \throws BadType if the provided RetType does not contain boolean data.
  */
 const bool KRuleVisitor::extractBool(const QPointer<RetType> &ret) {
     assertType(ret, RetType::RetTypeE::RBool);
@@ -528,16 +563,15 @@ const bool KRuleVisitor::extractBool(const QPointer<RetType> &ret) {
     return b;
 }
 
-/**
- * @brief KRuleVisitor::extractQString Tries to extract QString data from the provided RetType.
+/*!
+ * \brief KRuleVisitor::extractQString Tries to extract QString data from the provided RetType.
  *
  * Tries to extract QString data from the provided RetType.
- * If this is successfull then the pointer will be deleted.
  * Else if this is not possible BadType will be thrown.
  *
- * @param ret The RetType to extract data from and finally delete.
- * @return The extracted QString data.
- * @throws BadType if the provided RetType does not contain QString data.
+ * \param ret The RetType to extract data from and finally delete.
+ * \return The extracted QString data.
+ * \throws BadType if the provided RetType does not contain QString data.
  */
 const QString KRuleVisitor::extractQString(const QPointer<RetType> &ret) {
     assertType(ret, RetType::RetTypeE::RString);
@@ -545,16 +579,15 @@ const QString KRuleVisitor::extractQString(const QPointer<RetType> &ret) {
     return str;
 }
 
-/**
- * @brief KRuleVisitor::extractUInt Tries to extract 32 bits unsigned integer data from the provided RetType.
+/*!
+ * \brief KRuleVisitor::extractUInt Tries to extract 32 bits unsigned integer data from the provided RetType.
  *
  * Tries to extract 32 bits unsigned integer data from the provided RetType.
- * If this is successfull then the pointer will be deleted.
  * Else if this is not possible BadType will be thrown.
  *
- * @param ret The RetType to extract data from and finally delete.
- * @return The extracted 32 bit unsigned integer.
- * @throws BadType if the provided RetType does not contain an integer.
+ * \param ret The RetType to extract data from and finally delete.
+ * \return The extracted 32 bit unsigned integer.
+ * \throws BadType if the provided RetType does not contain an integer.
  */
 const quint32 KRuleVisitor::extractUInt(const QPointer<RetType> &ret) {
     assertType(ret, RetType::RetTypeE::RInt);

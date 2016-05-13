@@ -34,6 +34,7 @@ KRuleEngine::KRuleEngine(const QString &kruleFilename, QString path): importPath
  * \return Any rule violations formatted as QRuleOutput
  */
 QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames, bool renderDot) {
+
     foreach (const QString &qmlFilename, qmlFilenames) {
         verifyQMLFile(qmlFilename, renderDot);
     }
@@ -41,17 +42,14 @@ QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames,
 }
 
 
-void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap,
-                                      const QFileInfo &qmlFilename, const bool renderDot) {
-    QMap<QString, QList<QFileInfo>> avalibleFiles;
-
+void KRuleEngine::extendAvailableFiles(const QFileInfo &qmlFilename, QMap<QString, QList<QFileInfo>> &avalibleFiles,
+                                       QDir directory) {
     const QStringList nameFilter("*.qml");
-    QDir directory = qmlFilename.dir();
     QStringList qmlFiles = directory.entryList(nameFilter);
 
     foreach (QString s, qmlFiles) {
-        if(s != qmlFilename.fileName()) {
-            QFileInfo qFile = QFileInfo(directory,s);
+        QFileInfo qFile = QFileInfo(directory,s);
+        if(qFile != qmlFilename) {
             QList<QFileInfo> list;
             if(avalibleFiles.contains(qmlFilename.absoluteFilePath())) {
                 list =avalibleFiles.take(qmlFilename.absoluteFilePath());
@@ -60,6 +58,14 @@ void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QS
             avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
         }
     }
+}
+
+void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap,
+                                      const QFileInfo &qmlFilename, const bool renderDot) {
+    QMap<QString, QList<QFileInfo>> avalibleFiles;
+
+    QDir directory = qmlFilename.dir();
+    extendAvailableFiles(qmlFilename, avalibleFiles, directory);
 
     foreach(NodeWrapper* importNode, wrappedRoot->getNodes("ImportLiteral")) {
         if (importNode->getToken("fileNameToken").contains("\"")) {
@@ -71,20 +77,8 @@ void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QS
 
             //catalog add all sub files to importlist and run verifyQMLFile
             if (info.completeSuffix() == "") {
-                QStringList nameFilter("*.qml");
-
                 QDir directory(info.absoluteFilePath().append("/"));
-                QStringList qmlFiles = directory.entryList(nameFilter);
-
-                foreach (QString s, qmlFiles) {
-                    QFileInfo qFile = QFileInfo(directory,s);
-                    QList<QFileInfo> list;
-                    if(avalibleFiles.contains(qmlFilename.absoluteFilePath())) {
-                        list = avalibleFiles.take(qmlFilename.absoluteFilePath());
-                    }
-                    list.append(qFile);
-                    avalibleFiles.insert(qmlFilename.absoluteFilePath(),list);
-                }
+                extendAvailableFiles(qmlFilename, avalibleFiles, directory);
             }
 
             foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath())) {
@@ -215,9 +209,18 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderD
     }
 }
 
+
+/*!
+ * \brief KRuleEngine::parseQmlDirFile parses a qmldir file.
+ * \param qmldirFile The path to the qmldir file to parse.
+ * \param version 1.0
+ * \return The mapping of references to a pair of version and file path, for each member of the module. Will return empty map if the file does not exists.
+ */
 QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileInfo &qmldirFile, const float version) {
     QMap<QString, QPair<float, QFileInfo>> filemap;
     if (qmldirFile.exists()) {
+
+        // Read qmldir file
         QString filePath = qmldirFile.absoluteFilePath();
 
         QFile file(filePath);
@@ -232,6 +235,7 @@ QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileIn
 
         file.close();
 
+        // Iterate over each line
         QDir d = qmldirFile.dir();
         foreach(QString line, lines) {
             QString lc = QString(line);
@@ -251,9 +255,13 @@ QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileIn
                 } else if (type == "typeinfo") {
                 } else if (type == "classname") {
                 } else if (type == "depends") {
+
+                    // Find all dependancies and parse them aswell
                     reference = cols.at(1);
                     readVersion = cols.at(2).toFloat();
                     QMap<QString, QPair<float, QFileInfo>> result = parseQmlDirFile(QFileInfo(d, reference), version);
+
+                    // Prefix with the module name to make them look like a part of this module
                     QString prefix = qmldirFile.dir().dirName();
                     foreach(QString key, result.keys()) {
                         filemap.insert(prefix + "." + key, result.value(key));
@@ -270,12 +278,15 @@ QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileIn
                        reference = cols.at(0);
                        readVersion = cols.at(1).toFloat();
                     }
+
+                    // Add object with reference mapping and version number
+                    // Make sure that only the latest version that is not newer than the requested
+                    // version is selected.
                     if (readVersion <= version &&
                             (!filemap.contains(reference) || readVersion > filemap.value(reference).first)) {
                         filemap.insert(reference, QPair<float, QFileInfo>(readVersion, QFileInfo(d, cols.last())));
                     }
                 }
-
             }
         }
     }
