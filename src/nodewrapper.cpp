@@ -113,7 +113,7 @@ const QList<NodeWrapper*> NodeWrapper::getNodes(QStack<QString> stack) {
 }
 
 void NodeWrapper::innerGetNodes(QStack<QString> searchStack, const QStack<QString>& originalStack, QList<NodeWrapper*>& nodes) {
-    QString str = searchStack.pop();
+    const QString str = searchStack.pop();
     if (nodeType != str) {
         searchStack = originalStack;
     } else if (searchStack.isEmpty()) {

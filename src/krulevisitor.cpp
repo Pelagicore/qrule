@@ -56,12 +56,14 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         NodeWrapper* rootClone = new NodeWrapper(rootNode);
         node = rootClone;
         blameNode = node;
+        quantifiedNode.clear();
 
         // Verify the same rule repeatedly removing any storing
         // any failures in output format and then removing them from the AST.
         // Continue until there are no more failures or there are no more AST.
         while (!extractBool(rrule->expr_->accept(this))) {
             qDebug() << "FAILURE at node" << blameNode->getId();
+
             KRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
                 outp = failedRules[currentRuleTag];
@@ -69,13 +71,22 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
                 outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
                                        currentRuleASTScope, currentRuleCause, currentRuleExplanation);
             }
+
             outp->addCodeOccurrance(CodeOccurrance(blameNode->getSource(),
                                                    blameNode->getFileName().absoluteFilePath(),
                                                    blameNode->getRow(),
                                                    blameNode->getCol()));
+
             failedRules.insert(currentRuleTag, outp);
+            if(rootClone == blameNode) {
+                break;
+            }
+
             rootClone->dropNode(blameNode);
-            blameNode = node;
+
+            blameNode = rootClone;
+            node = rootClone;
+            quantifiedNode.clear();
         }
         node = rootNode;
         delete rootClone;
@@ -181,32 +192,41 @@ QPointer<RetType> KRuleVisitor::visitEF(EF *p) {
 // forAll [Filter]: expr
 QPointer<RetType> KRuleVisitor::visitEFirstOrdQ(EFirstOrdQ *exp) {
 
+    qDebug() << "Enter forAll";
     // Construct a stack from the filter list
     QStack<QString> filterStack;
     for(auto &f : *(exp->listfilter_)) {
-        filterStack.push(extractQString(f->accept(this)));
+        filterStack.push_front(extractQString(f->accept(this)));
     }
-
+    qDebug() << "Start find";
     const QList<NodeWrapper*> ls = node->getNodes(filterStack);
+    qDebug() << "Done find";
+
+    qDebug() << "Start iteration";
+
     NodeWrapper* startNode = node;
     foreach(NodeWrapper* n, ls) {
+
+        blameNode = n;
+        qDebug() << "Itterating over node: " << n->getId();
         // setup
         quantifiedNode.append(n);
 
         // verify expr
-        QPointer<RetType> r = exp->expr_->accept(this);
-        bool b = extractBool(r);
-
-        if (!b) {
-            // lazy break
-            node = n;
-            return new RetTypeBool(false);
-        }
+        bool b = extractBool(exp->expr_->accept(this));
 
         // clean
         node = startNode;
+
+        if (!b) {
+            // lazy break
+            blameNode = n;
+            return new RetTypeBool(false);
+        }
         quantifiedNode.removeFirst();
     }
+    qDebug() << "Done iteration";
+    qDebug() << "Exit forAll";
 
     return new RetTypeBool(true);
 }
