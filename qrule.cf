@@ -9,7 +9,6 @@ RSet.         RuleSet ::= [Rule] ;
 
 RRule.        Rule    ::= Tag Severity RuleCause ASTScope Explanation "::" Expr ;
 
-ASTGlobally.  ASTScope ::= "Globally";
 ASTFile.      ASTScope ::= "File";
 ASTImported.  ASTScope ::= "Imported";
 
