@@ -1,0 +1,92 @@
+-- Copyright (C) 2016 Pelagicore
+--
+-- You may use this file under the terms of the GPLv3 license.
+-- See the file LICENSE from this package for details.
+--
+-- SPDX-License-Identifier: GPL-3.0
+
+RSet.         RuleSet ::= [Rule] ;
+
+RRule.        Rule    ::= Tag Severity RuleCause ASTScope Explanation "::" Expr ;
+
+ASTGlobally.  ASTScope ::= "Globally";
+ASTFile.      ASTScope ::= "File";
+ASTImported.  ASTScope ::= "Imported";
+
+RCLang.       RuleCause ::= "Language";
+RCPolicy.     RuleCause ::= "Policy";
+
+Explan.       Explanation ::= "??" String ;
+Noexplan.     Explanation ::= "";
+
+separator     Rule "" ;
+
+TTag.         Tag ::= String ;
+
+SevInfo.      Severity   ::= "Info" ;
+SevWarning.   Severity   ::= "Warning" ;
+SevCritical.  Severity   ::= "Critical" ;
+
+AG.           PathQuantifier ::= "AG" Expr ;
+AF.           PathQuantifier ::= "AF" Expr ;
+AX.           PathQuantifier ::= "AX" Expr ;
+AU.           PathQuantifier ::= "A"  Expr "U" Expr ;
+EG.           PathQuantifier ::= "EG" Expr ;
+EF.           PathQuantifier ::= "EF" Expr ;
+EX.           PathQuantifier ::= "EX" Expr ;
+EU.           PathQuantifier ::= "E"  Expr "U" Expr ;
+
+INrChildren.  IAtom2  ::= "nrChildren" ;
+IRow.         IAtom2  ::= "row" ;
+ICol.         IAtom2  ::= "col" ;
+IQuant.       IAtom1  ::= Ident "." IAtom2 ;
+IInt.         IAtom1  ::= Integer ;
+
+coercions     IAtom  2;
+
+SValue.       SAtom3 ::= "value" ;
+SValueType.   SAtom3 ::= "valueType" ;
+SNodeType.    SAtom3 ::= "nodeType" ;
+SQuant.       SAtom2 ::= Ident "." SAtom3 ;
+SString.      SAtom2 ::= String ;
+SConcat.      SAtom1 ::= SAtom1 "+" SAtom2 ;
+
+coercions     SAtom  3;
+
+ETrue.        Expr10 ::= "True" ;
+EFalse.       Expr10 ::= "False" ;
+
+EParant.      Expr10 ::= "(" Expr ")" ;
+ENot.         Expr9  ::= "!" Expr10 ;
+
+
+EBEq.         Expr7  ::= Expr7 "=" Expr8 ;
+
+EPossToken.   Expr6  ::= String "is" "possible" "token" ;
+EExistToken.  Expr6  ::= String "is" "existing" "token" ;
+
+EILtEq.       Expr6  ::= IAtom "<=" IAtom ;
+EIGtEq.       Expr6  ::= IAtom ">=" IAtom ;
+EILt.         Expr6  ::= IAtom "<"  IAtom ;
+EIGt.         Expr6  ::= IAtom ">"  IAtom ;
+EIEq.         Expr6  ::= IAtom "="  IAtom ;
+
+EMatch.       Expr6  ::= SAtom "match" String ;
+ESEq.         Expr6  ::= SAtom "=" SAtom ;
+
+EAnd.         Expr4  ::= Expr4 "&" Expr5 ;
+EOr.          Expr4  ::= Expr4 "|" Expr5 ;
+
+
+EForAllQ.     Expr3  ::= "forAll" Ident "in" [Filter] ":" Expr ;
+EExistQ.      Expr3  ::= "exist" Ident "in" [Filter] ":" Expr ;
+EPQ.          Expr3  ::= PathQuantifier;
+EImpl.        Expr2  ::= Expr2 "->" Expr3 ;
+
+coercions     Expr   10 ;
+terminator    Expr   "" ;
+
+FString.      Filter ::= String ;
+separator     Filter ".";
+
+comment "#" ;
