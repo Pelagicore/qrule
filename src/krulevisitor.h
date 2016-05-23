@@ -78,14 +78,13 @@ public:
     QPointer<RetType> visitEF(EF* p);
     QPointer<RetType> visitEX(EX* p);
     QPointer<RetType> visitEU(EU* p);
-    QPointer<RetType> visitIFRow(IFRow* p);
-    QPointer<RetType> visitIFCol(IFCol* p);
+    QPointer<RetType> visitIQuant(IQuant* p);
     QPointer<RetType> visitIInt(IInt* p);
     QPointer<RetType> visitINrChildren(INrChildren* p);
     QPointer<RetType> visitIRow(IRow* p);
     QPointer<RetType> visitICol(ICol* p);
     QPointer<RetType> visitSString(SString* p);
-    QPointer<RetType> visitSFValue(SFValue* p);
+    QPointer<RetType> visitSQuant(SQuant* p);
     QPointer<RetType> visitSValue(SValue* p);
     QPointer<RetType> visitSValueType(SValueType* p);
     QPointer<RetType> visitSNodeType(SNodeType* p);
@@ -106,7 +105,8 @@ public:
     QPointer<RetType> visitESEq(ESEq* p);
     QPointer<RetType> visitEAnd(EAnd* p);
     QPointer<RetType> visitEOr(EOr* p);
-    QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ* p);
+    QPointer<RetType> visitEForAllQ(EForAllQ* p);
+    QPointer<RetType> visitEExistQ(EExistQ* p);
     QPointer<RetType> visitEPQ(EPQ* p);
     QPointer<RetType> visitEImpl(EImpl* p);
     QPointer<RetType> visitFString(FString* p);
@@ -133,11 +133,13 @@ private:
     const QString extractQString(const QPointer<RetType> &ret);
     const quint32 extractUInt(const QPointer<RetType> &ret);
 
+    QPointer<RetType> firstOrderQ(Expr *expr, const QString key, ListFilter *filter, const bool lazyCond);
+
     NodeWrapper *node;
     NodeWrapper *fileRoot;
     NodeWrapper *superRoot;
     NodeWrapper *blameNode;
-    QList<NodeWrapper*> quantifiedNode;
+    QMap<QString,NodeWrapper*> quantifiedNode;
 
     QString indent;
 

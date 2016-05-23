@@ -67,18 +67,17 @@ void render(char* s);
   QPointer<RetType> visitEX(EX *p);
   QPointer<RetType> visitEU(EU *p);
   QPointer<RetType> visitIAtom(IAtom *p); /* abstract class */
-  QPointer<RetType> visitIFRow(IFRow *p);
-  QPointer<RetType> visitIFCol(IFCol *p);
-  QPointer<RetType> visitIInt(IInt *p);
   QPointer<RetType> visitINrChildren(INrChildren *p);
   QPointer<RetType> visitIRow(IRow *p);
   QPointer<RetType> visitICol(ICol *p);
+  QPointer<RetType> visitIQuant(IQuant *p);
+  QPointer<RetType> visitIInt(IInt *p);
   QPointer<RetType> visitSAtom(SAtom *p); /* abstract class */
-  QPointer<RetType> visitSString(SString *p);
-  QPointer<RetType> visitSFValue(SFValue *p);
   QPointer<RetType> visitSValue(SValue *p);
   QPointer<RetType> visitSValueType(SValueType *p);
   QPointer<RetType> visitSNodeType(SNodeType *p);
+  QPointer<RetType> visitSQuant(SQuant *p);
+  QPointer<RetType> visitSString(SString *p);
   QPointer<RetType> visitSConcat(SConcat *p);
   QPointer<RetType> visitExpr(Expr *p); /* abstract class */
   QPointer<RetType> visitETrue(ETrue *p);
@@ -97,7 +96,8 @@ void render(char* s);
   QPointer<RetType> visitESEq(ESEq *p);
   QPointer<RetType> visitEAnd(EAnd *p);
   QPointer<RetType> visitEOr(EOr *p);
-  QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ *p);
+  QPointer<RetType> visitEForAllQ(EForAllQ *p);
+  QPointer<RetType> visitEExistQ(EExistQ *p);
   QPointer<RetType> visitEPQ(EPQ *p);
   QPointer<RetType> visitEImpl(EImpl *p);
   QPointer<RetType> visitListExpr(ListExpr* p);
@@ -208,18 +208,17 @@ class ShowAbsyn : public Visitor
   QPointer<RetType> visitEX(EX *p);
   QPointer<RetType> visitEU(EU *p);
   QPointer<RetType> visitIAtom(IAtom *p); /* abstract class */
-  QPointer<RetType> visitIFRow(IFRow *p);
-  QPointer<RetType> visitIFCol(IFCol *p);
-  QPointer<RetType> visitIInt(IInt *p);
   QPointer<RetType> visitINrChildren(INrChildren *p);
   QPointer<RetType> visitIRow(IRow *p);
   QPointer<RetType> visitICol(ICol *p);
+  QPointer<RetType> visitIQuant(IQuant *p);
+  QPointer<RetType> visitIInt(IInt *p);
   QPointer<RetType> visitSAtom(SAtom *p); /* abstract class */
-  QPointer<RetType> visitSString(SString *p);
-  QPointer<RetType> visitSFValue(SFValue *p);
   QPointer<RetType> visitSValue(SValue *p);
   QPointer<RetType> visitSValueType(SValueType *p);
   QPointer<RetType> visitSNodeType(SNodeType *p);
+  QPointer<RetType> visitSQuant(SQuant *p);
+  QPointer<RetType> visitSString(SString *p);
   QPointer<RetType> visitSConcat(SConcat *p);
   QPointer<RetType> visitExpr(Expr *p); /* abstract class */
   QPointer<RetType> visitETrue(ETrue *p);
@@ -238,7 +237,8 @@ class ShowAbsyn : public Visitor
   QPointer<RetType> visitESEq(ESEq *p);
   QPointer<RetType> visitEAnd(EAnd *p);
   QPointer<RetType> visitEOr(EOr *p);
-  QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ *p);
+  QPointer<RetType> visitEForAllQ(EForAllQ *p);
+  QPointer<RetType> visitEExistQ(EExistQ *p);
   QPointer<RetType> visitEPQ(EPQ *p);
   QPointer<RetType> visitEImpl(EImpl *p);
   QPointer<RetType> visitListExpr(ListExpr* p);

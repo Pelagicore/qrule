@@ -410,52 +410,14 @@ QPointer<RetType> PrintAbsyn::visitEU(EU* p)
 
 QPointer<RetType> PrintAbsyn::visitIAtom(IAtom*p) {} //abstract class
 
-QPointer<RetType> PrintAbsyn::visitIFRow(IFRow* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('R');
-  visitInteger(p->integer_);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-QPointer<RetType> PrintAbsyn::visitIFCol(IFCol* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  render('C');
-  visitInteger(p->integer_);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-QPointer<RetType> PrintAbsyn::visitIInt(IInt* p)
-{
-  int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
-
-  visitInteger(p->integer_);
-
-  if (oldi > 0) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 QPointer<RetType> PrintAbsyn::visitINrChildren(INrChildren* p)
 {
   int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
+  if (oldi > 2) render(_L_PAREN);
 
   render("nrChildren");
 
-  if (oldi > 0) render(_R_PAREN);
+  if (oldi > 2) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -463,11 +425,11 @@ QPointer<RetType> PrintAbsyn::visitINrChildren(INrChildren* p)
 QPointer<RetType> PrintAbsyn::visitIRow(IRow* p)
 {
   int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
+  if (oldi > 2) render(_L_PAREN);
 
   render("row");
 
-  if (oldi > 0) render(_R_PAREN);
+  if (oldi > 2) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -475,50 +437,51 @@ QPointer<RetType> PrintAbsyn::visitIRow(IRow* p)
 QPointer<RetType> PrintAbsyn::visitICol(ICol* p)
 {
   int oldi = _i_;
-  if (oldi > 0) render(_L_PAREN);
+  if (oldi > 2) render(_L_PAREN);
 
   render("col");
 
-  if (oldi > 0) render(_R_PAREN);
+  if (oldi > 2) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitIQuant(IQuant* p)
+{
+  int oldi = _i_;
+  if (oldi > 1) render(_L_PAREN);
+
+  visitIdent(p->ident_);
+  render('.');
+  _i_ = 2; p->iatom_->accept(this);
+
+  if (oldi > 1) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitIInt(IInt* p)
+{
+  int oldi = _i_;
+  if (oldi > 1) render(_L_PAREN);
+
+  visitInteger(p->integer_);
+
+  if (oldi > 1) render(_R_PAREN);
 
   _i_ = oldi;
 }
 
 QPointer<RetType> PrintAbsyn::visitSAtom(SAtom*p) {} //abstract class
 
-QPointer<RetType> PrintAbsyn::visitSString(SString* p)
-{
-  int oldi = _i_;
-  if (oldi > 2) render(_L_PAREN);
-
-  visitString(p->string_);
-
-  if (oldi > 2) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
-QPointer<RetType> PrintAbsyn::visitSFValue(SFValue* p)
-{
-  int oldi = _i_;
-  if (oldi > 2) render(_L_PAREN);
-
-  render('V');
-  visitInteger(p->integer_);
-
-  if (oldi > 2) render(_R_PAREN);
-
-  _i_ = oldi;
-}
-
 QPointer<RetType> PrintAbsyn::visitSValue(SValue* p)
 {
   int oldi = _i_;
-  if (oldi > 2) render(_L_PAREN);
+  if (oldi > 3) render(_L_PAREN);
 
   render("value");
 
-  if (oldi > 2) render(_R_PAREN);
+  if (oldi > 3) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -526,11 +489,11 @@ QPointer<RetType> PrintAbsyn::visitSValue(SValue* p)
 QPointer<RetType> PrintAbsyn::visitSValueType(SValueType* p)
 {
   int oldi = _i_;
-  if (oldi > 2) render(_L_PAREN);
+  if (oldi > 3) render(_L_PAREN);
 
   render("valueType");
 
-  if (oldi > 2) render(_R_PAREN);
+  if (oldi > 3) render(_R_PAREN);
 
   _i_ = oldi;
 }
@@ -538,9 +501,35 @@ QPointer<RetType> PrintAbsyn::visitSValueType(SValueType* p)
 QPointer<RetType> PrintAbsyn::visitSNodeType(SNodeType* p)
 {
   int oldi = _i_;
-  if (oldi > 2) render(_L_PAREN);
+  if (oldi > 3) render(_L_PAREN);
 
   render("nodeType");
+
+  if (oldi > 3) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitSQuant(SQuant* p)
+{
+  int oldi = _i_;
+  if (oldi > 2) render(_L_PAREN);
+
+  visitIdent(p->ident_);
+  render('.');
+  _i_ = 3; p->satom_->accept(this);
+
+  if (oldi > 2) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitSString(SString* p)
+{
+  int oldi = _i_;
+  if (oldi > 2) render(_L_PAREN);
+
+  visitString(p->string_);
 
   if (oldi > 2) render(_R_PAREN);
 
@@ -784,12 +773,30 @@ QPointer<RetType> PrintAbsyn::visitEOr(EOr* p)
   _i_ = oldi;
 }
 
-QPointer<RetType> PrintAbsyn::visitEFirstOrdQ(EFirstOrdQ* p)
+QPointer<RetType> PrintAbsyn::visitEForAllQ(EForAllQ* p)
 {
   int oldi = _i_;
   if (oldi > 3) render(_L_PAREN);
 
   render("forAll");
+  visitIdent(p->ident_);
+  render("in");
+  if(p->listfilter_) {_i_ = 0; p->listfilter_->accept(this);}  render(':');
+  _i_ = 0; p->expr_->accept(this);
+
+  if (oldi > 3) render(_R_PAREN);
+
+  _i_ = oldi;
+}
+
+QPointer<RetType> PrintAbsyn::visitEExistQ(EExistQ* p)
+{
+  int oldi = _i_;
+  if (oldi > 3) render(_L_PAREN);
+
+  render("exist");
+  visitIdent(p->ident_);
+  render("in");
   if(p->listfilter_) {_i_ = 0; p->listfilter_->accept(this);}  render(':');
   _i_ = 0; p->expr_->accept(this);
 
@@ -1096,30 +1103,6 @@ QPointer<RetType> ShowAbsyn::visitEU(EU* p)
 }
 QPointer<RetType> ShowAbsyn::visitIAtom(IAtom* p) {} //abstract class
 
-QPointer<RetType> ShowAbsyn::visitIFRow(IFRow* p)
-{
-  bufAppend('(');
-  bufAppend("IFRow");
-  bufAppend(' ');
-  visitInteger(p->integer_);
-  bufAppend(')');
-}
-QPointer<RetType> ShowAbsyn::visitIFCol(IFCol* p)
-{
-  bufAppend('(');
-  bufAppend("IFCol");
-  bufAppend(' ');
-  visitInteger(p->integer_);
-  bufAppend(')');
-}
-QPointer<RetType> ShowAbsyn::visitIInt(IInt* p)
-{
-  bufAppend('(');
-  bufAppend("IInt");
-  bufAppend(' ');
-  visitInteger(p->integer_);
-  bufAppend(')');
-}
 QPointer<RetType> ShowAbsyn::visitINrChildren(INrChildren* p)
 {
   bufAppend("INrChildren");
@@ -1132,24 +1115,28 @@ QPointer<RetType> ShowAbsyn::visitICol(ICol* p)
 {
   bufAppend("ICol");
 }
-QPointer<RetType> ShowAbsyn::visitSAtom(SAtom* p) {} //abstract class
-
-QPointer<RetType> ShowAbsyn::visitSString(SString* p)
+QPointer<RetType> ShowAbsyn::visitIQuant(IQuant* p)
 {
   bufAppend('(');
-  bufAppend("SString");
+  bufAppend("IQuant");
   bufAppend(' ');
-  visitString(p->string_);
+  visitIdent(p->ident_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->iatom_)  p->iatom_->accept(this);
+  bufAppend(']');
   bufAppend(')');
 }
-QPointer<RetType> ShowAbsyn::visitSFValue(SFValue* p)
+QPointer<RetType> ShowAbsyn::visitIInt(IInt* p)
 {
   bufAppend('(');
-  bufAppend("SFValue");
+  bufAppend("IInt");
   bufAppend(' ');
   visitInteger(p->integer_);
   bufAppend(')');
 }
+QPointer<RetType> ShowAbsyn::visitSAtom(SAtom* p) {} //abstract class
+
 QPointer<RetType> ShowAbsyn::visitSValue(SValue* p)
 {
   bufAppend("SValue");
@@ -1161,6 +1148,26 @@ QPointer<RetType> ShowAbsyn::visitSValueType(SValueType* p)
 QPointer<RetType> ShowAbsyn::visitSNodeType(SNodeType* p)
 {
   bufAppend("SNodeType");
+}
+QPointer<RetType> ShowAbsyn::visitSQuant(SQuant* p)
+{
+  bufAppend('(');
+  bufAppend("SQuant");
+  bufAppend(' ');
+  visitIdent(p->ident_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->satom_)  p->satom_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+QPointer<RetType> ShowAbsyn::visitSString(SString* p)
+{
+  bufAppend('(');
+  bufAppend("SString");
+  bufAppend(' ');
+  visitString(p->string_);
+  bufAppend(')');
 }
 QPointer<RetType> ShowAbsyn::visitSConcat(SConcat* p)
 {
@@ -1323,10 +1330,28 @@ QPointer<RetType> ShowAbsyn::visitEOr(EOr* p)
   p->expr_2->accept(this);
   bufAppend(')');
 }
-QPointer<RetType> ShowAbsyn::visitEFirstOrdQ(EFirstOrdQ* p)
+QPointer<RetType> ShowAbsyn::visitEForAllQ(EForAllQ* p)
 {
   bufAppend('(');
-  bufAppend("EFirstOrdQ");
+  bufAppend("EForAllQ");
+  bufAppend(' ');
+  visitIdent(p->ident_);
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->listfilter_)  p->listfilter_->accept(this);
+  bufAppend(']');
+  bufAppend(' ');
+  bufAppend('[');
+  if (p->expr_)  p->expr_->accept(this);
+  bufAppend(']');
+  bufAppend(')');
+}
+QPointer<RetType> ShowAbsyn::visitEExistQ(EExistQ* p)
+{
+  bufAppend('(');
+  bufAppend("EExistQ");
+  bufAppend(' ');
+  visitIdent(p->ident_);
   bufAppend(' ');
   bufAppend('[');
   if (p->listfilter_)  p->listfilter_->accept(this);

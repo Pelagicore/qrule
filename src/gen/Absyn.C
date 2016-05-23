@@ -926,135 +926,6 @@ EU *EU::clone() const
 
 
 
-/********************   IFRow    ********************/
-IFRow::IFRow(Integer p1)
-{
-  integer_ = p1;
-
-}
-
-IFRow::IFRow(const IFRow & other)
-{
-  integer_ = other.integer_;
-
-}
-
-IFRow &IFRow::operator=(const IFRow & other)
-{
-  IFRow tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void IFRow::swap(IFRow & other)
-{
-  std::swap(integer_, other.integer_);
-
-}
-
-IFRow::~IFRow()
-{
-
-}
-
-QPointer<RetType> IFRow::accept(Visitor *v)
-{
-  return v->visitIFRow(this);
-}
-
-IFRow *IFRow::clone() const
-{
-  return new IFRow(*this);
-}
-
-
-
-/********************   IFCol    ********************/
-IFCol::IFCol(Integer p1)
-{
-  integer_ = p1;
-
-}
-
-IFCol::IFCol(const IFCol & other)
-{
-  integer_ = other.integer_;
-
-}
-
-IFCol &IFCol::operator=(const IFCol & other)
-{
-  IFCol tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void IFCol::swap(IFCol & other)
-{
-  std::swap(integer_, other.integer_);
-
-}
-
-IFCol::~IFCol()
-{
-
-}
-
-QPointer<RetType> IFCol::accept(Visitor *v)
-{
-  return v->visitIFCol(this);
-}
-
-IFCol *IFCol::clone() const
-{
-  return new IFCol(*this);
-}
-
-
-
-/********************   IInt    ********************/
-IInt::IInt(Integer p1)
-{
-  integer_ = p1;
-
-}
-
-IInt::IInt(const IInt & other)
-{
-  integer_ = other.integer_;
-
-}
-
-IInt &IInt::operator=(const IInt & other)
-{
-  IInt tmp(other);
-  swap(tmp);
-  return *this;
-}
-
-void IInt::swap(IInt & other)
-{
-  std::swap(integer_, other.integer_);
-
-}
-
-IInt::~IInt()
-{
-
-}
-
-QPointer<RetType> IInt::accept(Visitor *v)
-{
-  return v->visitIInt(this);
-}
-
-IInt *IInt::clone() const
-{
-  return new IInt(*this);
-}
-
-
-
 /********************   INrChildren    ********************/
 INrChildren::INrChildren()
 {
@@ -1175,88 +1046,92 @@ ICol *ICol::clone() const
 
 
 
-/********************   SString    ********************/
-SString::SString(String p1)
+/********************   IQuant    ********************/
+IQuant::IQuant(Ident p1, IAtom *p2)
 {
-  string_ = p1;
+  ident_ = p1;
+  iatom_ = p2;
 
 }
 
-SString::SString(const SString & other)
+IQuant::IQuant(const IQuant & other)
 {
-  string_ = other.string_;
+  ident_ = other.ident_;
+  iatom_ = other.iatom_->clone();
 
 }
 
-SString &SString::operator=(const SString & other)
+IQuant &IQuant::operator=(const IQuant & other)
 {
-  SString tmp(other);
+  IQuant tmp(other);
   swap(tmp);
   return *this;
 }
 
-void SString::swap(SString & other)
+void IQuant::swap(IQuant & other)
 {
-  std::swap(string_, other.string_);
+  std::swap(ident_, other.ident_);
+  std::swap(iatom_, other.iatom_);
 
 }
 
-SString::~SString()
+IQuant::~IQuant()
 {
+  delete(iatom_);
 
 }
 
-QPointer<RetType> SString::accept(Visitor *v)
+QPointer<RetType> IQuant::accept(Visitor *v)
 {
-  return v->visitSString(this);
+  return v->visitIQuant(this);
 }
 
-SString *SString::clone() const
+IQuant *IQuant::clone() const
 {
-  return new SString(*this);
+  return new IQuant(*this);
 }
 
 
 
-/********************   SFValue    ********************/
-SFValue::SFValue(Integer p1)
+/********************   IInt    ********************/
+IInt::IInt(Integer p1)
 {
   integer_ = p1;
 
 }
 
-SFValue::SFValue(const SFValue & other)
+IInt::IInt(const IInt & other)
 {
   integer_ = other.integer_;
 
 }
 
-SFValue &SFValue::operator=(const SFValue & other)
+IInt &IInt::operator=(const IInt & other)
 {
-  SFValue tmp(other);
+  IInt tmp(other);
   swap(tmp);
   return *this;
 }
 
-void SFValue::swap(SFValue & other)
+void IInt::swap(IInt & other)
 {
   std::swap(integer_, other.integer_);
 
 }
 
-SFValue::~SFValue()
+IInt::~IInt()
 {
 
 }
 
-QPointer<RetType> SFValue::accept(Visitor *v)
+QPointer<RetType> IInt::accept(Visitor *v)
 {
-  return v->visitSFValue(this);
+  return v->visitIInt(this);
 }
 
-SFValue *SFValue::clone() const
+IInt *IInt::clone() const
 {
-  return new SFValue(*this);
+  return new IInt(*this);
 }
 
 
@@ -1377,6 +1252,96 @@ QPointer<RetType> SNodeType::accept(Visitor *v)
 SNodeType *SNodeType::clone() const
 {
   return new SNodeType(*this);
+}
+
+
+
+/********************   SQuant    ********************/
+SQuant::SQuant(Ident p1, SAtom *p2)
+{
+  ident_ = p1;
+  satom_ = p2;
+
+}
+
+SQuant::SQuant(const SQuant & other)
+{
+  ident_ = other.ident_;
+  satom_ = other.satom_->clone();
+
+}
+
+SQuant &SQuant::operator=(const SQuant & other)
+{
+  SQuant tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void SQuant::swap(SQuant & other)
+{
+  std::swap(ident_, other.ident_);
+  std::swap(satom_, other.satom_);
+
+}
+
+SQuant::~SQuant()
+{
+  delete(satom_);
+
+}
+
+QPointer<RetType> SQuant::accept(Visitor *v)
+{
+  return v->visitSQuant(this);
+}
+
+SQuant *SQuant::clone() const
+{
+  return new SQuant(*this);
+}
+
+
+
+/********************   SString    ********************/
+SString::SString(String p1)
+{
+  string_ = p1;
+
+}
+
+SString::SString(const SString & other)
+{
+  string_ = other.string_;
+
+}
+
+SString &SString::operator=(const SString & other)
+{
+  SString tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void SString::swap(SString & other)
+{
+  std::swap(string_, other.string_);
+
+}
+
+SString::~SString()
+{
+
+}
+
+QPointer<RetType> SString::accept(Visitor *v)
+{
+  return v->visitSString(this);
+}
+
+SString *SString::clone() const
+{
+  return new SString(*this);
 }
 
 
@@ -2162,50 +2127,104 @@ EOr *EOr::clone() const
 
 
 
-/********************   EFirstOrdQ    ********************/
-EFirstOrdQ::EFirstOrdQ(ListFilter *p1, Expr *p2)
+/********************   EForAllQ    ********************/
+EForAllQ::EForAllQ(Ident p1, ListFilter *p2, Expr *p3)
 {
-  listfilter_ = p1;
-  expr_ = p2;
+  ident_ = p1;
+  listfilter_ = p2;
+  expr_ = p3;
 
 }
 
-EFirstOrdQ::EFirstOrdQ(const EFirstOrdQ & other)
+EForAllQ::EForAllQ(const EForAllQ & other)
 {
+  ident_ = other.ident_;
   listfilter_ = other.listfilter_->clone();
   expr_ = other.expr_->clone();
 
 }
 
-EFirstOrdQ &EFirstOrdQ::operator=(const EFirstOrdQ & other)
+EForAllQ &EForAllQ::operator=(const EForAllQ & other)
 {
-  EFirstOrdQ tmp(other);
+  EForAllQ tmp(other);
   swap(tmp);
   return *this;
 }
 
-void EFirstOrdQ::swap(EFirstOrdQ & other)
+void EForAllQ::swap(EForAllQ & other)
 {
+  std::swap(ident_, other.ident_);
   std::swap(listfilter_, other.listfilter_);
   std::swap(expr_, other.expr_);
 
 }
 
-EFirstOrdQ::~EFirstOrdQ()
+EForAllQ::~EForAllQ()
 {
   delete(listfilter_);
   delete(expr_);
 
 }
 
-QPointer<RetType> EFirstOrdQ::accept(Visitor *v)
+QPointer<RetType> EForAllQ::accept(Visitor *v)
 {
-  return v->visitEFirstOrdQ(this);
+  return v->visitEForAllQ(this);
 }
 
-EFirstOrdQ *EFirstOrdQ::clone() const
+EForAllQ *EForAllQ::clone() const
 {
-  return new EFirstOrdQ(*this);
+  return new EForAllQ(*this);
+}
+
+
+
+/********************   EExistQ    ********************/
+EExistQ::EExistQ(Ident p1, ListFilter *p2, Expr *p3)
+{
+  ident_ = p1;
+  listfilter_ = p2;
+  expr_ = p3;
+
+}
+
+EExistQ::EExistQ(const EExistQ & other)
+{
+  ident_ = other.ident_;
+  listfilter_ = other.listfilter_->clone();
+  expr_ = other.expr_->clone();
+
+}
+
+EExistQ &EExistQ::operator=(const EExistQ & other)
+{
+  EExistQ tmp(other);
+  swap(tmp);
+  return *this;
+}
+
+void EExistQ::swap(EExistQ & other)
+{
+  std::swap(ident_, other.ident_);
+  std::swap(listfilter_, other.listfilter_);
+  std::swap(expr_, other.expr_);
+
+}
+
+EExistQ::~EExistQ()
+{
+  delete(listfilter_);
+  delete(expr_);
+
+}
+
+QPointer<RetType> EExistQ::accept(Visitor *v)
+{
+  return v->visitEExistQ(this);
+}
+
+EExistQ *EExistQ::clone() const
+{
+  return new EExistQ(*this);
 }
 
 
@@ -2390,4 +2409,3 @@ ListFilter *ListFilter::clone() const
 
 
 
-//C++ Abstract Syntax Implementation generated by the BNF Converter.

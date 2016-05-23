@@ -135,9 +135,9 @@ ListFilter* pListFilter(const char *str);
 #define _SYMB_47 306
 #define _SYMB_48 307
 #define _SYMB_49 308
-#define _SYMB_50 309
-#define _STRING_ 310
-#define _INTEGER_ 311
+#define _STRING_ 309
+#define _INTEGER_ 310
+#define _IDENT_ 311
 
 extern YYSTYPE yylval;
 

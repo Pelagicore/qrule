@@ -189,53 +189,58 @@ QPointer<RetType> KRuleVisitor::visitEF(EF *p) {
 //  IMPLEMENTED EXPRESSIONS
 // -------------------------
 
-// forAll [Filter]: expr
-QPointer<RetType> KRuleVisitor::visitEFirstOrdQ(EFirstOrdQ *exp) {
+// exist Ident in [Filter]: expr
+QPointer<RetType> KRuleVisitor::visitEExistQ(EExistQ *exp) {
+    const QString key = QString(exp->ident_.c_str());
+    return firstOrderQ(exp->expr_, key, exp->listfilter_, true);
+}
 
-    qDebug() << "Enter forAll";
-    // Construct a stack from the filter list
-    QStack<QString> filterStack;
-    for(auto &f : *(exp->listfilter_)) {
-        filterStack.push_front(extractQString(f->accept(this)));
-    }
-    qDebug() << "Start find";
-    const QList<NodeWrapper*> ls = node->getNodes(filterStack);
-    qDebug() << "Done find";
+// forAll Ident in [Filter]: expr
+QPointer<RetType> KRuleVisitor::visitEForAllQ(EForAllQ *exp) {
+    const QString key = QString(exp->ident_.c_str());
+    return firstOrderQ(exp->expr_, key, exp->listfilter_, false);
+}
 
-    qDebug() << "Start iteration";
-
-    NodeWrapper* startNode = node;
-    foreach(NodeWrapper* n, ls) {
-
-        blameNode = n;
-        qDebug() << "Itterating over node: " << n->getId();
-        // setup
-        quantifiedNode.append(n);
-
-        // verify expr
-        bool b = extractBool(exp->expr_->accept(this));
-
-        // clean
-        node = startNode;
-
-        if (!b) {
-            // lazy break
-            blameNode = n;
-            return new RetTypeBool(false);
+QPointer<RetType> KRuleVisitor::firstOrderQ(Expr *expr, const QString key, ListFilter *filter, const bool lazyCond) {
+    if (!quantifiedNode.contains(key)) {
+        // Construct a stack from the filter list
+        QStack<QString> filterStack;
+        for(auto &f : *(filter)) {
+            filterStack.push_front(extractQString(f->accept(this)));
         }
-        quantifiedNode.removeFirst();
-    }
-    qDebug() << "Done iteration";
-    qDebug() << "Exit forAll";
+        const QList<NodeWrapper*> ls = node->getNodes(filterStack);
 
-    return new RetTypeBool(true);
+        NodeWrapper* startNode = node;
+        foreach(NodeWrapper* n, ls) {
+            blameNode = n;
+            // setup
+            quantifiedNode.insert(key, n);
+
+            // verify expr
+            bool b = extractBool(expr->accept(this));
+
+            // clean
+            node = startNode;
+
+            if (b == lazyCond) {
+                // lazy break
+                blameNode = n;
+                return new RetTypeBool(lazyCond);
+            }
+            quantifiedNode.remove(key);
+        }
+
+        return new RetTypeBool(!lazyCond);
+    } else {
+        // Shadowing not supported
+        throw new NoQuantification();
+    }
 }
 
 // helper function for EG, EX and EU
 const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
     return breakCondition ? true : false;
 }
-
 
 QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
 
@@ -349,18 +354,18 @@ QPointer<RetType> KRuleVisitor::visitINrChildren(INrChildren *) {
     return new RetTypeUInt((quint32) node->getChildren().length());
 }
 
-QPointer<RetType> KRuleVisitor::visitIFRow(IFRow *e) {
-    if (!quantifiedNode.isEmpty()) {
-        return new RetTypeUInt(quantifiedNode[e->integer_]->getRow());
-    }
+QPointer<RetType> KRuleVisitor::visitIQuant(IQuant *e) {
+    const QString key = QString(e->ident_.c_str());
+    if (quantifiedNode.contains(key)) {
+        NodeWrapper* n = node;
+        node = quantifiedNode.value(key);
+        blameNode = node;
+        const quint32 i = extractUInt(e->iatom_->accept(this));
+        node = n;
+        return new RetTypeUInt(i);
+    } else {
     throw NoQuantification();
-}
-
-QPointer<RetType> KRuleVisitor::visitIFCol(IFCol *e) {
-    if (!quantifiedNode.isEmpty()) {
-        return new RetTypeUInt(quantifiedNode[e->integer_]->getCol());
     }
-    throw NoQuantification();
 }
 
 QPointer<RetType> KRuleVisitor::visitIRow(IRow *) {
@@ -425,11 +430,18 @@ QPointer<RetType> KRuleVisitor::visitSString(SString *exp) {
     return new RetTypeString(QString(exp->string_.c_str()));
 }
 
-QPointer<RetType> KRuleVisitor::visitSFValue(SFValue *e) {
-    if (!quantifiedNode.isEmpty()) {
-        return new RetTypeString(quantifiedNode[e->integer_]->getValue());
+QPointer<RetType> KRuleVisitor::visitSQuant(SQuant *e) {
+    const QString key = QString(e->ident_.c_str());
+    if (quantifiedNode.contains(key)) {
+        NodeWrapper* n = node;
+        node = quantifiedNode.value(key);
+        blameNode = node;
+        const QString s = extractQString(e->satom_->accept(this));
+        node = n;
+        return new RetTypeString(s);
+    } else {
+        throw NoQuantification();
     }
-    throw NoQuantification();
 }
 
 QPointer<RetType> KRuleVisitor::visitSConcat(SConcat *exp) {

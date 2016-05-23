@@ -62,17 +62,16 @@ class EG;
 class EF;
 class EX;
 class EU;
-class IFRow;
-class IFCol;
-class IInt;
 class INrChildren;
 class IRow;
 class ICol;
-class SString;
-class SFValue;
+class IQuant;
+class IInt;
 class SValue;
 class SValueType;
 class SNodeType;
+class SQuant;
+class SString;
 class SConcat;
 class ETrue;
 class EFalse;
@@ -90,7 +89,8 @@ class EMatch;
 class ESEq;
 class EAnd;
 class EOr;
-class EFirstOrdQ;
+class EForAllQ;
+class EExistQ;
 class EPQ;
 class EImpl;
 class FString;
@@ -137,17 +137,16 @@ public:
   virtual QPointer<RetType> visitEF(EF *p) = 0;
   virtual QPointer<RetType> visitEX(EX *p) = 0;
   virtual QPointer<RetType> visitEU(EU *p) = 0;
-  virtual QPointer<RetType> visitIFRow(IFRow *p) = 0;
-  virtual QPointer<RetType> visitIFCol(IFCol *p) = 0;
-  virtual QPointer<RetType> visitIInt(IInt *p) = 0;
   virtual QPointer<RetType> visitINrChildren(INrChildren *p) = 0;
   virtual QPointer<RetType> visitIRow(IRow *p) = 0;
   virtual QPointer<RetType> visitICol(ICol *p) = 0;
-  virtual QPointer<RetType> visitSString(SString *p) = 0;
-  virtual QPointer<RetType> visitSFValue(SFValue *p) = 0;
+  virtual QPointer<RetType> visitIQuant(IQuant *p) = 0;
+  virtual QPointer<RetType> visitIInt(IInt *p) = 0;
   virtual QPointer<RetType> visitSValue(SValue *p) = 0;
   virtual QPointer<RetType> visitSValueType(SValueType *p) = 0;
   virtual QPointer<RetType> visitSNodeType(SNodeType *p) = 0;
+  virtual QPointer<RetType> visitSQuant(SQuant *p) = 0;
+  virtual QPointer<RetType> visitSString(SString *p) = 0;
   virtual QPointer<RetType> visitSConcat(SConcat *p) = 0;
   virtual QPointer<RetType> visitETrue(ETrue *p) = 0;
   virtual QPointer<RetType> visitEFalse(EFalse *p) = 0;
@@ -165,7 +164,8 @@ public:
   virtual QPointer<RetType> visitESEq(ESEq *p) = 0;
   virtual QPointer<RetType> visitEAnd(EAnd *p) = 0;
   virtual QPointer<RetType> visitEOr(EOr *p) = 0;
-  virtual QPointer<RetType> visitEFirstOrdQ(EFirstOrdQ *p) = 0;
+  virtual QPointer<RetType> visitEForAllQ(EForAllQ *p) = 0;
+  virtual QPointer<RetType> visitEExistQ(EExistQ *p) = 0;
   virtual QPointer<RetType> visitEPQ(EPQ *p) = 0;
   virtual QPointer<RetType> visitEImpl(EImpl *p) = 0;
   virtual QPointer<RetType> visitFString(FString *p) = 0;
@@ -571,48 +571,6 @@ public:
   void swap(EU &);
 };
 
-class IFRow : public IAtom
-{
-public:
-  Integer integer_;
-
-  IFRow(const IFRow &);
-  IFRow &operator=(const IFRow &);
-  IFRow(Integer p1);
-  ~IFRow();
-  virtual QPointer<RetType> accept(Visitor *v);
-  virtual IFRow *clone() const;
-  void swap(IFRow &);
-};
-
-class IFCol : public IAtom
-{
-public:
-  Integer integer_;
-
-  IFCol(const IFCol &);
-  IFCol &operator=(const IFCol &);
-  IFCol(Integer p1);
-  ~IFCol();
-  virtual QPointer<RetType> accept(Visitor *v);
-  virtual IFCol *clone() const;
-  void swap(IFCol &);
-};
-
-class IInt : public IAtom
-{
-public:
-  Integer integer_;
-
-  IInt(const IInt &);
-  IInt &operator=(const IInt &);
-  IInt(Integer p1);
-  ~IInt();
-  virtual QPointer<RetType> accept(Visitor *v);
-  virtual IInt *clone() const;
-  void swap(IInt &);
-};
-
 class INrChildren : public IAtom
 {
 public:
@@ -652,32 +610,33 @@ public:
   void swap(ICol &);
 };
 
-class SString : public SAtom
+class IQuant : public IAtom
 {
 public:
-  String string_;
+  Ident ident_;
+  IAtom *iatom_;
 
-  SString(const SString &);
-  SString &operator=(const SString &);
-  SString(String p1);
-  ~SString();
+  IQuant(const IQuant &);
+  IQuant &operator=(const IQuant &);
+  IQuant(Ident p1, IAtom *p2);
+  ~IQuant();
   virtual QPointer<RetType> accept(Visitor *v);
-  virtual SString *clone() const;
-  void swap(SString &);
+  virtual IQuant *clone() const;
+  void swap(IQuant &);
 };
 
-class SFValue : public SAtom
+class IInt : public IAtom
 {
 public:
   Integer integer_;
 
-  SFValue(const SFValue &);
-  SFValue &operator=(const SFValue &);
-  SFValue(Integer p1);
-  ~SFValue();
+  IInt(const IInt &);
+  IInt &operator=(const IInt &);
+  IInt(Integer p1);
+  ~IInt();
   virtual QPointer<RetType> accept(Visitor *v);
-  virtual SFValue *clone() const;
-  void swap(SFValue &);
+  virtual IInt *clone() const;
+  void swap(IInt &);
 };
 
 class SValue : public SAtom
@@ -717,6 +676,35 @@ public:
   virtual QPointer<RetType> accept(Visitor *v);
   virtual SNodeType *clone() const;
   void swap(SNodeType &);
+};
+
+class SQuant : public SAtom
+{
+public:
+  Ident ident_;
+  SAtom *satom_;
+
+  SQuant(const SQuant &);
+  SQuant &operator=(const SQuant &);
+  SQuant(Ident p1, SAtom *p2);
+  ~SQuant();
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual SQuant *clone() const;
+  void swap(SQuant &);
+};
+
+class SString : public SAtom
+{
+public:
+  String string_;
+
+  SString(const SString &);
+  SString &operator=(const SString &);
+  SString(String p1);
+  ~SString();
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual SString *clone() const;
+  void swap(SString &);
 };
 
 class SConcat : public SAtom
@@ -966,19 +954,36 @@ public:
   void swap(EOr &);
 };
 
-class EFirstOrdQ : public Expr
+class EForAllQ : public Expr
 {
 public:
+  Ident ident_;
   ListFilter *listfilter_;
   Expr *expr_;
 
-  EFirstOrdQ(const EFirstOrdQ &);
-  EFirstOrdQ &operator=(const EFirstOrdQ &);
-  EFirstOrdQ(ListFilter *p1, Expr *p2);
-  ~EFirstOrdQ();
+  EForAllQ(const EForAllQ &);
+  EForAllQ &operator=(const EForAllQ &);
+  EForAllQ(Ident p1, ListFilter *p2, Expr *p3);
+  ~EForAllQ();
   virtual QPointer<RetType> accept(Visitor *v);
-  virtual EFirstOrdQ *clone() const;
-  void swap(EFirstOrdQ &);
+  virtual EForAllQ *clone() const;
+  void swap(EForAllQ &);
+};
+
+class EExistQ : public Expr
+{
+public:
+  Ident ident_;
+  ListFilter *listfilter_;
+  Expr *expr_;
+
+  EExistQ(const EExistQ &);
+  EExistQ &operator=(const EExistQ &);
+  EExistQ(Ident p1, ListFilter *p2, Expr *p3);
+  ~EExistQ();
+  virtual QPointer<RetType> accept(Visitor *v);
+  virtual EExistQ *clone() const;
+  void swap(EExistQ &);
 };
 
 class EPQ : public Expr
