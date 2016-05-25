@@ -64,7 +64,7 @@ void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QS
                                       const QFileInfo &qmlFilename, const bool renderDot) {
     QMap<QString, QList<QFileInfo>> avalibleFiles;
 
-    QDir directory = qmlFilename.dir();
+    QDir directory(qmlFilename.absolutePath().append("/"));
     extendAvailableFiles(qmlFilename, avalibleFiles, directory);
 
     foreach(NodeWrapper* importNode, wrappedRoot->getNodes("ImportLiteral")) {
@@ -81,18 +81,18 @@ void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QS
                 extendAvailableFiles(qmlFilename, avalibleFiles, directory);
             }
 
-            foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath())) {
-                foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
-                    if (objectDef->getValue() == f.baseName()) {
+        }
+    }
+    foreach (QFileInfo f, avalibleFiles.take(qmlFilename.absoluteFilePath())) {
+        foreach(NodeWrapper* objectDef, wrappedRoot->getNodes("ObjectDefinition")) {
+            if (objectDef->getValue() == f.baseName()) {
 
-                        if (!importedASTs.contains(f.absoluteFilePath())) {
-                             verifyQMLFile(f, renderDot);
-                        }
-
-                        importAliasMap.insert(f.absoluteFilePath(), f.baseName());
-
-                    }
+                if (!importedASTs.contains(f.absoluteFilePath())) {
+                     verifyQMLFile(f, renderDot);
                 }
+
+                importAliasMap.insert(f.absoluteFilePath(), f.baseName());
+
             }
         }
     }
