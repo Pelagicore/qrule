@@ -9,6 +9,7 @@ are defined by the users. This allows for features such as project
 or customer specific rules.
 
 Maintainer Viktor Sjölind (DunderRoffe at github)
+
 Maintained at https://github.com/pelagicore/qrule
 
 Build
