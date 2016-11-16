@@ -4,13 +4,13 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#include "kruleengine.h"
+#include "qruleengine.h"
 
 #include <stdio.h>
 #include "gen/Parser.H"
 #include "gen/Printer.H"
 #include "gen/Absyn.H"
-#include "krulevisitor.h"
+#include "qrulevisitor.h"
 
 #include <QDebug>
 #include <QCommandLineParser>
@@ -18,7 +18,7 @@
 #include <output/xmloutputformatter.h>
 #include <QTextStream>
 
-void printOutput(const QList<KRuleOutput*> &ruleViolations, QString fileName) {
+void printOutput(const QList<QRuleOutput*> &ruleViolations, QString fileName) {
     OutputFormatter* xof = new XMLOutputFormatter(ruleViolations);
     qDebug() << xof->format().toStdString().c_str();
 
@@ -36,7 +36,7 @@ int main(int argv, char *argc[]) {
 
     // Setup commandline parser
     QCoreApplication app(argv, argc);
-    QCoreApplication::setApplicationName("KRuleEngine");
+    QCoreApplication::setApplicationName("QRuleEngine");
     QCoreApplication::setApplicationVersion("1.0");
     QCommandLineParser commandLine;
     commandLine.setApplicationDescription(QLatin1String("Semantic rule engine for verifying QML code."));
@@ -55,7 +55,7 @@ int main(int argv, char *argc[]) {
     QCommandLineOption setPath(QStringList() << "I" << "ImportPath", QLatin1String("Change project path"),"path","");
     commandLine.addOption(setPath);
 
-    commandLine.addPositionalArgument(QLatin1String("krule"), QLatin1String("KRule rules file"));
+    commandLine.addPositionalArgument(QLatin1String("qrule"), QLatin1String("QRule rules file"));
     commandLine.addPositionalArgument(QLatin1String("files"), QLatin1String("list of qml or js files to verify"));
 
     commandLine.process(app);
@@ -64,7 +64,7 @@ int main(int argv, char *argc[]) {
         qInstallMessageHandler(messageHandler);
     }
 
-    // Display help instead of running the KRule Engine if too few arguments were given
+    // Display help instead of running the QRule Engine if too few arguments were given
     if (commandLine.positionalArguments().length() < 2) {
         commandLine.showHelp(-1);
     }
@@ -74,12 +74,12 @@ int main(int argv, char *argc[]) {
     QString name = commandLine.value(setOutput);
     QString path = commandLine.value(setPath);
     QStringList arguments = commandLine.positionalArguments();
-    QString kruleFilename = arguments.takeFirst();
+    QString qruleFilename = arguments.takeFirst();
 
-    // Start KRuleEngine
-    KRuleEngine kruleEngine = KRuleEngine(kruleFilename, path);
+    // Start QRuleEngine
+    QRuleEngine qruleEngine = QRuleEngine(qruleFilename, path);
 
-    QList<KRuleOutput*> violations = kruleEngine.verifyQMLFiles(arguments, s_setDot);
+    QList<QRuleOutput*> violations = qruleEngine.verifyQMLFiles(arguments, s_setDot);
 
     qDebug() << "############################################";
     qDebug() << "                XML OUTPUtT";

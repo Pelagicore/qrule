@@ -4,8 +4,8 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEOUTPUT_H
-#define KRULEOUTPUT_H
+#ifndef QRULEOUTPUT_H
+#define QRULEOUTPUT_H
 
 #include <QList>
 #include <QString>
@@ -22,16 +22,16 @@ public:
     quint32 col;
 };
 
-class KRuleOutput {
+class QRuleOutput {
 public:
-    KRuleOutput(QString tag, QString severity, QString astscope,
+    QRuleOutput(QString tag, QString severity, QString astscope,
                 QString rulecause, QString explanation):
         tag(tag), severity(severity), astscope(astscope),
         rulecause(rulecause), explanation(explanation) {}
-    ~KRuleOutput() {}
+    ~QRuleOutput() {}
 
     void addCodeOccurrance(CodeOccurrance codeOccurrance);
-    void addCodeOccurrances(KRuleOutput* kro);
+    void addCodeOccurrances(QRuleOutput* kro);
 
     const QString tag;
     const QString severity;
@@ -39,9 +39,9 @@ public:
     const QString rulecause;
     const QString explanation;
     QList<CodeOccurrance>& getOccurrances();
-    bool operator==(const KRuleOutput &k);
+    bool operator==(const QRuleOutput &k);
 private:
     QList<CodeOccurrance> codeOccurrances;
 };
 
-#endif // KRULEOUTPUT_H
+#endif // QRULEOUTPUT_H

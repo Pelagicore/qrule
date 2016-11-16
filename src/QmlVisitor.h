@@ -4,8 +4,8 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEENGINE_QMLVISITOR_H
-#define KRULEENGINE_QMLVISITOR_H
+#ifndef QRULEENGINE_QMLVISITOR_H
+#define QRULEENGINE_QMLVISITOR_H
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -249,4 +249,4 @@ private:
     void expandIndent();
 };
 
-#endif // KRULEENGINE_QMLVISITOR_H
+#endif // QRULEENGINE_QMLVISITOR_H

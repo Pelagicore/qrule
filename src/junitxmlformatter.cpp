@@ -13,7 +13,7 @@ QString JUnitXMLFormatter::format() {
     QString output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
     QMap<QString, int> sevMap;
-    foreach (KRuleOutput* ko, klist){
+    foreach (QRuleOutput* ko, klist){
         const QString key = ko->severity;
         int nr;
         if (sevMap.contains(key)) {
@@ -33,7 +33,7 @@ QString JUnitXMLFormatter::format() {
     output += "\" time=\"";
     output += QString::number(0);
     output += "\">\n";
-    foreach (KRuleOutput* ko, klist){
+    foreach (QRuleOutput* ko, klist){
         QString occurrances = QString();
         foreach (CodeOccurrance occurrance, ko->getOccurrances()) {
             occurrances.append("<occurrance")
@@ -44,15 +44,15 @@ QString JUnitXMLFormatter::format() {
                        .append("\n</occurrance>\n");
         }
 
-        QString kruleStartTag = QString().append("<testcase classname=\"\" name=\"").append(ko->tag)
+        QString qruleStartTag = QString().append("<testcase classname=\"\" name=\"").append(ko->tag)
                 .append("\" severity=\"").append(ko->severity)
                 .append("\" astscope=\"").append(ko->astscope)
                 .append("\" rulecause=\"").append(ko->rulecause)
                 .append("\">\n");
-        QString kruleEndTag = "</testcase>\n";
+        QString qruleEndTag = "</testcase>\n";
         QString explanationTag = QString().append("<explanation>\n").append(ko->explanation).append("\n</explanation>");
 
-        output.append(kruleStartTag.append(occurrances).append(explanationTag).append(kruleEndTag));
+        output.append(qruleStartTag.append(occurrances).append(explanationTag).append(qruleEndTag));
     }
     output.chop(1);
     return output.append("</testsuites>");

@@ -4,17 +4,17 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEENGINE_H
-#define KRULEENGINE_H
+#ifndef QRULEENGINE_H
+#define QRULEENGINE_H
 
-#include "krulevisitor.h"
+#include "qrulevisitor.h"
 
 #include <QMap>
 #include <QString>
 #include <QFileInfo>
 #include <QPair>
 
-#include <output/KRuleOutput.h>
+#include <output/QRuleOutput.h>
 
 #include "ParseException.h"
 
@@ -30,34 +30,34 @@
 
 
 /*!
- * \brief The KRuleEngine class Verifies a set of QRules on QML files.
+ * \brief The QRuleEngine class Verifies a set of QRules on QML files.
  */
-class KRuleEngine {
+class QRuleEngine {
 public:
     /*!
-     * \brief KRuleEngine::KRuleEngine Constructs a QRuleEngine by parsing a given QRule file.
-     * \param kruleFilename A QString representing the path to the QRule file containing the rules to use.
+     * \brief QRuleEngine::QRuleEngine Constructs a QRuleEngine by parsing a given QRule file.
+     * \param qruleFilename A QString representing the path to the QRule file containing the rules to use.
      * \param importPaths a QStringList that specifes import paths. Can be empty.
      */
-    KRuleEngine(const QString &kRuleFilename, QString importPath);
+    QRuleEngine(const QString &qRuleFilename, QString importPath);
 
     /*!
-     * \brief KRuleEngine::verifyQMLFiles Verifies the given QML files against the rules given at construction of this object.
+     * \brief QRuleEngine::verifyQMLFiles Verifies the given QML files against the rules given at construction of this object.
      * \param qmlFilenames A list of the paths to all the QML files that should be verifed.
      * \return Any rule violations formatted as QRuleOutput
      */
-    QList<KRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames, const bool renderDot);
+    QList<QRuleOutput*> verifyQMLFiles(const QStringList &qmlFilenames, const bool renderDot);
 
 private:
 
-    QMap<QString, KRuleOutput*> ruleViolations;
+    QMap<QString, QRuleOutput*> ruleViolations;
     QMap<QString, NodeWrapper*> importedASTs;
 
-    RuleSet* kruleTree;
+    RuleSet* qruleTree;
     void verifyQMLFile(const QFileInfo &qmlFilename, const bool renderDot);
 
     QString readCode(QString qmlFilename);
-    void mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map);
+    void mergeOccurranceMap(const QMap<QString, QRuleOutput*> &map);
 
     QMap<QString, QPair<float, QFileInfo>> parseQmlDirFile(const QFileInfo &qmldirFile, const float version);
 
@@ -68,4 +68,4 @@ private:
     void extendAvailableFiles(const QFileInfo &qmlFilename, QMap<QString, QList<QFileInfo>> &avalibleFiles, QDir directory);
 };
 
-#endif // KRULEENGINE_H
+#endif // QRULEENGINE_H

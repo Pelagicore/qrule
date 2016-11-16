@@ -4,8 +4,8 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEENGINE_RETTYPEBOOL_H
-#define KRULEENGINE_RETTYPEBOOL_H
+#ifndef QRULEENGINE_RETTYPEBOOL_H
+#define QRULEENGINE_RETTYPEBOOL_H
 
 #include "retType/RetType.h"
 
@@ -20,4 +20,4 @@ private:
     bool data;
 };
 
-#endif // KRULEENGINE_RETTYPEBOOL_H
+#endif // QRULEENGINE_RETTYPEBOOL_H

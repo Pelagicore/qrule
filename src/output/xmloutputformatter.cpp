@@ -8,7 +8,7 @@
 
 QString XMLOutputFormatter::format(){
     QString output = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-    foreach (KRuleOutput* ko, klist){
+    foreach (QRuleOutput* ko, klist){
         QString occurrances = QString();
         foreach (CodeOccurrance occurrance, ko->getOccurrances()) {
             occurrances.append("<occurrance")
@@ -19,15 +19,15 @@ QString XMLOutputFormatter::format(){
                        .append("\n</occurrance>\n");
         }
 
-        QString kruleStartTag = QString().append("<krule tag=\"").append(ko->tag)
+        QString qruleStartTag = QString().append("<qrule tag=\"").append(ko->tag)
                 .append("\" severity=\"").append(ko->severity)
                 .append("\" astscope=\"").append(ko->astscope)
                 .append("\" rulecause=\"").append(ko->rulecause)
                 .append("\">\n");
-        QString kruleEndTag = "</krule>\n";
+        QString qruleEndTag = "</qrule>\n";
         QString explanationTag = QString().append("<explanation>\n").append(ko->explanation).append("\n</explanation>");
 
-        output.append(kruleStartTag.append(occurrances).append(explanationTag).append(kruleEndTag));
+        output.append(qruleStartTag.append(occurrances).append(explanationTag).append(qruleEndTag));
     }
     output.chop(1);
     return output;

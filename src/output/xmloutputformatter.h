@@ -4,17 +4,17 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEXMLOUTPUTFORMATTER_H
-#define KRULEXMLOUTPUTFORMATTER_H
+#ifndef QRULEXMLOUTPUTFORMATTER_H
+#define QRULEXMLOUTPUTFORMATTER_H
 
 #include "output/outputformatter.h"
 
 class XMLOutputFormatter: public OutputFormatter {
 public:
-    XMLOutputFormatter(QList<KRuleOutput*> klist):OutputFormatter(klist) {}
+    XMLOutputFormatter(QList<QRuleOutput*> klist):OutputFormatter(klist) {}
     ~XMLOutputFormatter() {}
     QString format();
 
 };
 
-#endif // KRULEXMLOUTPUTFORMATTER_H
+#endif // QRULEXMLOUTPUTFORMATTER_H

@@ -4,12 +4,12 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEENGINE_KRULEVISITOR_H
-#define KRULEENGINE_KRULEVISITOR_H
+#ifndef QRULEENGINE_QRULEVISITOR_H
+#define QRULEENGINE_QRULEVISITOR_H
 
 #include "gen/Absyn.H"
 #include "nodewrapper.h"
-#include "output/KRuleOutput.h"
+#include "output/QRuleOutput.h"
 #include "retType/RetTypeBool.h"
 #include "retType/RetTypeString.h"
 #include "retType/RetTypeUInt.h"
@@ -40,9 +40,9 @@ public:
 };
 
 
-class KRuleVisitor : public Visitor {
+class QRuleVisitor : public Visitor {
 public:
-    KRuleVisitor(NodeWrapper *superRoot, NodeWrapper* fileRoot):
+    QRuleVisitor(NodeWrapper *superRoot, NodeWrapper* fileRoot):
         fileRoot(fileRoot), superRoot(superRoot) {}
 
     QPointer<RetType> visitRuleSet(RuleSet* p);
@@ -122,7 +122,7 @@ public:
     QPointer<RetType> visitIdent(Ident) {}
 
 
-    QMap<QString, KRuleOutput*> getFailures();
+    QMap<QString, QRuleOutput*> getFailures();
 
 private:
 
@@ -149,8 +149,8 @@ private:
     QString currentRuleASTScope = "";
     QString currentRuleCause = "";
     QString currentRuleExplanation = "";
-    QMap<QString, KRuleOutput*> failedRules;
+    QMap<QString, QRuleOutput*> failedRules;
 };
 
 
-#endif // KRULEENGINE_KRULEVISITOR_H
+#endif // QRULEENGINE_QRULEVISITOR_H

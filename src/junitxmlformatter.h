@@ -12,7 +12,7 @@
 
 class JUnitXMLFormatter: public OutputFormatter {
 public:
-    JUnitXMLFormatter(QList<KRuleOutput*> klist):OutputFormatter(klist) {}
+    JUnitXMLFormatter(QList<QRuleOutput*> klist):OutputFormatter(klist) {}
 };
 
 #endif // JUNITXMLFORMATTER_H

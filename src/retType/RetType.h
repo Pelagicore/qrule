@@ -4,8 +4,8 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEENGINE_RETTYPE_H
-#define KRULEENGINE_RETTYPE_H
+#ifndef QRULEENGINE_RETTYPE_H
+#define QRULEENGINE_RETTYPE_H
 
 #include <QObject>
 
@@ -16,4 +16,4 @@ public:
     virtual RetTypeE getType() = 0;
 };
 
-#endif // KRULEENGINE_RETTYPE_H
+#endif // QRULEENGINE_RETTYPE_H

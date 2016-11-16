@@ -4,19 +4,19 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#include "output/KRuleOutput.h"
+#include "output/QRuleOutput.h"
 
-void KRuleOutput::addCodeOccurrance(CodeOccurrance codeOccurrance) {
+void QRuleOutput::addCodeOccurrance(CodeOccurrance codeOccurrance) {
     codeOccurrances.append(codeOccurrance);
 }
 
-void KRuleOutput::addCodeOccurrances(KRuleOutput* kro) {
+void QRuleOutput::addCodeOccurrances(QRuleOutput* kro) {
     codeOccurrances += kro->codeOccurrances;
 }
 
-QList<CodeOccurrance>& KRuleOutput::getOccurrances() {
+QList<CodeOccurrance>& QRuleOutput::getOccurrances() {
     return codeOccurrances;
 }
-bool KRuleOutput::operator ==(const KRuleOutput &other){
+bool QRuleOutput::operator ==(const QRuleOutput &other){
     return this->tag==other.tag;
 }

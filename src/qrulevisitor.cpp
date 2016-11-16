@@ -5,31 +5,31 @@
 //
 // SPDX-License-Identifier: GPL-3.0
 #include "ParseException.h"
-#include "krulevisitor.h"
+#include "qrulevisitor.h"
 #include <gen/Printer.H>
 #include <QPointer>
 #include <QRegExp>
 #include <QStack>
 
-QPointer<RetType> KRuleVisitor::visitRuleSet(RuleSet *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitRule(Rule *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitASTScope(ASTScope *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitRuleCause(RuleCause *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitExplanation(Explanation *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitTag(Tag *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitSeverity(Severity *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitIAtom(IAtom *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitSAtom(SAtom *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitExpr(Expr *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitPathQuantifier(PathQuantifier *) {} //abstract class
-QPointer<RetType> KRuleVisitor::visitFilter(Filter *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitRuleSet(RuleSet *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitRule(Rule *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitASTScope(ASTScope *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitRuleCause(RuleCause *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitExplanation(Explanation *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitTag(Tag *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitSeverity(Severity *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitIAtom(IAtom *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitSAtom(SAtom *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitExpr(Expr *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitPathQuantifier(PathQuantifier *) {} //abstract class
+QPointer<RetType> QRuleVisitor::visitFilter(Filter *) {} //abstract class
 
 
-QPointer<RetType> KRuleVisitor::visitRSet(RSet *rset) {
+QPointer<RetType> QRuleVisitor::visitRSet(RSet *rset) {
     return rset->listrule_->accept(this);
 }
 
-QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
+QPointer<RetType> QRuleVisitor::visitRRule(RRule *rrule) {
     try {
 
         // Rule definition parsing
@@ -64,11 +64,11 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
         while (!extractBool(rrule->expr_->accept(this))) {
             qDebug() << "FAILURE at node" << blameNode->getId();
 
-            KRuleOutput* outp;
+            QRuleOutput* outp;
             if (failedRules.contains(currentRuleTag)) {
                 outp = failedRules[currentRuleTag];
             } else {
-                outp = new KRuleOutput(currentRuleTag, currentRuleSeverity,
+                outp = new QRuleOutput(currentRuleTag, currentRuleSeverity,
                                        currentRuleASTScope, currentRuleCause, currentRuleExplanation);
             }
 
@@ -95,47 +95,47 @@ QPointer<RetType> KRuleVisitor::visitRRule(RRule *rrule) {
     return QPointer<RetType>();
 }
 
-QPointer<RetType> KRuleVisitor::visitASTGlobally(ASTGlobally *) {
+QPointer<RetType> QRuleVisitor::visitASTGlobally(ASTGlobally *) {
     return new RetTypeString(QString("Globally"));
 }
 
-QPointer<RetType> KRuleVisitor::visitASTFile(ASTFile *) {
+QPointer<RetType> QRuleVisitor::visitASTFile(ASTFile *) {
     return new RetTypeString(QString("File"));
 }
 
-QPointer<RetType> KRuleVisitor::visitASTImported(ASTImported *) {
+QPointer<RetType> QRuleVisitor::visitASTImported(ASTImported *) {
     return new RetTypeString(QString("Imported"));
 }
 
-QPointer<RetType> KRuleVisitor::visitRCLang(RCLang *) {
+QPointer<RetType> QRuleVisitor::visitRCLang(RCLang *) {
     return new RetTypeString(QString("Language restriction"));
 }
 
-QPointer<RetType> KRuleVisitor::visitRCPolicy(RCPolicy *) {
+QPointer<RetType> QRuleVisitor::visitRCPolicy(RCPolicy *) {
     return new RetTypeString(QString("Policy"));
 }
 
-QPointer<RetType> KRuleVisitor::visitExplan(Explan *explan) {
+QPointer<RetType> QRuleVisitor::visitExplan(Explan *explan) {
     return new RetTypeString(QString(explan->string_.c_str()));
 }
 
-QPointer<RetType> KRuleVisitor::visitNoexplan(Noexplan *) {
+QPointer<RetType> QRuleVisitor::visitNoexplan(Noexplan *) {
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitTTag(TTag *ttag) {
+QPointer<RetType> QRuleVisitor::visitTTag(TTag *ttag) {
     return new RetTypeString(QString(ttag->string_.c_str()));
 }
 
-QPointer<RetType> KRuleVisitor::visitSevInfo(SevInfo *) {
+QPointer<RetType> QRuleVisitor::visitSevInfo(SevInfo *) {
     return new RetTypeString(QString("Info"));
 }
 
-QPointer<RetType> KRuleVisitor::visitSevWarning(SevWarning *) {
+QPointer<RetType> QRuleVisitor::visitSevWarning(SevWarning *) {
     return new RetTypeString(QString("Warning"));
 }
 
-QPointer<RetType> KRuleVisitor::visitSevCritical(SevCritical *) {
+QPointer<RetType> QRuleVisitor::visitSevCritical(SevCritical *) {
     return new RetTypeString(QString("Critical"));
 }
 
@@ -143,28 +143,28 @@ QPointer<RetType> KRuleVisitor::visitSevCritical(SevCritical *) {
 //  NORMALIZED EXPRESSIONS
 // ------------------------
 
-QPointer<RetType> KRuleVisitor::visitAF(AF *p) {
+QPointer<RetType> QRuleVisitor::visitAF(AF *p) {
     ENot *v = new ENot(new EPQ(new EG(new ENot(p->expr_->clone()))));
     QPointer<RetType> r = v->accept(this);
     delete v;
     return r;
 }
 
-QPointer<RetType> KRuleVisitor::visitAG(AG *p) {
+QPointer<RetType> QRuleVisitor::visitAG(AG *p) {
     ENot *v = new ENot(new EPQ(new EF(new ENot(p->expr_->clone()))));
     QPointer<RetType> r = v->accept(this);
     delete v;
     return r;
 }
 
-QPointer<RetType> KRuleVisitor::visitAX(AX *p) {
+QPointer<RetType> QRuleVisitor::visitAX(AX *p) {
     ENot *v = new ENot(new EPQ(new EX(new ENot(p->expr_->clone()))));
     QPointer<RetType> r = v->accept(this);
     delete v;
     return r;
 }
 
-QPointer<RetType> KRuleVisitor::visitAU(AU *p) {
+QPointer<RetType> QRuleVisitor::visitAU(AU *p) {
     Expr *e1 = p->expr_1->clone();
     Expr *e21 = p->expr_2->clone();
     Expr *e22 = p->expr_2->clone();
@@ -178,7 +178,7 @@ QPointer<RetType> KRuleVisitor::visitAU(AU *p) {
     return r;
 }
 
-QPointer<RetType> KRuleVisitor::visitEF(EF *p) {
+QPointer<RetType> QRuleVisitor::visitEF(EF *p) {
     EU *v = new EU(new ETrue, p->expr_->clone());
     QPointer<RetType> r = v->accept(this);
     delete v;
@@ -190,18 +190,18 @@ QPointer<RetType> KRuleVisitor::visitEF(EF *p) {
 // -------------------------
 
 // exist Ident in [Filter]: expr
-QPointer<RetType> KRuleVisitor::visitEExistQ(EExistQ *exp) {
+QPointer<RetType> QRuleVisitor::visitEExistQ(EExistQ *exp) {
     const QString key = QString(exp->ident_.c_str());
     return firstOrderQ(exp->expr_, key, exp->listfilter_, true);
 }
 
 // forAll Ident in [Filter]: expr
-QPointer<RetType> KRuleVisitor::visitEForAllQ(EForAllQ *exp) {
+QPointer<RetType> QRuleVisitor::visitEForAllQ(EForAllQ *exp) {
     const QString key = QString(exp->ident_.c_str());
     return firstOrderQ(exp->expr_, key, exp->listfilter_, false);
 }
 
-QPointer<RetType> KRuleVisitor::firstOrderQ(Expr *expr, const QString key, ListFilter *filter, const bool lazyCond) {
+QPointer<RetType> QRuleVisitor::firstOrderQ(Expr *expr, const QString key, ListFilter *filter, const bool lazyCond) {
     if (!quantifiedNode.contains(key)) {
         // Construct a stack from the filter list
         QStack<QString> filterStack;
@@ -238,11 +238,11 @@ QPointer<RetType> KRuleVisitor::firstOrderQ(Expr *expr, const QString key, ListF
 }
 
 // helper function for EG, EX and EU
-const bool KRuleVisitor::handleBreakCondition(const bool breakCondition) {
+const bool QRuleVisitor::handleBreakCondition(const bool breakCondition) {
     return breakCondition ? true : false;
 }
 
-QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
+QPointer<RetType> QRuleVisitor::visitEG(EG *eg) {
 
     // if the inner expression does not hold
     // at the current node there is no point in
@@ -279,7 +279,7 @@ QPointer<RetType> KRuleVisitor::visitEG(EG *eg) {
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitEU(EU *eu) {
+QPointer<RetType> QRuleVisitor::visitEU(EU *eu) {
 
     // if the second expression that is the expression that has to
     // finally hold holds now, then we return true
@@ -316,7 +316,7 @@ QPointer<RetType> KRuleVisitor::visitEU(EU *eu) {
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitEX(EX *ex) {
+QPointer<RetType> QRuleVisitor::visitEX(EX *ex) {
 
     // If there are no next node there are no
     // point in trying to verify rules for it
@@ -346,15 +346,15 @@ QPointer<RetType> KRuleVisitor::visitEX(EX *ex) {
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitIInt(IInt *ieint) {
+QPointer<RetType> QRuleVisitor::visitIInt(IInt *ieint) {
     return visitInteger(ieint->integer_);
 }
 
-QPointer<RetType> KRuleVisitor::visitINrChildren(INrChildren *) {
+QPointer<RetType> QRuleVisitor::visitINrChildren(INrChildren *) {
     return new RetTypeUInt((quint32) node->getChildren().length());
 }
 
-QPointer<RetType> KRuleVisitor::visitIQuant(IQuant *e) {
+QPointer<RetType> QRuleVisitor::visitIQuant(IQuant *e) {
     const QString key = QString(e->ident_.c_str());
     if (quantifiedNode.contains(key)) {
         NodeWrapper* n = node;
@@ -368,69 +368,69 @@ QPointer<RetType> KRuleVisitor::visitIQuant(IQuant *e) {
     }
 }
 
-QPointer<RetType> KRuleVisitor::visitIRow(IRow *) {
+QPointer<RetType> QRuleVisitor::visitIRow(IRow *) {
     return new RetTypeUInt(node->getRow());
 }
 
-QPointer<RetType> KRuleVisitor::visitICol(ICol *) {
+QPointer<RetType> QRuleVisitor::visitICol(ICol *) {
     return new RetTypeUInt(node->getCol());
 }
 
-QPointer<RetType> KRuleVisitor::visitEILtEq(EILtEq *ielteq) {
+QPointer<RetType> QRuleVisitor::visitEILtEq(EILtEq *ielteq) {
     quint32 i1 = extractUInt(ielteq->iatom_1->accept(this));
     quint32 i2 = extractUInt(ielteq->iatom_2->accept(this));
     return new RetTypeBool(i1 <= i2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEIGtEq(EIGtEq *iegteq) {
+QPointer<RetType> QRuleVisitor::visitEIGtEq(EIGtEq *iegteq) {
     quint32 i1 = extractUInt(iegteq->iatom_1->accept(this));
     quint32 i2 = extractUInt(iegteq->iatom_2->accept(this));
     return new RetTypeBool(i1 >= i2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEILt(EILt *ielt) {
+QPointer<RetType> QRuleVisitor::visitEILt(EILt *ielt) {
     quint32 i1 = extractUInt(ielt->iatom_1->accept(this));
     quint32 i2 = extractUInt(ielt->iatom_2->accept(this));
     return new RetTypeBool(i1 < i2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEIGt(EIGt *iegt) {
+QPointer<RetType> QRuleVisitor::visitEIGt(EIGt *iegt) {
     quint32 i1 = extractUInt(iegt->iatom_1->accept(this));
     quint32 i2 = extractUInt(iegt->iatom_2->accept(this));
     return new RetTypeBool(i1 > i2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEIEq(EIEq *ieq) {
+QPointer<RetType> QRuleVisitor::visitEIEq(EIEq *ieq) {
     quint32 i1 = extractUInt(ieq->iatom_1->accept(this));
     quint32 i2 = extractUInt(ieq->iatom_2->accept(this));
     return new RetTypeBool(i1 == i2);
 }
 
-QPointer<RetType> KRuleVisitor::visitETrue(ETrue *) {
+QPointer<RetType> QRuleVisitor::visitETrue(ETrue *) {
     return new RetTypeBool(true);
 }
 
-QPointer<RetType> KRuleVisitor::visitEFalse(EFalse *) {
+QPointer<RetType> QRuleVisitor::visitEFalse(EFalse *) {
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitSValue(SValue *) {
+QPointer<RetType> QRuleVisitor::visitSValue(SValue *) {
     return new RetTypeString(node->getValue());
 }
 
-QPointer<RetType> KRuleVisitor::visitSValueType(SValueType *) {
+QPointer<RetType> QRuleVisitor::visitSValueType(SValueType *) {
     return new RetTypeString(node->getValueType());
 }
 
-QPointer<RetType> KRuleVisitor::visitSNodeType(SNodeType *) {
+QPointer<RetType> QRuleVisitor::visitSNodeType(SNodeType *) {
     return new RetTypeString(node->getNodeType());
 }
 
-QPointer<RetType> KRuleVisitor::visitSString(SString *exp) {
+QPointer<RetType> QRuleVisitor::visitSString(SString *exp) {
     return new RetTypeString(QString(exp->string_.c_str()));
 }
 
-QPointer<RetType> KRuleVisitor::visitSQuant(SQuant *e) {
+QPointer<RetType> QRuleVisitor::visitSQuant(SQuant *e) {
     const QString key = QString(e->ident_.c_str());
     if (quantifiedNode.contains(key)) {
         NodeWrapper* n = node;
@@ -444,23 +444,23 @@ QPointer<RetType> KRuleVisitor::visitSQuant(SQuant *e) {
     }
 }
 
-QPointer<RetType> KRuleVisitor::visitSConcat(SConcat *exp) {
+QPointer<RetType> QRuleVisitor::visitSConcat(SConcat *exp) {
     QString s1 = extractQString(exp->satom_1->accept(this));
     QString s2 = extractQString(exp->satom_2->accept(this));
     return new RetTypeString(s1 + s2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEPossToken(EPossToken *exp) {
+QPointer<RetType> QRuleVisitor::visitEPossToken(EPossToken *exp) {
     bool b = node->getTokenMap().contains(QString(exp->string_.c_str()));
     return new RetTypeBool(b);
 }
 
-QPointer<RetType> KRuleVisitor::visitEExistToken(EExistToken *exp) {
+QPointer<RetType> QRuleVisitor::visitEExistToken(EExistToken *exp) {
     bool b = node->hasToken(QString(exp->string_.c_str()));
     return new RetTypeBool(b);
 }
 
-QPointer<RetType> KRuleVisitor::visitEMatch(EMatch *exp) {
+QPointer<RetType> QRuleVisitor::visitEMatch(EMatch *exp) {
     bool s = false;
 
     QRegExp regexp = QRegExp(QString(exp->string_.c_str()));
@@ -472,7 +472,7 @@ QPointer<RetType> KRuleVisitor::visitEMatch(EMatch *exp) {
     return new RetTypeBool(s);
 }
 
-QPointer<RetType> KRuleVisitor::visitESEq(ESEq *exp) {
+QPointer<RetType> QRuleVisitor::visitESEq(ESEq *exp) {
 
     QString s1 = extractQString(exp->satom_1->accept(this));
     QString s2 = extractQString(exp->satom_2->accept(this));
@@ -480,16 +480,16 @@ QPointer<RetType> KRuleVisitor::visitESEq(ESEq *exp) {
     return new RetTypeBool(s1 == s2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEParant(EParant *eparant) {
+QPointer<RetType> QRuleVisitor::visitEParant(EParant *eparant) {
     return eparant->expr_->accept(this);
 }
 
-QPointer<RetType> KRuleVisitor::visitENot(ENot *enot) {
+QPointer<RetType> QRuleVisitor::visitENot(ENot *enot) {
     return new RetTypeBool(!extractBool(enot->expr_->accept(this)));
 }
 
 // Implication Left -> Right
-QPointer<RetType> KRuleVisitor::visitEImpl(EImpl *eimpl) {
+QPointer<RetType> QRuleVisitor::visitEImpl(EImpl *eimpl) {
 
     const bool leftExpression = extractBool(eimpl->expr_1->accept(this));
     if (leftExpression == true) {
@@ -502,13 +502,13 @@ QPointer<RetType> KRuleVisitor::visitEImpl(EImpl *eimpl) {
     }
 }
 
-QPointer<RetType> KRuleVisitor::visitEBEq(EBEq *eeq){
+QPointer<RetType> QRuleVisitor::visitEBEq(EBEq *eeq){
     const bool b1 = extractBool(eeq->expr_1->accept(this));
     const bool b2 = extractBool(eeq->expr_2->accept(this));
     return new RetTypeBool(b1 == b2);
 }
 
-QPointer<RetType> KRuleVisitor::visitEAnd(EAnd *eand) {
+QPointer<RetType> QRuleVisitor::visitEAnd(EAnd *eand) {
     const bool b1 = extractBool(eand->expr_1->accept(this));
     if (b1) {
         const bool b2 = extractBool(eand->expr_2->accept(this));
@@ -519,7 +519,7 @@ QPointer<RetType> KRuleVisitor::visitEAnd(EAnd *eand) {
     }
 }
 
-QPointer<RetType> KRuleVisitor::visitEOr(EOr *eor) {
+QPointer<RetType> QRuleVisitor::visitEOr(EOr *eor) {
     const bool b1 = extractBool(eor->expr_1->accept(this));
     if (b1) {
         // lazy or
@@ -530,29 +530,29 @@ QPointer<RetType> KRuleVisitor::visitEOr(EOr *eor) {
     }
 }
 
-QPointer<RetType> KRuleVisitor::visitEPQ(EPQ *epq) {
+QPointer<RetType> QRuleVisitor::visitEPQ(EPQ *epq) {
     return epq->pathquantifier_->accept(this);
 }
 
-QPointer<RetType> KRuleVisitor::visitFString(FString* p) {
+QPointer<RetType> QRuleVisitor::visitFString(FString* p) {
     return new RetTypeString(p->string_.c_str());
 }
 
-QPointer<RetType> KRuleVisitor::visitListRule(ListRule* listrule) {
+QPointer<RetType> QRuleVisitor::visitListRule(ListRule* listrule) {
     for (ListRule::iterator i = listrule->begin() ; i != listrule->end() ; ++i) {
       (*i)->accept(this);
     }
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitListExpr(ListExpr* listexpr) {
+QPointer<RetType> QRuleVisitor::visitListExpr(ListExpr* listexpr) {
     for (ListExpr::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i) {
       (*i)->accept(this);
     }
     return new RetTypeBool(false);
 }
 
-QPointer<RetType> KRuleVisitor::visitListFilter(ListFilter* listexpr) {
+QPointer<RetType> QRuleVisitor::visitListFilter(ListFilter* listexpr) {
     for (ListFilter::iterator i = listexpr->begin() ; i != listexpr->end() ; ++i) {
       (*i)->accept(this);
     }
@@ -560,35 +560,35 @@ QPointer<RetType> KRuleVisitor::visitListFilter(ListFilter* listexpr) {
 }
 
 
-QPointer<RetType> KRuleVisitor::visitInteger(Integer x) {
+QPointer<RetType> QRuleVisitor::visitInteger(Integer x) {
     return new RetTypeUInt((quint32)x);
 }
 
-QPointer<RetType> KRuleVisitor::visitString(String x) {
+QPointer<RetType> QRuleVisitor::visitString(String x) {
     return new RetTypeString(QString(x.c_str()));
 }
 
 /*!
- * \brief KRuleVisitor::getFailures Returns any verification failures that were found during verification.
+ * \brief QRuleVisitor::getFailures Returns any verification failures that were found during verification.
  * \return A QMap of QRule tags to QRuleOutput.
  */
-QMap<QString, KRuleOutput*> KRuleVisitor::getFailures() {
+QMap<QString, QRuleOutput*> QRuleVisitor::getFailures() {
     return failedRules;
 }
 
 /*!
- * \brief KRuleVisitor::assertType Verifies that a RetType is of a specific type.
+ * \brief QRuleVisitor::assertType Verifies that a RetType is of a specific type.
  * \param ret  The RetType to check.
  * \param type The expected type of ret
  */
-void KRuleVisitor::assertType(const QPointer<RetType> &ret, RetType::RetTypeE type) {
+void QRuleVisitor::assertType(const QPointer<RetType> &ret, RetType::RetTypeE type) {
     if (ret.isNull() || ret->getType() != type) {
         throw BadType();
     }
 }
 
 /*!
- * \brief KRuleVisitor::extractBool Tries to extract boolean data from the provided RetType.
+ * \brief QRuleVisitor::extractBool Tries to extract boolean data from the provided RetType.
  *
  * Tries to extract boolean data from the provided RetType.
  * Else if this is not possible BadType will be thrown.
@@ -597,14 +597,14 @@ void KRuleVisitor::assertType(const QPointer<RetType> &ret, RetType::RetTypeE ty
  * \return The extracted boolean data.
  * \throws BadType if the provided RetType does not contain boolean data.
  */
-const bool KRuleVisitor::extractBool(const QPointer<RetType> &ret) {
+const bool QRuleVisitor::extractBool(const QPointer<RetType> &ret) {
     assertType(ret, RetType::RetTypeE::RBool);
     const bool b = ((RetTypeBool*)ret.data())->getData();
     return b;
 }
 
 /*!
- * \brief KRuleVisitor::extractQString Tries to extract QString data from the provided RetType.
+ * \brief QRuleVisitor::extractQString Tries to extract QString data from the provided RetType.
  *
  * Tries to extract QString data from the provided RetType.
  * Else if this is not possible BadType will be thrown.
@@ -613,14 +613,14 @@ const bool KRuleVisitor::extractBool(const QPointer<RetType> &ret) {
  * \return The extracted QString data.
  * \throws BadType if the provided RetType does not contain QString data.
  */
-const QString KRuleVisitor::extractQString(const QPointer<RetType> &ret) {
+const QString QRuleVisitor::extractQString(const QPointer<RetType> &ret) {
     assertType(ret, RetType::RetTypeE::RString);
     const QString str = ((RetTypeString*)ret.data())->getData();
     return str;
 }
 
 /*!
- * \brief KRuleVisitor::extractUInt Tries to extract 32 bits unsigned integer data from the provided RetType.
+ * \brief QRuleVisitor::extractUInt Tries to extract 32 bits unsigned integer data from the provided RetType.
  *
  * Tries to extract 32 bits unsigned integer data from the provided RetType.
  * Else if this is not possible BadType will be thrown.
@@ -629,7 +629,7 @@ const QString KRuleVisitor::extractQString(const QPointer<RetType> &ret) {
  * \return The extracted 32 bit unsigned integer.
  * \throws BadType if the provided RetType does not contain an integer.
  */
-const quint32 KRuleVisitor::extractUInt(const QPointer<RetType> &ret) {
+const quint32 QRuleVisitor::extractUInt(const QPointer<RetType> &ret) {
     assertType(ret, RetType::RetTypeE::RInt);
     const quint32 i = ((RetTypeUInt*)ret.data())->getData();
     return i;

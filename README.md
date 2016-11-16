@@ -137,7 +137,7 @@ Window {
 Produced output:
 ```XML
 <?xml version="1.0" encoding="UTF-8"?>
-<krule tag="LowerCaseLetterStartVarName" severity="Critical"
+<qrule tag="LowerCaseLetterStartVarName" severity="Critical"
        astscope="Imported"       rulecause="Policy">
 <occurrance row="10" col="20" filename="../testfiles/test.qml">
 Z = {asd: 123}
@@ -146,8 +146,8 @@ Z = {asd: 123}
 It is awfully important to have all JavaScript variable
  names start with a lowercase letter
 </explanation>
-</krule>
-<krule tag="NoUnreferencedId" severity="Critical"
+</qrule>
+<qrule tag="NoUnreferencedId" severity="Critical"
        astscope="File" rulecause="Policy">
 <occurrance row="7" col="9" filename="../testfiles/test.qml">
 ident1
@@ -155,7 +155,7 @@ ident1
 <explanation>
 All defined ids should be used at some point.
 </explanation>
-</krule>
+</qrule>
 ```
 
 # License and Copyright

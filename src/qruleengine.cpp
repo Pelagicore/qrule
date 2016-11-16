@@ -4,36 +4,36 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#include "kruleengine.h"
+#include "qruleengine.h"
 
 
 
 /*!
- * \brief KRuleEngine::KRuleEngine Constructs a QRuleEngine by parsing a given QRule file.
- * \param kruleFilename A QString representing the path to the QRule file containing the rules to use.
+ * \brief QRuleEngine::QRuleEngine Constructs a QRuleEngine by parsing a given QRule file.
+ * \param qruleFilename A QString representing the path to the QRule file containing the rules to use.
  * \param importPaths a QStringList that specifes import paths. Can be empty.
  */
-KRuleEngine::KRuleEngine(const QString &kruleFilename, QString path): importPath(path) {
-    FILE *kruleFile = fopen(kruleFilename.toStdString().c_str(), "r");
+QRuleEngine::QRuleEngine(const QString &qruleFilename, QString path): importPath(path) {
+    FILE *qruleFile = fopen(qruleFilename.toStdString().c_str(), "r");
 
-    if (!kruleFile) {
-      qWarning() << "Error opening krule file: " << kruleFilename;
-      throw ParseException(QString(kruleFilename).prepend("Could not open KRule file "));
+    if (!qruleFile) {
+      qWarning() << "Error opening qrule file: " << qruleFilename;
+      throw ParseException(QString(qruleFilename).prepend("Could not open QRule file "));
     }
-    kruleTree = pRuleSet(kruleFile);
+    qruleTree = pRuleSet(qruleFile);
 
-    if (kruleTree) {
+    if (qruleTree) {
     } else {
-        throw ParseException("Could not parse KRulefile");
+        throw ParseException("Could not parse QRulefile");
     }
 }
 
 /*!
- * \brief KRuleEngine::verifyQMLFiles Verifies the given QML files against the rules given at construction of this object.
+ * \brief QRuleEngine::verifyQMLFiles Verifies the given QML files against the rules given at construction of this object.
  * \param qmlFilenames A list of the paths to all the QML files that should be verifed.
  * \return Any rule violations formatted as QRuleOutput
  */
-QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames, bool renderDot) {
+QList<QRuleOutput*> QRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames, bool renderDot) {
 
     foreach (const QString &qmlFilename, qmlFilenames) {
         verifyQMLFile(qmlFilename, renderDot);
@@ -42,7 +42,7 @@ QList<KRuleOutput*> KRuleEngine::verifyQMLFiles(const QStringList &qmlFilenames,
 }
 
 
-void KRuleEngine::extendAvailableFiles(const QFileInfo &qmlFilename, QMap<QString, QList<QFileInfo>> &avalibleFiles,
+void QRuleEngine::extendAvailableFiles(const QFileInfo &qmlFilename, QMap<QString, QList<QFileInfo>> &avalibleFiles,
                                        QDir directory) {
     const QStringList nameFilter("*.qml");
     QStringList qmlFiles = directory.entryList(nameFilter);
@@ -60,7 +60,7 @@ void KRuleEngine::extendAvailableFiles(const QFileInfo &qmlFilename, QMap<QStrin
     }
 }
 
-void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap,
+void QRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap,
                                       const QFileInfo &qmlFilename, const bool renderDot) {
     QMap<QString, QList<QFileInfo>> avalibleFiles;
 
@@ -98,7 +98,7 @@ void KRuleEngine::parseLiteralImports(NodeWrapper* wrappedRoot, QMap<QString, QS
     }
 }
 
-void KRuleEngine::parseUriImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const bool renderDot) {
+void QRuleEngine::parseUriImports(NodeWrapper* wrappedRoot, QMap<QString, QString> &importAliasMap, const bool renderDot) {
     foreach(NodeWrapper* importNode, wrappedRoot->getNodes("ImportUri")) {
         QFileInfo info = QFileInfo(importPath.absoluteFilePath().append("/")
                                    .append(importNode->getToken("fileNameToken"))
@@ -128,7 +128,7 @@ void KRuleEngine::parseUriImports(NodeWrapper* wrappedRoot, QMap<QString, QStrin
     }
 }
 
-void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderDot) {
+void QRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderDot) {
 
     // Parse QML code
     QString code = readCode(qmlFilename.absoluteFilePath());
@@ -178,9 +178,9 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderD
     }
 
     // Verify wrapped AST
-    KRuleVisitor kruleVisitor = KRuleVisitor(wrappedSuperAST, wrappedFileAST);
-    kruleTree->accept(&kruleVisitor);
-    mergeOccurranceMap(kruleVisitor.getFailures());
+    QRuleVisitor qruleVisitor = QRuleVisitor(wrappedSuperAST, wrappedFileAST);
+    qruleTree->accept(&qruleVisitor);
+    mergeOccurranceMap(qruleVisitor.getFailures());
 
     // Add top object node to map over imported asts
     NodeWrapper* objectPointer;
@@ -212,12 +212,12 @@ void KRuleEngine::verifyQMLFile(const QFileInfo &qmlFilename, const bool renderD
 
 
 /*!
- * \brief KRuleEngine::parseQmlDirFile parses a qmldir file.
+ * \brief QRuleEngine::parseQmlDirFile parses a qmldir file.
  * \param qmldirFile The path to the qmldir file to parse.
  * \param version 1.0
  * \return The mapping of references to a pair of version and file path, for each member of the module. Will return empty map if the file does not exists.
  */
-QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileInfo &qmldirFile, const float version) {
+QMap<QString, QPair<float,QFileInfo>> QRuleEngine::parseQmlDirFile(const QFileInfo &qmldirFile, const float version) {
     QMap<QString, QPair<float, QFileInfo>> filemap;
     if (qmldirFile.exists()) {
 
@@ -295,7 +295,7 @@ QMap<QString, QPair<float,QFileInfo>> KRuleEngine::parseQmlDirFile(const QFileIn
     return filemap;
 }
 
-QString KRuleEngine::readCode(QString qmlFilename) {
+QString QRuleEngine::readCode(QString qmlFilename) {
     QFile file(qmlFilename);
     if (!file.open(QFile::ReadOnly)) {
         qWarning() << "Failed to open file" << qmlFilename << file.error();
@@ -307,10 +307,10 @@ QString KRuleEngine::readCode(QString qmlFilename) {
     return code;
 }
 
-void KRuleEngine::mergeOccurranceMap(const QMap<QString, KRuleOutput*> &map) {
+void QRuleEngine::mergeOccurranceMap(const QMap<QString, QRuleOutput*> &map) {
     foreach(QString key, map.keys()) {
         if (ruleViolations.contains(key)) {
-            KRuleOutput* ko = ruleViolations[key];
+            QRuleOutput* ko = ruleViolations[key];
             ko->addCodeOccurrances(map[key]);
             ruleViolations.insert(key, ko);
         } else {

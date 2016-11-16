@@ -4,8 +4,8 @@
 // See the file LICENSE from this package for details.
 //
 // SPDX-License-Identifier: GPL-3.0
-#ifndef KRULEENGINE_RETTYPESTRING_H
-#define KRULEENGINE_RETTYPESTRING_H
+#ifndef QRULEENGINE_RETTYPESTRING_H
+#define QRULEENGINE_RETTYPESTRING_H
 
 #include "retType/RetType.h"
 #include <QString>
@@ -21,4 +21,4 @@ private:
     QString data;
 };
 
-#endif // KRULEENGINE_RETTYPESTRING_H
+#endif // QRULEENGINE_RETTYPESTRING_H

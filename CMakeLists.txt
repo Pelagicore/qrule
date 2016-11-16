@@ -5,7 +5,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0
 cmake_minimum_required(VERSION 3.3)
-project(KRuleEngine)
+project(QRuleEngine)
 
 if (NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
