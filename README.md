@@ -46,6 +46,10 @@ Example:
 ./QRuleEngine rules.kr qmlFile1.qml qmlFile2.qml qmlFile3.qml
 ```
 
+Publications
+------------
+http://publications.lib.chalmers.se/records/fulltext/245104/245104.pdf
+
 QRule language
 --------------
 The QRule language is built around computational tree logic (CTL)
