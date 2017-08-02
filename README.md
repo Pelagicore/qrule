@@ -110,15 +110,15 @@ An example of an execution of QRuleEngine:
 QRule file:
 ```QRule
 "NoUnreferencedId" Critical Policy File
-  ?? "All defined ids should be used at some point."
-  :: forAll "ScriptBinding.ExpressionStatement.IdentifierExpression" :
-       (!(V = "parent")) ->
-         (EF((nodeType = "IdentifierExpression") & !(row = R) & (value = V))),
+  ?? "All defined ids should be used at some point"
+  :: forAll x in "ScriptBinding"."IdentifierExpression" :
+       (!(x.value = "parent")) -> (EF((nodeType = "IdentifierExpression") 
+  & !(row = x.row) & (value = x.value)))
 
 "LowerCaseLetterStartVarName" Critical Policy Imported
   ?? "It is awfully important to have all JavaScript
       variable names start with a lowercase letter"
-  :: AG( (nodeType = "VariableDeclaration") -> (value match "[a-z]*")),
+  :: AG( (nodeType = "VariableDeclaration") -> (value match "[a-z]*"))
 ```
 
 QML file:

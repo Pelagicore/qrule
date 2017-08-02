@@ -247,7 +247,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiPublicMember *exp) {
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap, filename);
-    NodeWrapper *t = new NodeWrapper(exp->memberType.toString(), QString("String"), QString("PublicMemberType"),
+    NodeWrapper *t = new NodeWrapper((exp->memberType)->name.toString(), QString("String"), QString("PublicMemberType"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), tokenMap, filename);
@@ -302,7 +302,7 @@ bool QmlVisitor::visit(QQmlJS::AST::UiParameterList *exp) {
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), QMap<QString, QString>(), filename);
-    NodeWrapper *t = new NodeWrapper(exp->type.toString(), QString("String"), QString("Type"),
+    NodeWrapper *t = new NodeWrapper((exp->type)->name.toString(), QString("String"), QString("Type"),
                                      exp->firstSourceLocation().startLine,
                                      exp->firstSourceLocation().startColumn,
                                      getSource(exp), QMap<QString, QString>(), filename);
